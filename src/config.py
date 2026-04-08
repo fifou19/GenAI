@@ -1,70 +1,58 @@
 """
-Configuration centralisée du projet HR Assistant.
-Chargée depuis les variables d'environnement (.env)
+Centralized configuration for the HR Assistant project.
+Loaded from environment variables (.env).
 """
-
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
 load_dotenv()
-MAX_RETRIES = 10      # au lieu de 5
-BASE_WAIT = 15        # au lieu de 10
-MAX_WAIT = 120        # au lieu de 60
-SLEEP_BETWEEN_CALLS = 8  # au lieu de 4  # seconds between API calls
-MAX_TOKENS = 3000
-TEMPERATURES = 0.3 # max tokens for LLM response (to avoid very long answers)
-MODEL = "gemini-2.5-flash-lite"
+MAX_RETRIES = 10      # instead of 5
+BASE_WAIT = 15        # instead of 10
+MAX_WAIT = 120        # instead of 60
+SLEEP_BETWEEN_CALLS = 8  # instead of 4  # seconds between API calls
+MAX_TOKENS = 3000  # max tokens for LLM response (to avoid very long answers)
+TEMPERATURES = 0.3
 
+# Data paths
 
-# ============================================================
-# LLM Provider — openai | anthropic | mistral | groq | gemini
-# ============================================================
+# Clean base directory
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+DATA_DIR = Path(os.getenv("DATA_DIR", BASE_DIR / "data"))
+CACHE_DIR = Path(os.getenv("CACHE_DIR", BASE_DIR / "cache"))
+
+# Subfolders
+GOUV_DIR = DATA_DIR / "gouv"
+GOUV_MD_DIR = DATA_DIR / "gouv_md"
+NOVATECH_DIR = DATA_DIR / "novatech"
+NOVATECH_MD_DIR = DATA_DIR / "novatech_md"
+CHAT_CACHE_DIR = CACHE_DIR / "chat_cache"
+CACHE_FILE = CHAT_CACHE_DIR / "conversations.json"
 
 # Gemini
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL")
 
-# OpenAI
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
-# Anthropic
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-20250514")
+# Embedding
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL")
+RERANKING_MODEL = os.getenv("RERANKING_MODEL", "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1")
 
-# Mistral
-MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY", "")
-MISTRAL_MODEL = os.getenv("MISTRAL_MODEL", "mistral-small-latest")
-
-# Groq
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
-GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-70b-versatile")
-
-# ============================================================
-# Embedding (sentence-transformers, local, gratuit)
-# ============================================================
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
-
-# ============================================================
 # ChromaDB
-# ============================================================
-CHROMA_PERSIST_DIR = os.getenv("CHROMA_PERSIST_DIR", "data/chroma_db")
-CHROMA_COLLECTION_NAME = os.getenv("CHROMA_COLLECTION_NAME", "hr_docs")
+CHROMA_PERSIST_DIR = os.getenv("CHROMA_PERSIST_DIR")
+CHROMA_COLLECTION_NAME = os.getenv("CHROMA_COLLECTION_NAME")
 
-# ============================================================
 # RAG parameters
-# ============================================================
-CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "800"))
-CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "200"))
-TOP_K = int(os.getenv("TOP_K", "5"))
 
-# ============================================================
-# Data paths
-# ============================================================
-DATA_DIR = os.getenv("DATA_DIR", "data")
-GOUV_DIR = os.path.join(DATA_DIR, "gouv")
-NOVATECH_DIR = os.path.join(DATA_DIR, "novatech")
-NOVATECH_MD_DIR = os.path.join(DATA_DIR, "novatech_md")
+CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "500"))
+CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "50"))
+TOP_K = int(os.getenv("TOP_K", "5"))
+DISTANCE_THRESHOLD = float(os.getenv("DISTANCE_THRESHOLD", "1.0"))
+USE_RERANKING = os.getenv("USE_RERANKING", "false").lower() == "true"
+
+
+
 
 
 

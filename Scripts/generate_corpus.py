@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Génération du corpus NovaTech Solutions via Gemini API.
-Approche article-par-article :
-  1. Pour chaque thème, demande à Gemini la structure (liste d'articles)
-  2. Puis génère chaque article séparément
-  3. Concatène le tout en un Markdown complet
+Generate the NovaTech Solutions corpus via Gemini API.
+Article-by-article approach:
+  1. For each theme, request the structure from Gemini (list of articles)
+  2. Then generate each article separately
+  3. Concatenate everything into a complete Markdown file
 
 Usage:
     pip install google-genai pdfplumber
@@ -20,37 +20,25 @@ import random
 from pathlib import Path
 from Scripts.md_to_pdf import convert_all_to_pdf
 
-from src.config import ( GEMINI_API_KEY , MAX_RETRIES, BASE_WAIT, MAX_WAIT, SLEEP_BETWEEN_CALLS, GOUV_DIR, NOVATECH_DIR, NOVATECH_MD_DIR , MODEL)
+from src.config import ( GEMINI_API_KEY , TEMPERATURES,MAX_RETRIES, BASE_WAIT, MAX_WAIT, SLEEP_BETWEEN_CALLS, GOUV_DIR, NOVATECH_DIR, NOVATECH_MD_DIR , GEMINI_MODEL,is_retryable_error)
 import pdfplumber
 from google import genai
 from google.genai import types
 
 # ============================================================
-# CONFIG
-# ============================================================
-
-
-
-
-def is_retryable_error(e):
-    s = str(e).lower()
-    return any(x in s for x in ["503", "429", "overloaded", "resource exhausted", "rate limit", "unavailable"])
-
-
-# ============================================================
 # GEMINI CALL WITH RETRY
 # ============================================================
-def call_gemini(client, system: str, prompt: str, temperature: float = 0.3) -> str:
+def call_gemini(client, system: str, prompt: str, temperature: float ) -> str:
     """Appelle Gemini avec retry et backoff."""
     last_exc = None
     for attempt in range(MAX_RETRIES):
         try:
             response = client.models.generate_content(
-                model=MODEL,
+                model=GEMINI_MODEL,
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     system_instruction=system,
-                    temperature=temperature,
+                    temperature=TEMPERATURES,
                     max_output_tokens=4096,
                 ),
             )
@@ -144,71 +132,232 @@ HR Contacts:
 # THEMES
 # ============================================================
 THEMES = [
+    # =========================================================
+    # 1) THEMES REGLEMENTAIRES ALIGNS AVEC LES SOURCES GOUV
+    # =========================================================
     {
-        "filename": "01_conges_payes_rtt",
-        "title": "Politique de Congés Payés et RTT",
-        "gouv_keys": ["gouv_01_conges_payes", "gouv_02_conges_evenements_familiaux"],
-        "description": "Paid leave (25 days), seniority leave (5/10/15/20 years), leave request procedure via MonEspace, RTT (11 days cadres forfait jours 2025, 12 days non-cadres), half RTT fixed by employer, RTT during probation (max 2), exceptional leave table (marriage, death, birth, sick child), leave donation (anonymous, 5 days max/year), carry-over and loss rules."
+        "theme_id": "conges_payes",
+        "filename": "01_conges_payes",
+        "title": "Congés payés",
+        "category": "reglementaire",
+        "source_type": "mixed",
+        "gouv_keys": ["gouv_01_conges_payes"],
+        "description": (
+            "Rules related to paid annual leave: acquisition, duration, leave counting, "
+            "employee rights, employer obligations, scheduling, carry-over, and paid leave management."
+        ),
     },
     {
-        "filename": "02_teletravail",
-        "title": "Politique de Télétravail",
+        "theme_id": "conges_evenements_familiaux",
+        "filename": "02_conges_evenements_familiaux",
+        "title": "Congés pour événements familiaux",
+        "category": "reglementaire",
+        "source_type": "mixed",
+        "gouv_keys": ["gouv_02_conges_evenements_familiaux"],
+        "description": (
+            "Special leave related to family events such as marriage, PACS, birth, adoption, "
+            "death of a relative, and child illness."
+        ),
+    },
+    {
+        "theme_id": "teletravail",
+        "filename": "03_teletravail",
+        "title": "Télétravail",
+        "category": "reglementaire",
+        "source_type": "mixed",
         "gouv_keys": ["gouv_03_teletravail"],
-        "description": "Eligibility (CDI or CDD >6 months, probation completed), special cases (alternants 1 day/week after 3 months, probation 1 day/week after 1st month, part-time ≤80% = 1 day/week), days table (cadres 3, non-cadres 2, managers ≥5 reports 2), mandatory office day, declaration via MonEspace by Friday, location (home, other on request, abroad prohibited except EU 4 weeks/year), hours (9:30-12, 14-17), disconnect right, equipment provided, monthly allowance (10/20/30€), furniture 50% capped 200€, reversibility 2 weeks notice."
+        "description": (
+            "Remote work rules: eligibility, frequency, request process, working conditions, "
+            "approved workplace, employer obligations, working hours, and associated allowances."
+        ),
     },
     {
-        "filename": "03_frais_deplacements",
-        "title": "Politique de Remboursement de Frais et Déplacements",
-        "gouv_keys": [],
-        "description": "Commuting 75% (vs 50% legal, CDI post-probation only), personal vehicle (authorization required, tax mileage table 3CV-7CV+), train (2nd class, 1st class cadres ≥3h, TravelNova 7 days advance), flights (economy <6h, premium economy cadres ≥6h, business director approval ≥8h), taxi/VTC (60€ provinces, 80€ Paris), meal vouchers 10€ (60%/40%), travel meals table (lunch France 20€, dinner 30€, international 40-50€), client meals (60€/person cadres, 40€ non-cadres with approval), accommodation table (Paris 150€, major cities 120€, others 100€, Europe 180€, outside 250€), MonEspace submission 30 days, advance >500€."
+        "theme_id": "arret_maladie",
+        "filename": "04_arret_maladie",
+        "title": "Arrêt maladie",
+        "category": "reglementaire",
+        "source_type": "mixed",
+        "gouv_keys": ["gouv_04_arret_maladie"],
+        "description": (
+            "Rules applicable in case of sick leave: employee notification, medical certificate deadlines, "
+            "salary maintenance, waiting period, return-to-work obligations, and leave impacts."
+        ),
     },
     {
-        "filename": "04_onboarding",
-        "title": "Guide d'Onboarding",
-        "gouv_keys": [],
-        "description": "Before arrival D-7 (DocuSign contract, admin file MonEspace, schedule, buddy), required documents, Day 1 (welcome 9:30, badge, kit, IT equipment, integration morning, IT security training), first week day-by-day, first month (NovAcademy: GDPR 2h, code of conduct 1h, harassment 1h30, CSR 45min, weekly manager check-ins), probation table (CDI cadre 4+4 months, non-cadre 2+2, CDD <6m 2 weeks, ≥6m 1 month), mid and final evaluation, practical info (hours 7:30-21:00, cafeteria, lost badge 15€), tools and contacts table."
+        "theme_id": "accident_travail",
+        "filename": "05_accident_travail",
+        "title": "Accident du travail",
+        "category": "reglementaire",
+        "source_type": "mixed",
+        "gouv_keys": ["gouv_05_accident_travail"],
+        "description": (
+            "Definition and management of work accidents: declaration process, deadlines, employer duties, "
+            "specific compensation regime, medical follow-up, and return-to-work rules."
+        ),
     },
     {
-        "filename": "05_mutuelle_avantages",
-        "title": "Mutuelle et Avantages Sociaux",
-        "gouv_keys": [],
-        "description": "Harmonie Mutuelle mandatory from Day 1, 2 plans table (Essential 35€/month, Family 85€/month), 60% employer, coverage (hospitalization, consultations, dental, optical 200-300€, alternative medicine 4x30€), exemptions, portability 12 months, insurance table cadres/non-cadres (0.80% vs 0.50%, death 4x vs 3x, maintenance 180 vs 90 days), CSE (holiday vouchers 200€, gifts 170€+50€/child, sport 50% cap 200€), profit sharing, PEE (100% match to 500€, 50% to 1000€, max 750€), PERCO 50% cap 300€, mobility 500€/year, solidarity leave 2 days, well-being (MindCare, yoga, fruit)."
+        "theme_id": "demission",
+        "filename": "06_demission",
+        "title": "Démission",
+        "category": "reglementaire",
+        "source_type": "mixed",
+        "gouv_keys": ["gouv_06_demission"],
+        "description": (
+            "Rules related to resignation: formalism, notice period, rights and obligations of the employee, "
+            "and employment contract termination process."
+        ),
     },
     {
-        "filename": "06_faq_rh",
-        "title": "FAQ RH",
-        "gouv_keys": [],
-        "description": "~20 Q&A in categories: leave (urgent leave, manager no response = approved after 5 days, RTT lost Dec 31, combine RTT+leave, sick leave and leave), remote work (new hires, abroad, manager withdrawal, allowance if absent), expenses (lost receipt max 2/semester, personal car, >30 days not guaranteed >3 months refused, parking 15€/day), health (add spouse 30 days, portability 12 months, psychologist 4x30€ + MindCare), compensation (payslip 25th, payment last day, PEE example, PEE vs PERCO), office (badge lost 15€, IT desk 5678, bike parking + mobility 500€). Concise answers with form references."
+        "theme_id": "rupture_conventionnelle",
+        "filename": "07_rupture_conventionnelle",
+        "title": "Rupture conventionnelle",
+        "category": "reglementaire",
+        "source_type": "mixed",
+        "gouv_keys": ["gouv_07_rupture_conventionnelle"],
+        "description": (
+            "Mutual termination process: conditions, procedure, timeline, indemnities, withdrawal period, "
+            "approval, and end-of-contract consequences."
+        ),
     },
     {
-        "filename": "07_arrets_maladie",
-        "title": "Politique Arrêts Maladie et Accidents du Travail",
-        "gouv_keys": ["gouv_04_arret_maladie", "gouv_05_arret_maladie_ij", "gouv_05_accident_travail"],
-        "description": "Employee obligations (notify 24h, certificate 48h via MonEspace), salary maintenance (1 year seniority required), waiting period (0 cadres, 3 days non-cadres, none for work accidents), maintenance table by seniority AND status, medical counter-visit, repeated absences ≥3/12months → HR meeting, work accident (definition, process, declaration 48h), AT/MP compensation (no seniority, no waiting, 100% 90 days then 80% max 12 months), return visit (60 days illness, 30 days accident), pre-return ≥3 months, therapeutic part-time, impact on leave/RTT/seniority."
+        "theme_id": "licenciement",
+        "filename": "08_licenciement",
+        "title": "Licenciement",
+        "category": "reglementaire",
+        "source_type": "mixed",
+        "gouv_keys": ["gouv_08_licenciement"],
+        "description": (
+            "Dismissal rules: personal or economic dismissal, procedure, mandatory meetings, notice period, "
+            "indemnities, and employee rights."
+        ),
     },
     {
-        "filename": "08_formation_carriere",
-        "title": "Formation Continue et Évolution de Carrière",
+        "theme_id": "cpf",
+        "filename": "09_cpf",
+        "title": "Compte Personnel de Formation (CPF)",
+        "category": "reglementaire",
+        "source_type": "mixed",
         "gouv_keys": ["gouv_09_cpf"],
-        "description": "Skills plan table (mandatory, job, transversal, degree with examples), budget 2% payroll cap 3000€/year, request procedure, CPF (500€/year cap 5000€, work time 60/120 days, no response 30 days = approved, company top-up), career interview every 2 years (distinct from annual), 6-year review (3000€ corrective), internal mobility (2 weeks internal posting, 18 months seniority, confidential, 3 months adaptation), NovAcademy 500+ modules 2h/month."
+        "description": (
+            "Rules governing the CPF: annual credit, use conditions, employee request process, employer response, "
+            "training during working time, and possible employer top-up."
+        ),
     },
     {
-        "filename": "09_entretiens_remuneration",
-        "title": "Entretiens Annuels, Objectifs et Rémunération",
-        "gouv_keys": [],
-        "description": "Annual review Jan-Feb (review, competencies, objectives), self-assessment 1 week before MonEspace, competency scale 1-5 table, 3 categories (technical, behavioral, managerial), improvement plan if ≤2 (3-month follow-up), objectives 3-5 SMART + collective 20%, quarterly check-ins, salary grid N1-N8 table (25k-120k), increases March (general 2.5%, individual ~1.5%, promotion ≥5%, none if ≤2), variable table (sales 15-30%, managers 10-15%, cadres 5-10%, non-cadres none), exceptional bonus max 3000€ 2/year, feedback, 360° managers every 2 years."
-    },
-    {
-        "filename": "10_depart_entreprise",
-        "title": "Départ de l'Entreprise",
-        "gouv_keys": ["gouv_06_demission", "gouv_07_rupture_conventionnelle", "gouv_08_licenciement"],
-        "description": "Resignation (registered letter, email not valid, notice 1 month non-cadre / 3 months cadre, waiver), mutual termination (full process, indemnities, 15-day retraction, 15-day approval, timeline 5-8 weeks), dismissal (personal and economic, process, notice table, legal indemnity), CDD end (10% precarity bonus), exit checklist (IT return, expenses, handover, exit interview, access disabled 6pm), documents within 7 days, non-compete clause."
-    },
-    {
-        "filename": "11_handicap_rqth",
-        "title": "Handicap, RQTH et Aménagements de Poste",
+        "theme_id": "rqth_handicap",
+        "filename": "10_rqth_handicap",
+        "title": "RQTH, handicap et aménagements de poste",
+        "category": "reglementaire",
+        "source_type": "mixed",
         "gouv_keys": ["gouv_10_rqth"],
-        "description": "Disability agreement 2024-2027, RQTH (definition, benefits: accommodation, Agefiph, doubled notice, absence days, priority training), RQTH process (personal, confidential, MDPH, 4-6 months, 1-10 years or lifetime), strict confidentiality (only disability liaison + HR + occupational physician with written consent), accommodations table (equipment, software, organizational, environment, human), procedure (3-6 weeks), funding company + Agefiph >5000€, enhanced remote work up to 4 days/week, 2 paid absence days/year + 3 additional, SEEPH awareness November, mandatory manager training, liaison Marc Lefèvre contact details."
+        "description": (
+            "Recognition of disability status (RQTH), related rights, confidentiality principles, workplace "
+            "accommodations, dedicated leave, funding support, and associated HR process."
+        ),
+    },
+
+    # =========================================================
+    # 2) THEMES INTERNES COMPLEMENTAIRES
+    # =========================================================
+    {
+        "theme_id": "rtt",
+        "filename": "11_rtt",
+        "title": "RTT",
+        "category": "interne",
+        "source_type": "internal",
+        "gouv_keys": [],
+        "description": (
+            "RTT policy: number of days by status, allocation rules, employer-fixed RTT, use during probation, "
+            "request process, carry-over rules, and expiry conditions."
+        ),
+    },
+    {
+        "theme_id": "frais_deplacements",
+        "filename": "12_frais_deplacements",
+        "title": "Frais et déplacements professionnels",
+        "category": "interne",
+        "source_type": "internal",
+        "gouv_keys": [],
+        "description": (
+            "Travel and expense reimbursement policy: commuting reimbursement, mileage allowance, train and flight "
+            "rules, taxi/VTC caps, meals, accommodation caps, submission deadlines, and travel advance rules."
+        ),
+    },
+    {
+        "theme_id": "onboarding",
+        "filename": "13_onboarding",
+        "title": "Onboarding et intégration",
+        "category": "interne",
+        "source_type": "internal",
+        "gouv_keys": [],
+        "description": (
+            "New hire onboarding process: pre-arrival steps, required documents, day 1, first week, training plan, "
+            "probation follow-up, tools, and useful internal contacts."
+        ),
+    },
+    {
+        "theme_id": "mutuelle_avantages",
+        "filename": "14_mutuelle_avantages",
+        "title": "Mutuelle et avantages sociaux",
+        "category": "interne",
+        "source_type": "internal",
+        "gouv_keys": [],
+        "description": (
+            "Health insurance and social benefits: mandatory coverage, contribution split, plan options, portability, "
+            "provident scheme, CSE benefits, savings plans, mobility package, and well-being initiatives."
+        ),
+    },
+    {
+        "theme_id": "formation_carriere",
+        "filename": "15_formation_carriere",
+        "title": "Formation continue et évolution de carrière",
+        "category": "interne",
+        "source_type": "mixed",
+        "gouv_keys": ["gouv_09_cpf"],
+        "description": (
+            "Internal training policy and career development: skills plan, training budget, request workflow, "
+            "career interviews, internal mobility, and articulation with CPF rights."
+        ),
+    },
+    {
+        "theme_id": "entretiens_remuneration",
+        "filename": "16_entretiens_remuneration",
+        "title": "Entretiens annuels, objectifs et rémunération",
+        "category": "interne",
+        "source_type": "internal",
+        "gouv_keys": [],
+        "description": (
+            "Annual review process, objective setting, competency evaluation, salary review principles, bonus policy, "
+            "promotion rules, and managerial feedback framework."
+        ),
+    },
+    {
+        "theme_id": "faq_rh",
+        "filename": "17_faq_rh",
+        "title": "FAQ RH",
+        "category": "interne",
+        "source_type": "internal",
+        "gouv_keys": [],
+        "description": (
+            "Operational HR FAQ covering recurring employee questions about leave, remote work, expenses, health "
+            "coverage, payroll, badges, support contacts, and practical company rules."
+        ),
+    },
+    {
+        "theme_id": "depart_entreprise",
+        "filename": "18_depart_entreprise",
+        "title": "Départ de l'entreprise",
+        "category": "interne",
+        "source_type": "mixed",
+        "gouv_keys": [
+            "gouv_06_demission",
+            "gouv_07_rupture_conventionnelle",
+            "gouv_08_licenciement",
+        ],
+        "description": (
+            "Internal offboarding policy covering resignation, mutual termination, dismissal, end-of-contract "
+            "formalities, company asset return, expense closure, handover, final documents, and non-compete clauses."
+        ),
     },
 ]
 
@@ -226,7 +375,7 @@ Content to cover: {theme['description']}
 
 Return a JSON array of article titles (in French) that should compose this HR policy document. Include an introduction and a contact block at the end. Typically 5-8 articles."""
 
-    result = call_gemini(client, SYSTEM_STRUCTURE, prompt, temperature=0.2)
+    result = call_gemini(client, SYSTEM_STRUCTURE, prompt, temperature=TEMPERATURES)
 
     # Parse JSON from response (handle markdown code blocks)
     result = result.strip()
@@ -282,7 +431,7 @@ Here are the sections already written (for context and consistency):
 
 Now write ONLY the section "{article_title}". Use ## for the section title. Be thorough and detailed for this specific section. Include tables where relevant. Write 150-400 words for this section."""
 
-    return call_gemini(client, SYSTEM_ARTICLE, prompt, temperature=0.3)
+    return call_gemini(client, SYSTEM_ARTICLE, prompt, temperature=TEMPERATURES)
 
 
 # ============================================================
@@ -322,8 +471,8 @@ def generate_document(client, theme: dict, gouv_texts: dict) -> str:
 
     # Step 2: Generate each article
     header = f"# {theme['title']} — NovaTech Solutions\n\n"
-    header += f"**Document interne — Version 2025**\n"
-    header += f"**Direction des Ressources Humaines**\n\n---\n\n"
+    header += f"**Internal document — Version 2025**\n"
+    header += f"**Human Resources Department**\n\n---\n\n"
 
     full_document = header
     generated_so_far = ""
@@ -349,7 +498,7 @@ def generate_document(client, theme: dict, gouv_texts: dict) -> str:
 # MAIN
 # ============================================================
 def main():
-    api_key = os.environ.get("GEMINI_API_KEY")
+    api_key = GEMINI_API_KEY
     if not api_key:
         print("❌ GEMINI_API_KEY not set")
         print("   export GEMINI_API_KEY=your_key_here")
@@ -361,7 +510,7 @@ def main():
 
     print(f"\n{'='*60}")
     print(f"  NovaTech Solutions — Corpus Generation")
-    print(f"  Model: {MODEL}")
+    print(f"  Model: {GEMINI_MODEL}")
     print(f"  Documents: {len(THEMES)}")
     print(f"  Mode: article-by-article")
     print(f"{'='*60}")

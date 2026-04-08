@@ -1,29 +1,22 @@
 """
-Wrapper LLM multi-provider.
-Centralise les appels LLM pour que rag.py et tools.py n'aient pas à se
-soucier du provider choisi (Gemini, OpenAI, Anthropic, Mistral, Groq).
+Call to the Gemini LLM.
 """
 import time
 import random
+from google import genai
+from google.genai import types
 from src.config import (
-    GEMINI_API_KEY, GEMINI_MODEL,MAX_TOKENS,TEMPERATURES, 
-    
-    MAX_RETRIES, BASE_WAIT, MAX_WAIT,is_retryable_error
+    GEMINI_API_KEY, GEMINI_MODEL, MAX_TOKENS, TEMPERATURES,
+    MAX_RETRIES, BASE_WAIT, MAX_WAIT, is_retryable_error
 )
 
+_client = genai.Client(api_key=GEMINI_API_KEY)
 
 
-# ============================================================
-# GEMINI
-# ============================================================
-def call_gemini(messages: list[dict]) -> str:
-    from google import genai
-    from google.genai import types
-
-    client = genai.Client(api_key=GEMINI_API_KEY)
+def call_gemini(messages: list[dict]) -> str: # type: ignore
     for attempt in range(MAX_RETRIES):
         try:
-    # Extraire le system prompt et les messages user/assistant
+            # Extract the system prompt and the user/assistant messages
             system_instruction = ""
             contents = []
 
@@ -41,8 +34,8 @@ def call_gemini(messages: list[dict]) -> str:
                         parts=[types.Part.from_text(text=msg["content"])]
                     ))
 
-            response = client.models.generate_content(
-                model=GEMINI_MODEL,
+            response = _client.models.generate_content(
+                model=GEMINI_MODEL, # type: ignore
                 contents=contents,
                 config=types.GenerateContentConfig(
                     system_instruction=system_instruction.strip(),
@@ -65,5 +58,5 @@ def call_gemini(messages: list[dict]) -> str:
             print(f"    Retry {attempt+1}/{MAX_RETRIES} — waiting {wait:.0f}s ({e})")
             time.sleep(wait)
 
-        raise RuntimeError(f"Failed after {MAX_RETRIES} retries") from last_exc
+    raise RuntimeError(f"Failed after {MAX_RETRIES} retries") from last_exc
 

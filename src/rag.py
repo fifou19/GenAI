@@ -1,46 +1,91 @@
 """
-Pipeline RAG : retrieval depuis ChromaDB + génération via LLM.
-C'est le fichier principal qui orchestre la recherche et la réponse.
+RAG pipeline: retrieval from ChromaDB + generation via LLM.
+Main file that orchestrates search and response.
 """
 
+import json
 import chromadb
 from chromadb.utils import embedding_functions
 
 from src.config import (
-    EMBEDDING_MODEL, CHROMA_PERSIST_DIR, CHROMA_COLLECTION_NAME, TOP_K
+    EMBEDDING_MODEL, CHROMA_PERSIST_DIR, CHROMA_COLLECTION_NAME, TOP_K, DISTANCE_THRESHOLD,
+    RERANKING_MODEL,USE_RERANKING
 )
 from src.prompts import build_messages
 from src.llm import call_gemini
+from src.tools import TOOL_DEFINITIONS, format_tool_instructions, execute_tool_call
+
+
+def extract_json_object(text: str) -> str | None:
+    """Find the first complete JSON object in a text output."""
+    start = text.find("{")
+    while start != -1:
+        depth = 0
+        in_string = False
+        escape = False
+        for idx in range(start, len(text)):
+            char = text[idx]
+            if char == '"' and not escape:
+                in_string = not in_string
+            if in_string and char == '\\' and not escape:
+                escape = True
+                continue
+            escape = False
+            if in_string:
+                continue
+            if char == "{":
+                depth += 1
+            elif char == "}":
+                depth -= 1
+                if depth == 0:
+                    return text[start:idx + 1]
+        start = text.find("{", start + 1)
+    return None
+
+
+def parse_tool_call(response_text: str) -> dict | None:
+    json_text = extract_json_object(response_text)
+    if not json_text:
+        return None
+
+    try:
+        tool_call = json.loads(json_text)
+        if isinstance(tool_call, dict) and "tool" in tool_call and "arguments" in tool_call:
+            return tool_call
+    except Exception:
+        return None
+    return None
 
 
 # ============================================================
-# RETRIEVER — Recherche dans ChromaDB
+# RETRIEVER — Search in ChromaDB
 # ============================================================
 class Retriever:
-    """Recherche les chunks les plus pertinents dans ChromaDB."""
+    """Searches for the most relevant chunks in ChromaDB."""
 
     def __init__(self):
         self.ef = embedding_functions.SentenceTransformerEmbeddingFunction(
-            model_name=EMBEDDING_MODEL
+            model_name=EMBEDDING_MODEL # type: ignore
         )
-        self.client = chromadb.PersistentClient(path=CHROMA_PERSIST_DIR)
+        self.client = chromadb.PersistentClient(path=CHROMA_PERSIST_DIR) # type: ignore
         self.collection = self.client.get_collection(
-            name=CHROMA_COLLECTION_NAME,
-            embedding_function=self.ef,
+            name=CHROMA_COLLECTION_NAME, # type: ignore
+            embedding_function=self.ef, # type: ignore
         )
 
     def search(self, query: str, top_k: int = TOP_K, 
-               source_filter: str = None) -> list[dict]:
+               source_filter: str = None, distance_threshold: float = None) -> list[dict]: # type: ignore
         """
-        Recherche sémantique dans la base vectorielle.
+        Semantic search in the vector database.
         
         Args:
-            query: la question du salarié
-            top_k: nombre de chunks à retourner
-            source_filter: "gouv" ou "novatech" pour filtrer par source
+            query: the employee's question
+            top_k: number of chunks to return
+            source_filter: "gouv" or "novatech" to filter by source
+            distance_threshold: distance threshold (0-2), chunks above are filtered
         
         Returns:
-            Liste de dicts avec 'text', 'metadata', 'distance'
+            List of dicts with 'text', 'metadata', 'distance'
         """
         where_filter = None
         if source_filter:
@@ -48,23 +93,30 @@ class Retriever:
 
         results = self.collection.query(
             query_texts=[query],
-            n_results=top_k,
-            where=where_filter,
+            n_results=top_k * 2,  # Retrieve more to filter later
+            where=where_filter, # type: ignore
         )
 
         chunks = []
         if results and results["documents"] and results["documents"][0]:
             for i, doc in enumerate(results["documents"][0]):
+                distance = results["distances"][0][i] if results["distances"] else 0
+                
+                # Filter by distance threshold when specified
+                if distance_threshold is not None and distance > distance_threshold:
+                    continue
+                    
                 chunks.append({
                     "text": doc,
                     "metadata": results["metadatas"][0][i] if results["metadatas"] else {},
-                    "distance": results["distances"][0][i] if results["distances"] else 0,
+                    "distance": distance,
                 })
 
-        return chunks
+        # Return only the first top_k chunks
+        return chunks[:top_k]
 
     def get_stats(self) -> dict:
-        """Retourne des stats sur la collection."""
+        """Return stats about the collection."""
         count = self.collection.count()
         return {
             "total_chunks": count,
@@ -77,44 +129,98 @@ class Retriever:
 # RAG CHAIN — Retrieval + Generation
 # ============================================================
 class RAGChain:
-    """Pipeline complet : question → retrieval → LLM → réponse."""
+    """Complete pipeline: question → retrieval → LLM → answer."""
 
     def __init__(self):
         self.retriever = Retriever()
+        self._cross_encoder = None  # lazy-loaded once on first reranking call
 
-    def answer(self, question: str, chat_history: list[dict] = None,
-               top_k: int = TOP_K) -> dict:
+    def _get_cross_encoder(self):
+        if self._cross_encoder is None:
+            from sentence_transformers import CrossEncoder
+            self._cross_encoder = CrossEncoder(RERANKING_MODEL)
+        return self._cross_encoder
+
+    def answer(self, question: str, chat_history: list[dict] = None, # type: ignore
+               top_k: int = TOP_K, distance_threshold: float = DISTANCE_THRESHOLD,
+               use_reranking: bool = USE_RERANKING) -> dict:
         """
-        Répond à une question en utilisant le RAG.
+        Answer a question using the RAG pipeline.
         
         Args:
-            question: la question du salarié
-            chat_history: historique de la conversation (optionnel)
-            top_k: nombre de chunks à récupérer
+            question: the employee's question
+            chat_history: conversation history (optional)
+            top_k: number of chunks to retrieve
+            distance_threshold: threshold for filtering chunks
+            use_reranking: enable the LLM reranking of chunks
         
         Returns:
-            dict avec 'answer', 'sources', 'chunks'
+            dict with 'answer', 'sources', 'chunks'
         """
         # 1. Retrieval
-        chunks = self.retriever.search(question, top_k=top_k)
-
-        # 2. Build messages (system + few-shot + history + context + question)
+        chunks = self.retriever.search(question, top_k=top_k, distance_threshold=distance_threshold)
+        
+        # 2. Optional reranking
+        if use_reranking and chunks:
+            chunks = self.rerank_chunks(question, chunks, top_k=top_k)
+        
+        # 3. Build messages (system + few-shot + history + context + question)
         messages = build_messages(question, chunks, chat_history)
 
-        # 3. Call LLM
-        answer = call_gemini(messages)
+        # 4. Ask the LLM whether a tool should be used
+        # Merge tool instructions into the last user message to avoid consecutive user turns
+        tool_instructions = format_tool_instructions()
+        messages_with_tool_prompt = messages[:-1] + [{
+            "role": "user",
+            "content": messages[-1]["content"] + "\n\n" + tool_instructions,
+        }]
 
-        # 4. Extract sources for display
+        response_text = call_gemini(messages_with_tool_prompt)
+        tool_call = parse_tool_call(response_text)
+
+        tool_result = None
+        if tool_call:
+            tool_result = execute_tool_call(tool_call["tool"], tool_call["arguments"])
+            followup_messages = messages_with_tool_prompt + [
+                {"role": "assistant", "content": f"Tool call result: {tool_result}"},
+                {"role": "user", "content": "Use the tool result above to answer the original question."},
+            ]
+            answer = call_gemini(followup_messages)
+        else:
+            answer = response_text
+
+        # 5. Extract sources for display
         sources = self._extract_sources(chunks)
 
         return {
             "answer": answer,
             "sources": sources,
             "chunks": chunks,
+            "tool_call": tool_call,
+            "tool_result": tool_result,
         }
 
+    def rerank_chunks(self, question: str, chunks: list[dict], top_k: int = 5) -> list[dict]:
+        """
+        Rerank chunks using a local cross-encoder (no API call).
+        Much faster and more accurate than LLM-based scoring.
+        """
+        if not chunks:
+            return chunks
+
+        model = self._get_cross_encoder()
+        pairs = [[question, chunk["text"]] for chunk in chunks]
+        scores = model.predict(pairs)
+
+        scored_chunks = [
+            {**chunk, "rerank_score": float(score)}
+            for chunk, score in zip(chunks, scores)
+        ]
+        scored_chunks.sort(key=lambda x: -x["rerank_score"])
+        return scored_chunks[:top_k]
+
     def _extract_sources(self, chunks: list[dict]) -> list[dict]:
-        """Extrait les sources uniques des chunks pour l'affichage."""
+        """Extract unique sources from chunks for display."""
         seen = set()
         sources = []
         for chunk in chunks:

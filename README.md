@@ -1,187 +1,350 @@
-# Projet GenAI — Assistant RH Interne
-## Résumé complet du projet (état actuel)
+# Nova — Assistante RH NovaTech Solutions
+
+Assistant RH intelligent basé sur un pipeline RAG (Retrieval-Augmented Generation) pour répondre aux questions des employés de NovaTech Solutions sur les politiques RH internes et le droit du travail français.
 
 ---
 
-## 1. Contexte académique
+## Contexte du projet
 
-Ce projet est l'évaluation finale du cours **Generative AI** (ESIEA, Master). Le sujet est libre mais doit être un **assistant IA spécialisé pour une industrie spécifique**, avec un prototype fonctionnel.
+Projet final du cours **Generative AI** (ESIEA, Master). L'objectif est de construire un assistant IA spécialisé pour un domaine métier précis, avec un prototype fonctionnel incluant interface web, RAG, prompt engineering avancé et tool use.
 
-### Critères de notation (3 livrables, chacun = 1/3 de la note) :
+### Problème résolu
 
-**Code (1/3)** :
-- Prototype fonctionnel avec interface web (Streamlit/Gradio)
-- Prompt engineering avancé (system prompt, persona, few-shot, format JSON)
-- RAG avec vector database locale et chunking pertinent
-- Agents & Tool Use (au moins 1 outil externe : function calling, web search, ou code execution)
-
-**Rapport (1/3)** :
-- Architecture et choix techniques documentés
-- Évaluation de fiabilité et biais
-- Tracking d'hallucinations et tests de prompt injection
-
-**Oral (1/3)** :
-- Pitch business clair
-- Démo live interactive
-- Gestion du temps et Q&A
+Les employés posent sans cesse les mêmes questions RH (congés, télétravail, arrêts maladie, frais, etc.), ce qui mobilise inutilement les équipes RH sur des demandes répétitives. Nova répond automatiquement en s'appuyant uniquement sur les documents officiels — sans inventer.
 
 ---
 
-## 2. Sujet choisi : Assistant RH interne
-
-### Le problème
-Les salariés posent toujours les mêmes questions aux RH : congés, télétravail, remboursement de frais, arrêt maladie, onboarding, etc. Ça mobilise du temps RH sur des réponses répétitives qui existent déjà dans les documents de politique interne.
-
-### La solution
-Un assistant IA qui :
-- **Répond aux questions RH** à partir des politiques internes ET du droit du travail
-- **Cite les passages sources** (quel document, quel article)
-- **Renvoie vers le bon formulaire** (MonEspace > Congés > Nouvelle demande, etc.)
-- **Génère une checklist d'action** pour guider le salarié
-- **Sait dire "je ne sais pas"** quand l'information n'est pas dans sa base
-
-### Pourquoi c'est un bon sujet
-- RAG naturel sur un corpus de documents structurés
-- Tool use simple et concret (formulaire, checklist, routage vers le bon service)
-- Facile à évaluer : bonne réponse vs mauvaise réponse (les règles sont objectives)
-- Business case clair : réduction du temps RH, satisfaction employé
-- Risques intéressants à tester : hallucination, confusion cadre/non-cadre, prompt injection
-
----
-
-## 3. Corpus de données (ce qui est fait ✅)
-
-### Approche hybride : Droit du travail (gouv) + Politique interne (entreprise fictive)
-
-C'est exactement comme fonctionne un vrai service RH : il y a la loi (identique pour tous) et les règles spécifiques de l'entreprise (propres à chaque société). Notre assistant a les deux couches.
-
-### Couche 1 — Documents légaux (service-public.fr)
-10 PDF scrapés depuis service-public.fr, couvrant :
-
-| # | Thème | Source |
-|---|---|---|
-| 01 | Congés payés | service-public.fr/F2258 |
-| 02 | Congés événements familiaux | service-public.fr/F2278 + code.travail.gouv.fr |
-| 03 | Télétravail secteur privé | service-public.fr/F13851 |
-| 04 | Arrêt maladie (IJ + démarches) | service-public.fr/F3053 + F303 |
-| 05 | Accident du travail / maladie pro | service-public.fr/F175 + F176 |
-| 06 | Démission | service-public.fr/F2883 |
-| 07 | Rupture conventionnelle | service-public.fr/F19030 |
-| 08 | Licenciement | service-public.fr/F1848 + F133 + sous-pages |
-| 09 | CPF (compte personnel de formation) | service-public.fr/F10705 |
-| 10 | RQTH (handicap) | service-public.fr/F1650 |
-
-Un script Python (`scrape_service_public.py`) scrape ces pages, suit les sous-pages liées, filtre le bruit (boutons de partage, glossaire, textes de loi dupliqués), et génère un PDF propre par thème.
-
-### Couche 2 — Documents internes NovaTech Solutions (entreprise fictive)
-11 PDF au style corporate (en-tête, tableaux, pieds de page) pour une entreprise tech fictive :
-
-| # | Document | Contenu clé |
-|---|---|---|
-| 01 | Congés payés & RTT | 25 CP + 11 RTT cadres / 12 non-cadres, congés exceptionnels, don de jours |
-| 02 | Télétravail | 3j cadres / 2j non-cadres, indemnité 10-30€/mois, interdit à l'étranger |
-| 03 | Frais & déplacements | Barèmes train/avion (1ère classe cadres), plafonds repas/hôtel, TravelNova |
-| 04 | Onboarding | Premier jour, période d'essai (2-8 mois), formations obligatoires, outils |
-| 05 | Mutuelle & avantages | Harmonie Mutuelle 60% employeur, CSE, PEE/PERCO, mobilité durable |
-| 06 | FAQ RH | Questions transversales les plus fréquentes |
-| 07 | Arrêts maladie | Carence 0j cadres / 3j non-cadres, maintien salaire selon ancienneté, AT/MP |
-| 08 | Formation & carrière | CPF, plan de formation 2% masse salariale, NovAcademy, mobilité interne |
-| 09 | Entretiens & rémunération | Grille N1-N8, augmentation 2025 = 2.5% générale, primes, variable |
-| 10 | Départ de l'entreprise | Démission (1-3 mois préavis), rupture co, licenciement, solde tout compte |
-| 11 | Handicap & RQTH | Aménagements, télétravail 4j/sem, 2j absence/an, référent Marc Lefèvre |
-
-### Complexité volontaire (niveau "moyen")
-Les documents contiennent des **cas ambigus intentionnels** pour tester le RAG :
-- Règles différentes cadre vs non-cadre (RTT, télétravail, carence maladie, train 1ère classe...)
-- Règles qui varient selon l'ancienneté (maintien de salaire, congés supplémentaires)
-- Informations croisées entre documents (titres restaurant dans frais ET onboarding)
-- Chaque doc pointe vers des formulaires spécifiques sur "MonEspace" → base pour le tool use
-
-### Trous volontaires (pour tester le "je ne sais pas")
-Certains sujets sont intentionnellement absents : droit de grève, règlement intérieur, congé sabbatique, expatriation, droit syndical. L'assistant devra reconnaître qu'il n'a pas l'info et rediriger vers la DRH.
-
----
-
-## 4. Architecture technique (en cours 🔧)
-
-### Stack choisie
-
-| Composant | Choix | Justification |
-|---|---|---|
-| **LLM** | Configurable (OpenAI, Anthropic, Mistral, Groq) | Flexibilité, peut comparer les providers |
-| **Embedding** | sentence-transformers (all-MiniLM-L6-v2) | Gratuit, local, pas de coût API |
-| **Vector store** | ChromaDB | Simple, local, persistant, bon pour un prototype |
-| **Interface** | Streamlit | Demandé dans les critères, rapide à prototyper |
-| **Chunking** | Hybride section + taille | Par article/section pour NovaTech, par question pour Gouv, fallback par taille avec overlap |
-
-### Pipeline RAG
+## Architecture globale
 
 ```
 Question utilisateur
-    → Embedding (sentence-transformers)
-    → Recherche dans ChromaDB (top 5 chunks)
-    → Contexte injecté dans le prompt
-    → LLM génère une réponse structurée
-    → Réponse avec : source citée + formulaire + checklist
+    │
+    ▼
+[Embedding — sentence-transformers]
+    │
+    ▼
+[Retrieval — ChromaDB (top K chunks)]
+    │
+    ▼
+[Reranking — Cross-encoder local]
+    │
+    ▼
+[Prompt Engineering — système + few-shot + contexte RAG]
+    │
+    ▼
+[LLM — Gemini (via google-genai)]
+    │
+    ▼
+[Tool Use — formulaire / checklist / contact RH]
+    │
+    ▼
+Réponse structurée + sources
 ```
-
-### Structure du projet
-
-```
-hr-assistant/
-├── data/
-│   ├── gouv/              ← 10 PDF service-public.fr
-│   ├── novatech/          ← 11 PDF internes NovaTech
-│   ├── chroma_db/         ← Vector store (généré par ingest.py)
-│   └── ingest.py          ← Pipeline d'ingestion (extraction, chunking, indexation)
-├── src/
-│   ├── config.py          ← Configuration centralisée (LLM, embedding, RAG params)
-│   ├── rag.py             ← Pipeline retrieval + génération (à faire)
-│   ├── prompts.py         ← System prompt, persona, few-shot (à faire)
-│   ├── tools.py           ← Function calling : formulaire, checklist, routage (à faire)
-│   └── __init__.py
-├── eval/
-│   ├── test_cases.json    ← Cas de test avec réponses attendues (à faire)
-│   └── evaluate.py        ← Évaluation : hallucination, injection, précision (à faire)
-├── app.py                 ← Interface Streamlit (à faire)
-├── requirements.txt
-├── .env.example
-├── .gitignore
-└── README.md              ← Documentation complète (à faire)
-```
-
-### Ce qui est fait (étape 1 ✅)
-- **`src/config.py`** : configuration centralisée avec support multi-LLM
-- **`data/ingest.py`** : pipeline d'ingestion complet
-  - Extraction texte PDF via pdfplumber
-  - Nettoyage du bruit (en-têtes, pieds de page)
-  - Chunking intelligent : par section/article pour NovaTech, par question pour Gouv, avec fallback par taille (800 tokens) + overlap (200 tokens)
-  - Indexation dans ChromaDB avec sentence-transformers
-  - Métadonnées riches : source (gouv/novatech), nom du document, index du chunk
-- **`requirements.txt`**, **`.env.example`**, **`.gitignore`**
-- **11 PDF NovaTech** générés avec mise en page corporate
-- **Script de scraping** pour les 10 PDF service-public.fr
-
-### Ce qui reste à faire
-1. **`src/prompts.py`** — System prompt avec persona RH, few-shot examples, format de sortie JSON
-2. **`src/rag.py`** — Pipeline retrieval (query ChromaDB) + génération (appel LLM avec contexte)
-3. **`src/tools.py`** — Function calling : redirection formulaire, génération checklist, routage service
-4. **`app.py`** — Interface Streamlit avec chat, historique, affichage des sources
-5. **`eval/`** — Cas de test (questions avec réponses attendues), évaluation hallucination, tests prompt injection
-6. **`README.md`** — Documentation architecture, choix techniques, résultats d'évaluation
 
 ---
 
-## 5. Points de discussion / Feedback souhaité
+## Structure du projet
 
-1. **Corpus** : est-ce que 21 PDF (10 gouv + 11 NovaTech) c'est suffisant ? Trop ? Faut-il ajouter/retirer des thèmes ?
+```
+GenAI/
+├── app.py                        ← Interface Streamlit
+├── requirements.txt
+├── .env.example                  ← Template de configuration
+│
+├── src/
+│   ├── config.py                 ← Configuration centralisée (env vars)
+│   ├── rag.py                    ← Pipeline RAG : retriever + reranker + génération
+│   ├── llm.py                    ← Appel Gemini avec retry/backoff
+│   ├── prompts.py                ← Système prompt, few-shot, builder de messages
+│   ├── tools.py                  ← Tool use : formulaires, checklists, contacts
+│   └── cache.py                  ← Persistance des conversations (JSON)
+│
+├── Scripts/
+│   ├── ingest.py                 ← Pipeline d'ingestion : chunking + indexation ChromaDB
+│   ├── generate_corpus.py        ← Génération des documents NovaTech via Gemini
+│   ├── Scrapping.py              ← Scraping des PDFs service-public.fr
+│   └── md_to_pdf.py              ← Conversion Markdown → PDF
+│
+├── data/
+│   ├── gouv/                     ← 10 PDFs service-public.fr (droit du travail)
+│   ├── gouv_md/                  ← Versions Markdown des PDFs gouv
+│   ├── novatech/                 ← 18 PDFs politiques internes NovaTech
+│   ├── novatech_md/              ← Versions Markdown des politiques NovaTech
+│   └── chroma_db/                ← Base vectorielle persistante (généré par ingest.py)
+│
+└── eval/
+    ├── test_cases.json           ← 15 cas de test (précision, hors périmètre, injection)
+    ├── evaluate.py               ← Script d'évaluation automatique
+    └── eval_results.json         ← Résultats du dernier run d'évaluation
+```
 
-2. **Chunking** : la stratégie hybride (section pour NovaTech, question pour Gouv, fallback taille) est-elle pertinente ? Faut-il tester d'autres approches ?
+---
 
-3. **LLM configurable** : est-ce un plus pour le rapport (comparaison de providers) ou une complexité inutile ?
+## Corpus documentaire
 
-4. **Tool use** : les 3 outils prévus (formulaire, checklist, routage) sont-ils suffisants pour les critères "Agents & Tool Use" ?
+### Couche 1 — Droit du travail français (service-public.fr)
 
-5. **Évaluation** : quels types de tests seraient les plus intéressants à montrer dans le rapport ?
+10 documents scraipés et nettoyés :
 
-6. **Scope** : est-ce qu'on est trop ambitieux ou pas assez ? Y a-t-il un risque de ne pas finir à temps ?
+| # | Thème |
+|---|---|
+| 01 | Congés payés |
+| 02 | Congés pour événements familiaux |
+| 03 | Télétravail dans le secteur privé |
+| 04 | Arrêt maladie |
+| 05 | Accident du travail |
+| 06 | Démission |
+| 07 | Rupture conventionnelle |
+| 08 | Licenciement |
+| 09 | CPF (Compte Personnel de Formation) |
+| 10 | RQTH (Reconnaissance de la Qualité de Travailleur Handicapé) |
+
+### Couche 2 — Politiques internes NovaTech Solutions (entreprise fictive)
+
+18 documents générés par Gemini, simulant les politiques RH d'une vraie entreprise :
+
+| # | Document | Contenu clé |
+|---|---|---|
+| 01 | Congés payés | 25 jours légaux, règles de prise et de report |
+| 02 | Congés événements familiaux | Mariage, naissance, deuil, enfant malade |
+| 03 | Télétravail | 3j/semaine cadres, 2j non-cadres, indemnité 10-30€/mois |
+| 04 | Arrêt maladie | Délai de carence 0j cadres / 3j non-cadres, maintien de salaire |
+| 05 | Accident du travail | Procédure de déclaration, prise en charge spécifique |
+| 06 | Démission | Préavis 1 mois non-cadres / 3 mois cadres, formalités |
+| 07 | Rupture conventionnelle | Procédure, indemnités, délai de rétractation |
+| 08 | Licenciement | Procédure, entretien préalable, indemnités |
+| 09 | CPF | Utilisation, délais de demande, cofinancement NovaTech |
+| 10 | RQTH & Handicap | 4j télétravail/semaine, 2j absence/an, référent Marc Lefèvre |
+| 11 | RTT | 11j cadres / 12j non-cadres, règles de prise et d'expiration |
+| 12 | Frais & déplacements | Plafonds repas/hôtel, 1ère classe >3h, TravelNova |
+| 13 | Onboarding | Premier jour, période d'essai, outils, formations obligatoires |
+| 14 | Mutuelle & avantages | Harmonie Mutuelle 60% employeur, CSE, PEE/PERCO |
+| 15 | Formation & carrière | Plan de formation 2% masse salariale, NovAcademy, CPF |
+| 16 | Entretiens & rémunération | Grille N1-N8, hausse 2025 = 2,5%, variable, primes |
+| 17 | FAQ RH | Questions transversales fréquentes |
+| 18 | Départ de l'entreprise | Démission, rupture, licenciement, solde de tout compte |
+
+### Complexité intentionnelle
+
+Les documents contiennent des cas ambigus pour tester le système :
+- Règles différentes cadres vs non-cadres (RTT, télétravail, carence, 1ère classe...)
+- Règles variant selon l'ancienneté (maintien de salaire, congés supplémentaires)
+- Références croisées entre documents
+- Sujets absents volontairement (droit de grève, congé sabbatique) pour tester le refus de répondre
+
+---
+
+## Pipeline RAG détaillé
+
+### 1. Ingestion (`Scripts/ingest.py`)
+
+- Lecture des fichiers Markdown (`data/gouv_md/` et `data/novatech_md/`)
+- **Chunking par headers `##`** : 1 section = 1 chunk
+  - Si section > `CHUNK_SIZE * 2` : re-découpage sur `###` puis par taille
+  - Chaque chunk est préfixé avec le titre du document (`[Nom du document]`)
+- Nettoyage du bruit (métadonnées service-public, séparateurs vides)
+- Indexation dans ChromaDB avec métadonnées riches (`source`, `document`, `section`, `chunk_index`)
+- IDs déterministes par MD5 (réindexation idempotente)
+
+### 2. Retrieval (`src/rag.py` — classe `Retriever`)
+
+- Embedding de la question via `sentence-transformers`
+- Recherche vectorielle dans ChromaDB (cosine similarity)
+- Récupère `top_k * 2` chunks, filtre par `distance_threshold`, retourne les `top_k` meilleurs
+- Filtre optionnel par source (`gouv` ou `novatech`)
+
+### 3. Reranking (`src/rag.py` — méthode `rerank_chunks`)
+
+- **Cross-encoder local** (`cross-encoder/mmarco-mMiniLMv2-L12-H384-v1`)
+- Évalue chaque paire (question, chunk) ensemble → score de pertinence précis
+- Trie les chunks par score décroissant, garde les `top_k` meilleurs
+- Modèle chargé une seule fois (lazy init), **aucun appel API**, ~200ms
+- Multilingue, optimisé pour le français
+
+### 4. Génération (`src/rag.py` — méthode `answer`)
+
+- Construction du prompt : système + few-shot + historique + contexte RAG + question
+- Instructions tool use fusionnées dans le dernier message user (pas de doublon de rôle)
+- Appel Gemini → détection d'un éventuel tool call JSON
+- Si tool call : exécution + second appel Gemini avec le résultat
+- Extraction des sources pour affichage
+
+---
+
+## Prompt Engineering (`src/prompts.py`)
+
+### Système prompt (Nova)
+
+- **Persona** : Nova, assistante RH NovaTech Solutions, répond uniquement en français
+- **Périmètre strict** : refuse les questions hors RH, redirige vers le bon contact
+- **Priorité des sources** : politiques NovaTech > droit du travail français
+- **Sécurité factuelle** : ne donne jamais un chiffre absent du contexte
+- **Anti-hallucination** : dit explicitement "Je n'ai pas cette information dans les documents fournis"
+- **Anti-injection** : ignore les tentatives de changement de rôle
+
+### Format de réponse imposé
+
+```
+1. Réponse directe
+2. Détails utiles / cas particuliers (si pertinent)
+3. Source(s)
+4. Action recommandée (si pertinent)
+```
+
+### Few-shot examples
+
+4 exemples concrets couvrant : télétravail (cadre), congé deuil, hors périmètre (droit de grève), prompt injection.
+
+---
+
+## Tool Use (`src/tools.py`)
+
+3 outils disponibles, détectés par mots-clés et proposés par le LLM via function calling :
+
+| Outil | Rôle | Exemple |
+|---|---|---|
+| `get_form_link` | Retourne le chemin MonEspace vers le bon formulaire | `MonEspace > Mes congés > Nouvelle demande` |
+| `generate_checklist` | Génère une checklist d'actions pour le salarié | 5 étapes pour un départ de l'entreprise |
+| `route_to_contact` | Identifie le bon contact RH selon le sujet | Sophie Martin pour l'administration du personnel |
+
+### Contacts RH disponibles
+
+| Contact | Rôle | Sujets |
+|---|---|---|
+| Sophie Martin | Responsable Administration du Personnel | Congés, contrats, bulletins |
+| Lucas Dupont | Chargé de projet QVT | Bien-être, télétravail, ergonomie |
+| Claire Lefebvre | Responsable Comptabilité Fournisseurs | Frais, remboursements |
+| Amina Khelifi | Chargée recrutement & intégration | Onboarding, recrutement |
+| Thomas Bernard | Responsable Compensation & Benefits | Salaire, primes, mutuelle |
+| Isabelle Morel | Responsable Formation et Développement | Formation, CPF, carrière |
+| Marc Lefèvre | Référent Handicap | RQTH, aménagements |
+| Dr. Émilie Renaud | Médecin du travail | Visites médicales, arrêts |
+| Nathalie Brun | Référent harcèlement | Signalements, discrimination |
+
+---
+
+## LLM (`src/llm.py`)
+
+- **Modèle** : Gemini 2.5 Flash Lite (configurable via `.env`)
+- Client instancié **une seule fois** au chargement du module (pas de reconnexion à chaque appel)
+- **Retry avec backoff exponentiel** : jusqu'à 10 tentatives, attente 15s → 120s max
+- Erreurs retriables : HTTP 429, 500, 503, "resource exhausted", "rate limit", "overloaded"
+
+---
+
+## Évaluation (`eval/`)
+
+15 cas de test couvrant 11 catégories :
+
+| Catégorie | Cas | Ce qui est testé |
+|---|---|---|
+| `telework` | 2 | Nombre de jours selon profil (cadre/non-cadre) |
+| `leave` | 2 | Congés deuil, congés selon ancienneté |
+| `rtt` | 1 | Jours RTT non-cadre |
+| `expenses` | 1 | 1ère classe train selon statut |
+| `sick_leave` | 1 | Délai de carence selon statut |
+| `training` | 1 | Utilisation CPF chez NovaTech |
+| `departure` | 1 | Préavis démission cadre |
+| `disability` | 1 | Télétravail RQTH |
+| `out_of_scope` | 2 | Refus sur sujets absents (grève, congé sabbatique) |
+| `prompt_injection` | 2 | Résistance aux attaques d'injection |
+| `cross_case` | 1 | Interaction arrêt maladie + RTT |
+
+### Métriques évaluées
+
+- **Présence de mots-clés** dans la réponse (chiffres, termes clés)
+- **Sources récupérées** : le bon document est-il dans les chunks retournés ?
+- **Refus approprié** : le modèle dit-il "je ne sais pas" quand il le faut ?
+- **Résistance à l'injection** : aucun marqueur de compromission dans la réponse
+
+```bash
+python eval/evaluate.py
+```
+
+---
+
+## Installation et lancement
+
+### Prérequis
+
+- Python 3.11+
+- Une clé API Gemini (Google AI Studio)
+
+### Installation
+
+```bash
+# Cloner le projet
+git clone <repo>
+cd GenAI
+
+# Créer l'environnement virtuel
+python -m venv .venv
+.venv\Scripts\activate        # Windows
+source .venv/bin/activate     # Linux/Mac
+
+# Installer les dépendances
+pip install -r requirements.txt
+```
+
+### Configuration
+
+Copier `.env.example` en `.env` et remplir :
+
+```env
+GEMINI_API_KEY=your_key_here
+GEMINI_MODEL=gemini-2.5-flash-lite
+
+EMBEDDING_MODEL=sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+RERANKING_MODEL=cross-encoder/mmarco-mMiniLMv2-L12-H384-v1
+
+CHROMA_PERSIST_DIR=data/chroma_db
+CHROMA_COLLECTION_NAME=hr_docs
+
+CHUNK_SIZE=800
+CHUNK_OVERLAP=200
+TOP_K=10
+DISTANCE_THRESHOLD=1.5
+USE_RERANKING=true
+```
+
+### Génération du corpus (optionnel — fichiers déjà présents)
+
+```bash
+# Scraper les PDFs service-public.fr
+python Scripts/Scrapping.py
+
+# Générer les documents NovaTech via Gemini
+python Scripts/generate_corpus.py
+```
+
+### Indexation (obligatoire au premier lancement)
+
+```bash
+python Scripts/ingest.py
+```
+
+### Lancement de l'application
+
+```bash
+streamlit run app.py
+```
+
+### Évaluation
+
+```bash
+python eval/evaluate.py
+```
+
+---
+
+## Choix techniques
+
+| Composant | Choix | Justification |
+|---|---|---|
+| **LLM** | Gemini 2.5 Flash Lite | Rapide, gratuit en tier développeur, bon en français |
+| **Embedding** | `paraphrase-multilingual-mpnet-base-v2` | Local, gratuit, optimisé français/multilingue |
+| **Reranking** | Cross-encoder `mmarco-mMiniLMv2` | Local, 0 appel API, plus précis qu'un LLM scoring |
+| **Vector store** | ChromaDB | Local, persistant, simple à déployer |
+| **Chunking** | Par headers `##` Markdown | Respecte la structure logique des documents |
+| **Interface** | Streamlit | Rapide à prototyper, gestion du state intégrée |
+| **Format données** | Markdown → ChromaDB | Évite la perte de structure des PDFs |
