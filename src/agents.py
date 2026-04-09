@@ -19,7 +19,12 @@ import json
 from src.rag import Retriever, extract_json_object
 from src.llm import call_gemini
 from src.config import TOP_K, DISTANCE_THRESHOLD, USE_RERANKING, RERANKING_MODEL
-from src.tools import execute_tool_call
+from src.tools import (
+    CHECKLIST_KEYWORDS,
+    execute_tool_call,
+    find_matching_key,
+    normalize_text,
+)
 from prompts.rag_prompt_template import build_messages
 from prompts.prompts_llm import infer_answer_language
 from prompts.prompts_agents import ROUTER_SYSTEM_PROMPT, SYNTHESIS_SYSTEM_PROMPT, ACTION_AGENT_PROMPT
@@ -104,6 +109,27 @@ class ActionAgent(BaseAgent):
         "generate_checklist": "checklist",
         "route_to_contact": "contact",
     }
+    ACTION_INTENT_PATTERNS = (
+        "how do i", "what should i do", "next step", "next steps", "process", "procedure",
+        "submit", "apply", "request", "declare", "fill", "form", "where do i submit",
+        "comment faire", "que dois-je faire", "prochaine etape", "prochaines etapes",
+        "demarche", "procedure", "declarer", "formulaire", "soumettre", "deposer",
+    )
+    CONTACT_INTENT_PATTERNS = (
+        "contact", "who should i contact", "who do i contact", "who can help",
+        "qui contacter", "a qui", "à qui", "qui peut m'aider", "qui peut m’aider",
+    )
+
+    def _question_requests_action(self, question: str) -> bool:
+        normalized = normalize_text(question)
+        return any(pattern in normalized for pattern in self.ACTION_INTENT_PATTERNS)
+
+    def _question_requests_contact(self, question: str) -> bool:
+        normalized = normalize_text(question)
+        return any(pattern in normalized for pattern in self.CONTACT_INTENT_PATTERNS)
+
+    def _question_can_benefit_from_checklist(self, question: str) -> bool:
+        return bool(find_matching_key(CHECKLIST_KEYWORDS, question))
 
     def run(self, question: str, **kwargs) -> dict:
         # Ask the LLM which tools to call and with what arguments
@@ -122,10 +148,20 @@ class ActionAgent(BaseAgent):
             except Exception:
                 pass
 
+        wants_action = self._question_requests_action(question)
+        wants_contact = self._question_requests_contact(question)
+        can_offer_checklist = wants_action or self._question_can_benefit_from_checklist(question)
+
         # Execute each selected tool
         tools_results = []
         for call in tool_calls:
             tool_name = call.get("tool", "")
+            if tool_name == "get_form_link" and not wants_action:
+                continue
+            if tool_name == "generate_checklist" and not can_offer_checklist:
+                continue
+            if tool_name == "route_to_contact" and not (wants_action or wants_contact):
+                continue
             arguments = call.get("arguments", {})
             result = execute_tool_call(tool_name, arguments)
             if result.get("found"):

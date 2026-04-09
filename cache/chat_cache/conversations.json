@@ -1,10 +1,535 @@
 [
   {
+    "id": "bcc34f35-2e26-48df-b544-5e9b2be58d5e",
+    "title": "Am I eligible for the mobility bonus?",
+    "created_at": "2026-04-09T19:24:39.510762",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Am I eligible for the mobility bonus?"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the information available, NovaTech Solutions does not appear to have a specific benefit called a \"mobility bonus.\"\n\nHowever, the company does offer several forms of support and reimbursement related to professional expenses and mobility:\n\n*   **Kilometric Allowances:** If you use your personal vehicle for authorized professional travel, you can claim kilometric allowances. These are calculated based on the vehicle's fiscal horsepower and the distance traveled, following the French tax authority's scale. You will need to submit supporting documents through MonEspace.\n*   **Mission Expenses:** Expenses incurred during professional missions, such as meals, accommodation, and local transportation, are reimbursable upon submission of receipts via MonEspace, according to the company's mission expense policy.\n*   **Commuting Costs:** NovaTech Solutions reimburses **50%** of the cost of public transport passes (train, RER, metro, bus, tramway) for your daily commute. You can submit your reimbursement request with proof of your pass through MonEspace.\n*   **Professional Travel:** For employees whose roles involve frequent travel or international assignments, a **mobility package** is available. This includes using the **TravelNova** platform for booking flights, trains, and hotels.\n*   **International Mobility:** For expatriations or long-term assignments abroad, the HR department provides individualized support, which may include assistance with housing searches, relocation expenses, and administrative matters.\n*   **Advances on Travel Expenses:** If a professional trip is estimated to cost over **€200**, you can request an advance of up to **80%** of the estimated cost, with a maximum advance of **€1,000**.\n*   **Taxi/VTC Reimbursement:** Reimbursement for taxi or VTC services is generally capped at **€50** per trip within Île-de-France and **€35** in other regions, unless a manager approves an exception.\n*   **Air Travel:** Flights are typically reimbursed in economy class. It is recommended to make reservations through **TravelNova** whenever possible.\n*   **Toll and Parking Fees:** These expenses can be reimbursed separately upon submission of original supporting documents via MonEspace.\n\nIf you are looking for a specific \"mobility bonus\" that is not described above, we recommend contacting the HR team directly for further clarification.",
+        "sources": [
+          {
+            "document": "12_frais_deplacements",
+            "source": "novatech",
+            "filename": "12_frais_deplacements.md",
+            "distance": 0.37963294982910156
+          },
+          {
+            "document": "14_mutuelle_avantages",
+            "source": "novatech",
+            "filename": "14_mutuelle_avantages.md",
+            "distance": 0.4575650095939636
+          },
+          {
+            "document": "gouv_09_cpf",
+            "source": "gouv",
+            "filename": "gouv_09_cpf.md",
+            "distance": 0.5304501056671143
+          },
+          {
+            "document": "gouv_04_arret_maladie",
+            "source": "gouv",
+            "filename": "gouv_04_arret_maladie.md",
+            "distance": 0.5469661951065063
+          },
+          {
+            "document": "gouv_05_accident_travail",
+            "source": "gouv",
+            "filename": "gouv_05_accident_travail.md",
+            "distance": 0.5652692317962646
+          }
+        ],
+        "tools": []
+      },
+      {
+        "role": "user",
+        "content": "How many telework days do I have as a manager?"
+      },
+      {
+        "role": "assistant",
+        "content": "The provided documents do not specify the exact number of telework days for managers.\n\nHowever, NovaTech Solutions' general policy on telework is as follows:\n\n*   **Eligibility:** While the policy mentions eligibility for various employee categories such as apprentices, fixed-term contract employees, disabled workers, and those with caregiving responsibilities, managers are not explicitly listed with specific telework day limits in the provided context.\n*   **Working Hours:** Telework does not alter your working hours. If you are on a \"forfait jours\" (day-rate) system, you will continue to work within your annual day-rate agreement. For other employees, working hours are tracked as usual, and you must adhere to your contractual duration and authorized overtime.\n*   **Adaptation Period:** An initial two-week adaptation period is planned when you begin regular telework.\n*   **Termination:** The telework agreement can be terminated by either party with a **7-day notice period**. A return to full-time on-site work can be requested by the employee or decided by the employer with a **15-day notice period**, except in exceptional circumstances.\n\n*Source: Télétravail — NovaTech Solutions (Articles 1, 2, 5), FAQ RH — Télétravail et Organisation du Travail (Article 3.6)*\n\nTo get precise information on your telework entitlement as a manager, please consult the dedicated section on **MonEspace** (**Accueil > Mon Organisation > Télétravail**) or contact **Sophie Martin, Responsable Administration du Personnel**, via email at **teletravail@novatech.fr**.",
+        "sources": [
+          {
+            "document": "11_rtt",
+            "source": "novatech",
+            "filename": "11_rtt.md",
+            "distance": 0.4447476863861084
+          },
+          {
+            "document": "03_teletravail",
+            "source": "novatech",
+            "filename": "03_teletravail.md",
+            "distance": 0.4715511202812195
+          },
+          {
+            "document": "17_faq_rh",
+            "source": "novatech",
+            "filename": "17_faq_rh.md",
+            "distance": 0.46616077423095703
+          },
+          {
+            "document": "gouv_01_conges_payes",
+            "source": "gouv",
+            "filename": "gouv_01_conges_payes.md",
+            "distance": 0.4344749450683594
+          },
+          {
+            "document": "gouv_03_teletravail",
+            "source": "gouv",
+            "filename": "gouv_03_teletravail.md",
+            "distance": 0.45456433296203613
+          }
+        ],
+        "tools": []
+      },
+      {
+        "role": "user",
+        "content": "How do I declare my telework days?"
+      },
+      {
+        "role": "assistant",
+        "content": "To declare your telework days, you should use your personal space on **MonEspace**.\n\n*   Navigate to the **Telework** section, then to **Weekly schedule**.\n*   You can submit your requests there.\n*   Please ensure that your requests are submitted at least **7 calendar days** before your desired telework date.\n\nIf you wish to proceed, you can access the telework declaration form here: [https://monespace.novatech-solutions.fr/teletravail/planning](https://monespace.novatech-solutions.fr/teletravail/planning)\n\n*Source: Télétravail — NovaTech Solutions (Article 5.1)*",
+        "sources": [
+          {
+            "document": "11_rtt",
+            "source": "novatech",
+            "filename": "11_rtt.md",
+            "distance": 0.4872734546661377
+          },
+          {
+            "document": "17_faq_rh",
+            "source": "novatech",
+            "filename": "17_faq_rh.md",
+            "distance": 0.46476292610168457
+          },
+          {
+            "document": "02_conges_evenements_familiaux",
+            "source": "novatech",
+            "filename": "02_conges_evenements_familiaux.md",
+            "distance": 0.46149396896362305
+          },
+          {
+            "document": "03_teletravail",
+            "source": "novatech",
+            "filename": "03_teletravail.md",
+            "distance": 0.4701550602912903
+          }
+        ],
+        "tools": [
+          {
+            "type": "form",
+            "tool": "get_form_link",
+            "found": true,
+            "name": "Telework declaration",
+            "path": "MonEspace > Telework > Weekly schedule",
+            "url": "https://monespace.novatech-solutions.fr/teletravail/planning",
+            "match": "teletravail"
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": "Who should I contact if my sick leave situation is unusual?"
+      },
+      {
+        "role": "assistant",
+        "content": "If you encounter unusual difficulties with your sick leave, such as technical issues with MonEspace, please contact **Sophie Martin**, the Head of Personnel Administration, at **administration@novatech.fr** or by internal phone at **x567**. She can offer guidance or alternative solutions.\n\nFor any health-related concerns, including your fitness to return to work and potential workplace adjustments, your primary contact is the occupational physician, **Dr. Émilie Renaud**, reachable at **medecine.travail@novatech.fr** or internal phone **x568**.\n\nIf you require psychological support or have questions about your quality of life at work during your sick leave, **Lucas Dupont** is available to listen. You can reach him at **lucas.dupont@novatech.fr** or internal phone **x569**.\n\n*Source: NovaTech — Arrêt maladie — 7. Contact et Assistance (Articles 7.1, 7.3)*\n\nPlease note that French labor law does not specify particular contacts for unusual sick leave situations. However, it does outline general procedures such as employer-requested medical check-ups and the examination period for professional illnesses by the CPAM or MSA.\n\nIf you need further assistance, you can also submit requests through MonEspace under the relevant sections.",
+        "sources": [
+          {
+            "document": "04_arret_maladie",
+            "source": "novatech",
+            "filename": "04_arret_maladie.md",
+            "distance": 0.4726293087005615
+          },
+          {
+            "document": "17_faq_rh",
+            "source": "novatech",
+            "filename": "17_faq_rh.md",
+            "distance": 0.47078847885131836
+          },
+          {
+            "document": "03_teletravail",
+            "source": "novatech",
+            "filename": "03_teletravail.md",
+            "distance": 0.4703221321105957
+          },
+          {
+            "document": "11_rtt",
+            "source": "novatech",
+            "filename": "11_rtt.md",
+            "distance": 0.5177894830703735
+          },
+          {
+            "document": "02_conges_evenements_familiaux",
+            "source": "novatech",
+            "filename": "02_conges_evenements_familiaux.md",
+            "distance": 0.47595298290252686
+          },
+          {
+            "document": "gouv_04_arret_maladie",
+            "source": "gouv",
+            "filename": "gouv_04_arret_maladie.md",
+            "distance": 0.4804224967956543
+          },
+          {
+            "document": "gouv_05_accident_travail",
+            "source": "gouv",
+            "filename": "gouv_05_accident_travail.md",
+            "distance": 0.5097603797912598
+          },
+          {
+            "document": "gouv_07_rupture_conventionnelle",
+            "source": "gouv",
+            "filename": "gouv_07_rupture_conventionnelle.md",
+            "distance": 0.5151309370994568
+          },
+          {
+            "document": "gouv_02_conges_evenements_familiaux",
+            "source": "gouv",
+            "filename": "gouv_02_conges_evenements_familiaux.md",
+            "distance": 0.5028483867645264
+          },
+          {
+            "document": "gouv_01_conges_payes",
+            "source": "gouv",
+            "filename": "gouv_01_conges_payes.md",
+            "distance": 0.5097513198852539
+          }
+        ],
+        "tools": [
+          {
+            "type": "contact",
+            "tool": "route_to_contact",
+            "found": true,
+            "name": "Sophie Martin",
+            "role": "Head of Personnel Administration",
+            "email": "sophie.martin@novatech-solutions.fr",
+            "match_count": 1
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": "What is the resignation notice period for an executive employee?"
+      },
+      {
+        "role": "assistant",
+        "content": "For an executive employee (cadre) resigning from NovaTech Solutions, the notice period is **3 months**. This applies regardless of your length of service with the company.\n\n*Source: NovaTech — Démission — Article 2 — Préavis de démission*",
+        "sources": [
+          {
+            "document": "06_demission",
+            "source": "novatech",
+            "filename": "06_demission.md",
+            "distance": 0.41207796335220337
+          },
+          {
+            "document": "08_licenciement",
+            "source": "novatech",
+            "filename": "08_licenciement.md",
+            "distance": 0.4046492576599121
+          },
+          {
+            "document": "18_depart_entreprise",
+            "source": "novatech",
+            "filename": "18_depart_entreprise.md",
+            "distance": 0.41193050146102905
+          },
+          {
+            "document": "07_rupture_conventionnelle",
+            "source": "novatech",
+            "filename": "07_rupture_conventionnelle.md",
+            "distance": 0.4320208430290222
+          },
+          {
+            "document": "gouv_01_conges_payes",
+            "source": "gouv",
+            "filename": "gouv_01_conges_payes.md",
+            "distance": 0.3307129144668579
+          },
+          {
+            "document": "gouv_07_rupture_conventionnelle",
+            "source": "gouv",
+            "filename": "gouv_07_rupture_conventionnelle.md",
+            "distance": 0.3644289970397949
+          }
+        ],
+        "tools": []
+      },
+      {
+        "role": "user",
+        "content": "How do I start the resignation process?"
+      },
+      {
+        "role": "assistant",
+        "content": "To initiate the resignation process at NovaTech Solutions, you must formally notify the company of your decision.\n\nThe recommended steps are:\n\n*   **Submit a written notification.** You can do this by:\n    *   Using the dedicated form on **MonEspace** (**MonEspace > Mes démarches > Démission**). This is the preferred method as it automatically informs HR and your manager.\n    *   Sending a letter via **registered mail with acknowledgment of receipt**.\n    *   Hand-delivering the letter and obtaining a signed receipt.\n*   Your resignation letter should clearly state your intention to resign and your final day of employment, taking into account your applicable notice period. You are not required to provide a reason for your resignation.\n\nThe notice period for executive employees (cadres) is **3 months**. For non-executive employees (non-cadres), it is generally **2 months**, unless a more favorable provision applies. The notice period begins on the date your resignation letter is first presented or handed over.\n\n*Source: NovaTech — Démission — Articles 1.1, 1.2, 1.3, 5.1, 7.2; NovaTech — Départ de l'entreprise — Article 1.1; NovaTech — Démission — Article 2.3*\n\nFrench labor law confirms that resignation is a way for an employee to terminate an indefinite-term contract (CDI) by clearly expressing their will to end the contract.\n\nIf you have any questions or if your situation is unusual, you can contact the dedicated email address **demission@novatech.fr** or **Sophie Martin**, Head of Personnel Administration.\n\nIf you are ready to proceed, here are the next steps:\n\n*   Start the departure workflow in MonEspace.\n*   List any documents, equipment, or ongoing work that may require handover.\n*   Coordinate the next steps with your manager and HR.",
+        "sources": [
+          {
+            "document": "18_depart_entreprise",
+            "source": "novatech",
+            "filename": "18_depart_entreprise.md",
+            "distance": 0.440856397151947
+          },
+          {
+            "document": "06_demission",
+            "source": "novatech",
+            "filename": "06_demission.md",
+            "distance": 0.447811484336853
+          },
+          {
+            "document": "08_licenciement",
+            "source": "novatech",
+            "filename": "08_licenciement.md",
+            "distance": 0.5134302973747253
+          },
+          {
+            "document": "gouv_07_rupture_conventionnelle",
+            "source": "gouv",
+            "filename": "gouv_07_rupture_conventionnelle.md",
+            "distance": 0.4997291564941406
+          },
+          {
+            "document": "gouv_06_demission",
+            "source": "gouv",
+            "filename": "gouv_06_demission.md",
+            "distance": 0.4582364559173584
+          },
+          {
+            "document": "gouv_05_accident_travail",
+            "source": "gouv",
+            "filename": "gouv_05_accident_travail.md",
+            "distance": 0.6057416200637817
+          },
+          {
+            "document": "gouv_04_arret_maladie",
+            "source": "gouv",
+            "filename": "gouv_04_arret_maladie.md",
+            "distance": 0.6008356809616089
+          }
+        ],
+        "tools": [
+          {
+            "type": "form",
+            "tool": "get_form_link",
+            "found": true,
+            "name": "Departure procedure",
+            "path": "MonEspace > My departure > Start",
+            "url": "https://monespace.novatech-solutions.fr/depart/initier",
+            "match": "demission"
+          },
+          {
+            "type": "checklist",
+            "tool": "generate_checklist",
+            "found": true,
+            "topic": "departure",
+            "items": [
+              "Review the departure information given in the answer above",
+              "Start the departure workflow in MonEspace if you are ready to proceed",
+              "List the documents, equipment, and ongoing work that may need handover",
+              "Coordinate the next steps with your manager and HR",
+              "Contact HR directly if your departure case is urgent or atypical"
+            ],
+            "scope": "generic_next_steps"
+          }
+        ]
+      }
+    ],
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "Am I eligible for the mobility bonus?"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the information available, NovaTech Solutions does not appear to have a specific benefit called a \"mobility bonus.\"\n\nHowever, the company does offer several forms of support and reimbursement related to professional expenses and mobility:\n\n*   **Kilometric Allowances:** If you use your personal vehicle for authorized professional travel, you can claim kilometric allowances. These are calculated based on the vehicle's fiscal horsepower and the distance traveled, following the French tax authority's scale. You will need to submit supporting documents through MonEspace.\n*   **Mission Expenses:** Expenses incurred during professional missions, such as meals, accommodation, and local transportation, are reimbursable upon submission of receipts via MonEspace, according to the company's mission expense policy.\n*   **Commuting Costs:** NovaTech Solutions reimburses **50%** of the cost of public transport passes (train, RER, metro, bus, tramway) for your daily commute. You can submit your reimbursement request with proof of your pass through MonEspace.\n*   **Professional Travel:** For employees whose roles involve frequent travel or international assignments, a **mobility package** is available. This includes using the **TravelNova** platform for booking flights, trains, and hotels.\n*   **International Mobility:** For expatriations or long-term assignments abroad, the HR department provides individualized support, which may include assistance with housing searches, relocation expenses, and administrative matters.\n*   **Advances on Travel Expenses:** If a professional trip is estimated to cost over **€200**, you can request an advance of up to **80%** of the estimated cost, with a maximum advance of **€1,000**.\n*   **Taxi/VTC Reimbursement:** Reimbursement for taxi or VTC services is generally capped at **€50** per trip within Île-de-France and **€35** in other regions, unless a manager approves an exception.\n*   **Air Travel:** Flights are typically reimbursed in economy class. It is recommended to make reservations through **TravelNova** whenever possible.\n*   **Toll and Parking Fees:** These expenses can be reimbursed separately upon submission of original supporting documents via MonEspace.\n\nIf you are looking for a specific \"mobility bonus\" that is not described above, we recommend contacting the HR team directly for further clarification."
+      },
+      {
+        "role": "user",
+        "content": "How many telework days do I have as a manager?"
+      },
+      {
+        "role": "assistant",
+        "content": "The provided documents do not specify the exact number of telework days for managers.\n\nHowever, NovaTech Solutions' general policy on telework is as follows:\n\n*   **Eligibility:** While the policy mentions eligibility for various employee categories such as apprentices, fixed-term contract employees, disabled workers, and those with caregiving responsibilities, managers are not explicitly listed with specific telework day limits in the provided context.\n*   **Working Hours:** Telework does not alter your working hours. If you are on a \"forfait jours\" (day-rate) system, you will continue to work within your annual day-rate agreement. For other employees, working hours are tracked as usual, and you must adhere to your contractual duration and authorized overtime.\n*   **Adaptation Period:** An initial two-week adaptation period is planned when you begin regular telework.\n*   **Termination:** The telework agreement can be terminated by either party with a **7-day notice period**. A return to full-time on-site work can be requested by the employee or decided by the employer with a **15-day notice period**, except in exceptional circumstances.\n\n*Source: Télétravail — NovaTech Solutions (Articles 1, 2, 5), FAQ RH — Télétravail et Organisation du Travail (Article 3.6)*\n\nTo get precise information on your telework entitlement as a manager, please consult the dedicated section on **MonEspace** (**Accueil > Mon Organisation > Télétravail**) or contact **Sophie Martin, Responsable Administration du Personnel**, via email at **teletravail@novatech.fr**."
+      },
+      {
+        "role": "user",
+        "content": "How do I declare my telework days?"
+      },
+      {
+        "role": "assistant",
+        "content": "To declare your telework days, you should use your personal space on **MonEspace**.\n\n*   Navigate to the **Telework** section, then to **Weekly schedule**.\n*   You can submit your requests there.\n*   Please ensure that your requests are submitted at least **7 calendar days** before your desired telework date.\n\nIf you wish to proceed, you can access the telework declaration form here: [https://monespace.novatech-solutions.fr/teletravail/planning](https://monespace.novatech-solutions.fr/teletravail/planning)\n\n*Source: Télétravail — NovaTech Solutions (Article 5.1)*"
+      },
+      {
+        "role": "user",
+        "content": "Who should I contact if my sick leave situation is unusual?"
+      },
+      {
+        "role": "assistant",
+        "content": "If you encounter unusual difficulties with your sick leave, such as technical issues with MonEspace, please contact **Sophie Martin**, the Head of Personnel Administration, at **administration@novatech.fr** or by internal phone at **x567**. She can offer guidance or alternative solutions.\n\nFor any health-related concerns, including your fitness to return to work and potential workplace adjustments, your primary contact is the occupational physician, **Dr. Émilie Renaud**, reachable at **medecine.travail@novatech.fr** or internal phone **x568**.\n\nIf you require psychological support or have questions about your quality of life at work during your sick leave, **Lucas Dupont** is available to listen. You can reach him at **lucas.dupont@novatech.fr** or internal phone **x569**.\n\n*Source: NovaTech — Arrêt maladie — 7. Contact et Assistance (Articles 7.1, 7.3)*\n\nPlease note that French labor law does not specify particular contacts for unusual sick leave situations. However, it does outline general procedures such as employer-requested medical check-ups and the examination period for professional illnesses by the CPAM or MSA.\n\nIf you need further assistance, you can also submit requests through MonEspace under the relevant sections."
+      },
+      {
+        "role": "user",
+        "content": "What is the resignation notice period for an executive employee?"
+      },
+      {
+        "role": "assistant",
+        "content": "For an executive employee (cadre) resigning from NovaTech Solutions, the notice period is **3 months**. This applies regardless of your length of service with the company.\n\n*Source: NovaTech — Démission — Article 2 — Préavis de démission*"
+      },
+      {
+        "role": "user",
+        "content": "How do I start the resignation process?"
+      },
+      {
+        "role": "assistant",
+        "content": "To initiate the resignation process at NovaTech Solutions, you must formally notify the company of your decision.\n\nThe recommended steps are:\n\n*   **Submit a written notification.** You can do this by:\n    *   Using the dedicated form on **MonEspace** (**MonEspace > Mes démarches > Démission**). This is the preferred method as it automatically informs HR and your manager.\n    *   Sending a letter via **registered mail with acknowledgment of receipt**.\n    *   Hand-delivering the letter and obtaining a signed receipt.\n*   Your resignation letter should clearly state your intention to resign and your final day of employment, taking into account your applicable notice period. You are not required to provide a reason for your resignation.\n\nThe notice period for executive employees (cadres) is **3 months**. For non-executive employees (non-cadres), it is generally **2 months**, unless a more favorable provision applies. The notice period begins on the date your resignation letter is first presented or handed over.\n\n*Source: NovaTech — Démission — Articles 1.1, 1.2, 1.3, 5.1, 7.2; NovaTech — Départ de l'entreprise — Article 1.1; NovaTech — Démission — Article 2.3*\n\nFrench labor law confirms that resignation is a way for an employee to terminate an indefinite-term contract (CDI) by clearly expressing their will to end the contract.\n\nIf you have any questions or if your situation is unusual, you can contact the dedicated email address **demission@novatech.fr** or **Sophie Martin**, Head of Personnel Administration.\n\nIf you are ready to proceed, here are the next steps:\n\n*   Start the departure workflow in MonEspace.\n*   List any documents, equipment, or ongoing work that may require handover.\n*   Coordinate the next steps with your manager and HR."
+      }
+    ]
+  },
+  {
     "id": "cb3b3c02-35a5-4727-8760-e0ce83656686",
-    "title": "New conversation",
+    "title": "I lost my grand father. How many day of ",
     "created_at": "2026-04-09T17:59:59.708299",
-    "messages": [],
-    "chat_history": []
+    "messages": [
+      {
+        "role": "user",
+        "content": "I lost my grand father. How many day of leave can I?"
+      },
+      {
+        "role": "assistant",
+        "content": "I am very sorry for your loss.\n\nUnder French labor law, you are entitled to **1 day** of leave for the death of your grandfather. This leave is counted in working days.\n\nNovaTech's internal policy on leave for the death of a loved one refers to a \"proche\" (close relative). While the policy doesn't explicitly state the duration for the death of a grandfather, it does outline the procedure for requesting such leave.\n\nHere are the key points regarding leave requests at NovaTech:\n\n*   Leave must be taken in the days following the event.\n*   Leave is counted in **working days**.\n*   You should submit your request via **MonEspace** at least **5 working days** before the leave, unless it's an emergency.\n*   Official supporting documents, such as a death certificate, must be uploaded to **MonEspace** within **10 working days** after the end of your leave.\n\n*Source: Code du travail — Congés pour événements familiaux (secteur privé)*\n*Source: NovaTech — Congés pour événements familiaux — Articles 5.1, 5.2, 5.3, 5.4, and 8*\n\nIf you need further clarification on the specific duration or have any unusual circumstances, please feel free to contact **Sophie Martin**, Head of Personnel Administration, at sophie.martin@novatech-solutions.fr.\n\nTo help you with this process, here are some practical next steps:\n\n*   Review the policy details provided above.\n*   Open the relevant leave form in MonEspace if you are ready to submit a request.\n*   Prepare any supporting documents that may be needed for your case.\n*   Inform your manager if coordination is required.\n*   Contact HR if your situation is unusual or urgent.",
+        "sources": [
+          {
+            "document": "01_conges_payes",
+            "source": "novatech",
+            "filename": "01_conges_payes.md",
+            "distance": 0.4960811138153076
+          },
+          {
+            "document": "02_conges_evenements_familiaux",
+            "source": "novatech",
+            "filename": "02_conges_evenements_familiaux.md",
+            "distance": 0.5010658502578735
+          },
+          {
+            "document": "04_arret_maladie",
+            "source": "novatech",
+            "filename": "04_arret_maladie.md",
+            "distance": 0.5632953643798828
+          },
+          {
+            "document": "gouv_02_conges_evenements_familiaux",
+            "source": "gouv",
+            "filename": "gouv_02_conges_evenements_familiaux.md",
+            "distance": 0.42237162590026855
+          },
+          {
+            "document": "gouv_01_conges_payes",
+            "source": "gouv",
+            "filename": "gouv_01_conges_payes.md",
+            "distance": 0.5260718464851379
+          }
+        ],
+        "tools": [
+          {
+            "type": "contact",
+            "tool": "route_to_contact",
+            "found": true,
+            "name": "Sophie Martin",
+            "role": "Head of Personnel Administration",
+            "email": "sophie.martin@novatech-solutions.fr",
+            "match_count": 1
+          },
+          {
+            "type": "checklist",
+            "tool": "generate_checklist",
+            "found": true,
+            "topic": "leave",
+            "items": [
+              "Review the policy details given in the answer above before taking action",
+              "Open the relevant leave form in MonEspace if you are ready to submit a request",
+              "Prepare any supporting documents that may be needed for your case",
+              "Inform your manager if coordination is required",
+              "Contact HR if your situation is unusual or urgent"
+            ],
+            "scope": "generic_next_steps"
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": "How many telework days do I have as a manager?”"
+      },
+      {
+        "role": "assistant",
+        "content": "I am unable to provide a specific number of telework days you are entitled to as a manager.\n\nWhile NovaTech's policy outlines general principles for telework, including for managers who are on a \"forfait jours\" (day-based package), it does not specify a fixed number of telework days per week or month for this category of employee. The policy does detail telework conditions for specific groups such as alternants, CDD employees, workers with disabilities, and family caregivers.\n\n*Source: NovaTech — Télétravail — Article 1, Article 5; NovaTech — FAQ RH — Section 3.6*\n\nTo get precise information regarding your telework days as a manager, please refer to the following:\n\n*   **Email:** teletravail@novatech.fr\n*   **MonEspace:** Navigate to Accueil > Mon Organisation > Télétravail\n*   **Contact:** Sophie Martin, Responsable Administration du Personnel\n\nHere are some practical next steps to help you with your telework arrangements:\n\n*   Review the telework conditions mentioned above.\n*   If you need to declare your telework days, please open the telework planning form in MonEspace.\n*   Confirm your schedule with your manager if necessary.\n*   Ensure you have the required equipment and a suitable workspace for teleworking.\n*   Contact HR if your situation requires an exception or further clarification.",
+        "sources": [
+          {
+            "document": "11_rtt",
+            "source": "novatech",
+            "filename": "11_rtt.md",
+            "distance": 0.4572809338569641
+          },
+          {
+            "document": "03_teletravail",
+            "source": "novatech",
+            "filename": "03_teletravail.md",
+            "distance": 0.4319424033164978
+          },
+          {
+            "document": "17_faq_rh",
+            "source": "novatech",
+            "filename": "17_faq_rh.md",
+            "distance": 0.4802420139312744
+          }
+        ],
+        "tools": [
+          {
+            "type": "contact",
+            "tool": "route_to_contact",
+            "found": true,
+            "name": "Lucas Dupont",
+            "role": "QVT Project Manager",
+            "email": "lucas.dupont@novatech-solutions.fr",
+            "match_count": 1
+          },
+          {
+            "type": "checklist",
+            "tool": "generate_checklist",
+            "found": true,
+            "topic": "telework",
+            "items": [
+              "Review the telework conditions mentioned in the answer above",
+              "Open the telework planning form in MonEspace if you need to declare days",
+              "Confirm your schedule with your manager if needed",
+              "Make sure you have the required equipment and a suitable setup",
+              "Contact HR if your case requires an exception"
+            ],
+            "scope": "generic_next_steps"
+          }
+        ]
+      }
+    ],
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "I lost my grand father. How many day of leave can I?"
+      },
+      {
+        "role": "assistant",
+        "content": "I am very sorry for your loss.\n\nUnder French labor law, you are entitled to **1 day** of leave for the death of your grandfather. This leave is counted in working days.\n\nNovaTech's internal policy on leave for the death of a loved one refers to a \"proche\" (close relative). While the policy doesn't explicitly state the duration for the death of a grandfather, it does outline the procedure for requesting such leave.\n\nHere are the key points regarding leave requests at NovaTech:\n\n*   Leave must be taken in the days following the event.\n*   Leave is counted in **working days**.\n*   You should submit your request via **MonEspace** at least **5 working days** before the leave, unless it's an emergency.\n*   Official supporting documents, such as a death certificate, must be uploaded to **MonEspace** within **10 working days** after the end of your leave.\n\n*Source: Code du travail — Congés pour événements familiaux (secteur privé)*\n*Source: NovaTech — Congés pour événements familiaux — Articles 5.1, 5.2, 5.3, 5.4, and 8*\n\nIf you need further clarification on the specific duration or have any unusual circumstances, please feel free to contact **Sophie Martin**, Head of Personnel Administration, at sophie.martin@novatech-solutions.fr.\n\nTo help you with this process, here are some practical next steps:\n\n*   Review the policy details provided above.\n*   Open the relevant leave form in MonEspace if you are ready to submit a request.\n*   Prepare any supporting documents that may be needed for your case.\n*   Inform your manager if coordination is required.\n*   Contact HR if your situation is unusual or urgent."
+      },
+      {
+        "role": "user",
+        "content": "How many telework days do I have as a manager?”"
+      },
+      {
+        "role": "assistant",
+        "content": "I am unable to provide a specific number of telework days you are entitled to as a manager.\n\nWhile NovaTech's policy outlines general principles for telework, including for managers who are on a \"forfait jours\" (day-based package), it does not specify a fixed number of telework days per week or month for this category of employee. The policy does detail telework conditions for specific groups such as alternants, CDD employees, workers with disabilities, and family caregivers.\n\n*Source: NovaTech — Télétravail — Article 1, Article 5; NovaTech — FAQ RH — Section 3.6*\n\nTo get precise information regarding your telework days as a manager, please refer to the following:\n\n*   **Email:** teletravail@novatech.fr\n*   **MonEspace:** Navigate to Accueil > Mon Organisation > Télétravail\n*   **Contact:** Sophie Martin, Responsable Administration du Personnel\n\nHere are some practical next steps to help you with your telework arrangements:\n\n*   Review the telework conditions mentioned above.\n*   If you need to declare your telework days, please open the telework planning form in MonEspace.\n*   Confirm your schedule with your manager if necessary.\n*   Ensure you have the required equipment and a suitable workspace for teleworking.\n*   Contact HR if your situation requires an exception or further clarification."
+      }
+    ]
   },
   {
     "id": "5b8a964f-eb5c-405c-80c9-07daef99c599",
