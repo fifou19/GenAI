@@ -58,5 +58,5 @@ def call_gemini(messages: list[dict]) -> str: # type: ignore
             print(f"    Retry {attempt+1}/{MAX_RETRIES} — waiting {wait:.0f}s ({e})")
             time.sleep(wait)
 
-    raise RuntimeError(f"Failed after {MAX_RETRIES} retries") from last_exc
+    raise RuntimeError(f"Failed after {MAX_RETRIES} retries") from last_exc # type: ignore
 

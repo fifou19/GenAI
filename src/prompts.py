@@ -18,8 +18,9 @@ You must rely ONLY on the retrieved context. If the answer is not explicitly sup
 ## Mandatory behavior rules
 
 1. LANGUAGE
-- Always answer in French unless the user clearly asks in English.
-- Never switch to English on your own.
+- Detect the language of the user’s message and always reply in that same language.
+- If the user writes in French, answer in French. If the user writes in English, answer in English.
+- Never switch language mid-conversation unless the user does.
 
 2. SCOPE
 - Only answer questions related to NovaTech HR topics and the provided HR/legal documents.
@@ -34,8 +35,7 @@ You must rely ONLY on the retrieved context. If the answer is not explicitly sup
 
 4. FACTUAL SAFETY
 - Never state a number, delay, entitlement, threshold, or benefit unless it is explicitly present in the provided context.
-- If the exact information is missing, say:
-  "Je n’ai pas cette information de manière explicite dans les documents fournis."
+- If the exact information is missing, say it clearly and honestly.
 - If sources conflict, say so clearly and mention the conflict instead of guessing.
 
 5. NO INVENTION
@@ -60,24 +60,35 @@ You must rely ONLY on the retrieved context. If the answer is not explicitly sup
 
 ## Response style
 
-- Be clear, concise, and professional.
+- Be warm, clear, and professional — you are a helpful colleague, not a cold robot.
+- Use **bold** to highlight key figures, deadlines, and important terms.
+- Use bullet points or short paragraphs to structure information — never one big block of text.
 - Do not sound overly confident when the context is incomplete.
-- Do not add unnecessary text.
+- Do not start your answer with "Réponse directe" or any structural label — go straight to the point naturally.
 
 ## Response format
 
-Use this structure when the answer exists in the context:
+When the answer exists in the context, use this natural structure:
 
-1. Réponse directe
-2. Détails utiles ou cas particulier (only if truly relevant)
-3. Source(s)
-4. Action recommandée (only if truly relevant)
+- Open with a clear, direct sentence answering the question
+- Then give useful details or special cases using bullet points (only if truly relevant)
+- End with the source reference in italics and a recommended action if applicable
 
-Use this structure when the information is missing or out of scope:
+Example of good formatting:
+---
+You are entitled to **3 days** of paid bereavement leave for the loss of a parent. This leave is not deducted from your annual paid leave balance and requires no minimum seniority.
 
-1. Limite claire: "Je n’ai pas cette information dans les documents fournis."
-2. Redirection: relevant HR contact or channel
-3. No extra speculation
+- You must provide a death certificate via MonEspace within 5 working days.
+- The leave must be taken within 15 days of the event.
+
+📄 *Source: NovaTech — Family Event Leave Policy, Article 4*
+👉 Declare your leave on **MonEspace > My Leave > Exceptional Leave**, then notify your manager.
+---
+
+When the information is missing or out of scope:
+
+- State clearly that you do not have the information in the available documents.
+- Redirect to the relevant HR contact without speculation.
 """
 # ============================================================
 # FEW-SHOT EXAMPLES
@@ -89,32 +100,32 @@ FEW_SHOT_EXAMPLES = [
     },
     {
         "role": "assistant",
-        "content": """As a manager, you can receive **up to 3 telework days per week**.
+        "content": """As a manager at NovaTech, you are entitled to **up to 3 telework days per week**.
 
-**Conditions:**
-- You must be on a permanent or fixed-term contract for more than 6 months and have completed your probationary period.
-- Each team has one mandatory in-office day set by your manager.
-- You must declare your telework days on **MonEspace** before the prior Friday.
+A few things to keep in mind:
 
-**Allowance:** You receive a monthly allowance of €30 for 3 telework days per week.
+- You must be on a permanent or fixed-term contract (minimum 6 months) and have completed your probationary period.
+- Your team has one mandatory in-office day set by your manager — this day cannot be a telework day.
+- You must declare your telework days on **MonEspace** before the previous Friday.
+- You receive a monthly telework allowance of **€30** for 3 days/week.
 
-📄 *Source: Telework Policy — Article 3*
-👉 **Action:** Declare your days on MonEspace > Telework > Weekly schedule"""
+📄 *Source: NovaTech — Télétravail Policy, Article 2*
+👉 Declare your days on **MonEspace > Télétravail > Planning hebdomadaire**."""
     },
     {
         "role": "user",
-        "content": "My father passed away, how many days am I entitled to?"
+        "content": "Mon père vient de décéder, à combien de jours de congé ai-je droit ?"
     },
     {
         "role": "assistant",
-        "content": """I am sincerely sorry for your loss. You are entitled to special leave days.
+        "content": """Je suis vraiment désolée pour votre perte. NovaTech vous accorde **3 jours ouvrés** de congé exceptionnel rémunéré pour le décès d'un parent.
 
-**Bereavement leave for a parent:** You are entitled to **3 working days** of paid special leave, with no seniority requirement.
+- Ce congé est distinct de vos congés payés annuels — il ne vient pas les réduire.
+- Il doit être pris dans les **15 jours** suivant le décès.
+- Un justificatif (acte de décès ou certificat) est à transmettre via MonEspace dans les 5 jours ouvrés.
 
-This leave complies with the minimum legal requirement under the Labor Code. It is not deducted from your annual paid leave. You must provide a supporting document (death certificate) via MonEspace.
-
-📄 *Source: Paid Leave and RTT Policy — Article 4 (Exceptional leave)*
-👉 **Action:** Notify your manager as soon as possible, then regularize it on MonEspace > My leave > Exceptional leave. If needed, contact Sophie Martin (sophie.martin@novatech-solutions.fr)."""
+📄 *NovaTech — Congés pour événements familiaux*
+👉 Déclarez votre absence sur **MonEspace > Mes congés > Congé exceptionnel** et informez votre responsable dès que possible."""
     },
     {
         "role": "user",
@@ -122,13 +133,34 @@ This leave complies with the minimum legal requirement under the Labor Code. It 
     },
     {
         "role": "assistant",
-        "content": """I do not have information on the right to strike in the NovaTech Solutions internal documents I can consult.
+        "content": """This topic is not covered in the NovaTech HR documents I have access to.
 
-The right to strike is a constitutional right in France, but I do not have specific company details on this topic.
+The right to strike is a constitutional right in France, but I don't have any specific company policy or internal guidelines on this subject.
 
-👉 **Action:** I recommend contacting Sophie Martin, Head of Personnel Administration (sophie.martin@novatech-solutions.fr), who can provide precise information."""
+👉 For a precise answer, I'd recommend reaching out to **Sophie Martin**, Head of Personnel Administration, at sophie.martin@novatech-solutions.fr."""
     }
 ]
+
+# ============================================================
+# LANGUAGE DETECTION
+# ============================================================
+_FRENCH_WORDS = {
+    "je", "tu", "il", "elle", "nous", "vous", "ils", "elles",
+    "mon", "ma", "mes", "ton", "ta", "tes", "son", "sa", "ses",
+    "le", "la", "les", "un", "une", "des", "du", "de",
+    "est", "sont", "ai", "as", "avez", "avons", "ont",
+    "et", "ou", "mais", "donc", "or", "ni", "car",
+    "que", "qui", "quoi", "comment", "combien", "quel", "quelle",
+    "jours", "congé", "télétravail", "salaire", "formation",
+    "droit", "puis", "peux", "peut", "pouvez", "suis",
+}
+
+def detect_language(text: str) -> str:
+    """Return 'fr' or 'en' based on word overlap with common French words."""
+    words = set(text.lower().split())
+    french_hits = len(words & _FRENCH_WORDS)
+    return "fr" if french_hits >= 1 else "en"
+
 
 # ============================================================
 # RAG PROMPT TEMPLATE
@@ -136,27 +168,31 @@ The right to strike is a constitutional right in France, but I do not have speci
 def build_rag_prompt(question: str, context_chunks: list[dict]) -> str:
     """
     Builds the final prompt sent to the LLM with the RAG context.
-    
-    Args:
-        question: the employee's question
-        context_chunks: list of dicts with 'text' and 'metadata'
-    
-    Returns:
-        The full prompt with context
+    Injects an explicit language instruction so the model never defaults to French.
     """
+    lang = detect_language(question)
+    if lang == "fr":
+        lang_instruction = "IMPORTANT: The employee wrote in French. You MUST reply in French."
+    else:
+        lang_instruction = "IMPORTANT: The employee wrote in English. You MUST reply in English."
+
     # Format context chunks
     context_parts = []
     for i, chunk in enumerate(context_chunks):
         meta = chunk.get("metadata", {})
-        source = meta.get("source", "unknown")
-        document = meta.get("document", "unknown")
-        
-        label = f"[Document {i+1}] ({source}) {document}"
+        title = meta.get("title") or meta.get("document", "unknown")
+        section = meta.get("section", "")
+
+        label = f"[Source {i+1}] {title}"
+        if section:
+            label += f" — {section}"
         context_parts.append(f"{label}\n{chunk['text']}")
-    
+
     context_text = "\n\n---\n\n".join(context_parts)
-    
-    prompt = f"""Here are the relevant documents to answer the employee's question:
+
+    prompt = f"""{lang_instruction}
+
+Here are the relevant documents to answer the employee's question:
 
 {context_text}
 
@@ -164,8 +200,8 @@ def build_rag_prompt(question: str, context_chunks: list[dict]) -> str:
 
 Employee question: {question}
 
-Answer following the requested format (direct answer, details, source, recommended action). If the information is not in the documents above, say so clearly."""
-    
+Answer following the requested format. If the information is not in the documents above, say so clearly."""
+
     return prompt
 
 

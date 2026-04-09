@@ -1,5 +1,549 @@
 [
   {
+    "id": "7a9b78ef-03cf-4dc2-920c-ee43dea0a701",
+    "title": "J'ai perdu mon grand pere combien de jou",
+    "created_at": "2026-04-09T01:44:10.227704",
+    "messages": [
+      {
+        "role": "user",
+        "content": "J'ai perdu mon grand pere combien de jours de congé j'ai le droit"
+      },
+      {
+        "role": "assistant",
+        "content": "Je suis désolé d'apprendre le décès de votre grand-père.\n\nPour le décès d'un grand-parent, la politique de NovaTech ne spécifie pas de jours de congé exceptionnel rémunéré. La loi française prévoit des dispositions pour le décès d'un enfant, d'un conjoint, d'un partenaire lié par un PACS, d'un père ou d'une mère, mais pas explicitement pour les grands-parents.\n\n📄 *Source : Documents fournis (politique NovaTech sur les congés pour événements familiaux non disponible, loi française sur les congés pour événements familiaux)*\n\n👉 Je vous invite à contacter **Sophie Martin**, Responsable Administration du Personnel, à l'adresse sophie.martin@novatech-solutions.fr pour discuter de votre situation. Elle pourra vous informer sur les options possibles, comme l'utilisation de vos jours de congés payés ou de congés sans solde.",
+        "sources": [
+          {
+            "document": "gouv_02_conges_evenements_familiaux",
+            "source": "gouv",
+            "filename": "gouv_02_conges_evenements_familiaux.md",
+            "distance": 0.47398895025253296
+          },
+          {
+            "document": "gouv_01_conges_payes",
+            "source": "gouv",
+            "filename": "gouv_01_conges_payes.md",
+            "distance": 0.4644148349761963
+          },
+          {
+            "document": "gouv_04_arret_maladie",
+            "source": "gouv",
+            "filename": "gouv_04_arret_maladie.md",
+            "distance": 0.5213937759399414
+          },
+          {
+            "document": "01_conges_payes",
+            "source": "novatech",
+            "filename": "01_conges_payes.md",
+            "distance": 0.511798083782196
+          }
+        ],
+        "tools": [
+          {
+            "type": "form",
+            "name": "Leave request",
+            "path": "MonEspace > My leave > New request",
+            "url": "https://monespace.novatech-solutions.fr/conges/nouvelle-demande",
+            "match": "conges"
+          },
+          {
+            "type": "checklist",
+            "items": [
+              "Check your leave balance on MonEspace",
+              "Submit the request with the correct notice period (2 weeks / 1 month / 2 months)",
+              "Wait for manager approval (5 working days)",
+              "Organize handover of ongoing tasks",
+              "Set up your out-of-office email and Slack message"
+            ],
+            "topic": "leave"
+          }
+        ]
+      }
+    ],
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "J'ai perdu mon grand pere combien de jours de congé j'ai le droit"
+      },
+      {
+        "role": "assistant",
+        "content": "Je suis désolé d'apprendre le décès de votre grand-père.\n\nPour le décès d'un grand-parent, la politique de NovaTech ne spécifie pas de jours de congé exceptionnel rémunéré. La loi française prévoit des dispositions pour le décès d'un enfant, d'un conjoint, d'un partenaire lié par un PACS, d'un père ou d'une mère, mais pas explicitement pour les grands-parents.\n\n📄 *Source : Documents fournis (politique NovaTech sur les congés pour événements familiaux non disponible, loi française sur les congés pour événements familiaux)*\n\n👉 Je vous invite à contacter **Sophie Martin**, Responsable Administration du Personnel, à l'adresse sophie.martin@novatech-solutions.fr pour discuter de votre situation. Elle pourra vous informer sur les options possibles, comme l'utilisation de vos jours de congés payés ou de congés sans solde."
+      }
+    ]
+  },
+  {
+    "id": "b9ada597-c3dc-48fb-bc0e-8ea925623d4a",
+    "title": "I lost my grandfather . How many days of",
+    "created_at": "2026-04-09T01:44:00.373797",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I lost my grandfather . How many days of leave do I get?\n\n"
+      },
+      {
+        "role": "assistant",
+        "content": "I am sorry for your loss.\n\nAccording to French labor law, in the event of the death of a grandparent, you are entitled to **1 day** of leave. This day is counted in working days.\n\n- You must inform your employer of your absence.\n- You will need to provide a death certificate as proof.\n\n📄 *Source: French Labor Law (gouv_02_conges_evenements_familiaux), Article related to family events*",
+        "sources": [
+          {
+            "document": "gouv_02_conges_evenements_familiaux",
+            "source": "gouv",
+            "filename": "gouv_02_conges_evenements_familiaux.md",
+            "distance": 0.43394166231155396
+          },
+          {
+            "document": "gouv_01_conges_payes",
+            "source": "gouv",
+            "filename": "gouv_01_conges_payes.md",
+            "distance": 0.4835200905799866
+          },
+          {
+            "document": "01_conges_payes",
+            "source": "novatech",
+            "filename": "01_conges_payes.md",
+            "distance": 0.48281538486480713
+          }
+        ],
+        "tools": [
+          {
+            "type": "form",
+            "name": "Leave request",
+            "path": "MonEspace > My leave > New request",
+            "url": "https://monespace.novatech-solutions.fr/conges/nouvelle-demande",
+            "match": "conges"
+          },
+          {
+            "type": "checklist",
+            "items": [
+              "Check your leave balance on MonEspace",
+              "Submit the request with the correct notice period (2 weeks / 1 month / 2 months)",
+              "Wait for manager approval (5 working days)",
+              "Organize handover of ongoing tasks",
+              "Set up your out-of-office email and Slack message"
+            ],
+            "topic": "leave"
+          },
+          {
+            "type": "contact",
+            "name": "Sophie Martin",
+            "role": "Head of Personnel Administration",
+            "email": "sophie.martin@novatech-solutions.fr",
+            "match_count": 1
+          }
+        ]
+      }
+    ],
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "I lost my grandfather . How many days of leave do I get?\n\n"
+      },
+      {
+        "role": "assistant",
+        "content": "I am sorry for your loss.\n\nAccording to French labor law, in the event of the death of a grandparent, you are entitled to **1 day** of leave. This day is counted in working days.\n\n- You must inform your employer of your absence.\n- You will need to provide a death certificate as proof.\n\n📄 *Source: French Labor Law (gouv_02_conges_evenements_familiaux), Article related to family events*"
+      }
+    ]
+  },
+  {
+    "id": "bfe85785-5989-4030-a41a-72984d000130",
+    "title": "I lost my grandfather . How many days of",
+    "created_at": "2026-04-09T01:41:21.915630",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I lost my grandfather . How many days of leave do I get?"
+      },
+      {
+        "role": "assistant",
+        "content": "1. Réponse directe: Vous avez droit à 1 jour de congé en cas de décès de votre grand-parent.\n2. Détails utiles ou cas particulier: Les journées d'absence sont comptées en jours ouvrables.\n3. Source(s): [Document 1] (gouv) gouv_02_conges_evenements_familiaux\n4. Action recommandée: Vous devez informer votre employeur de votre absence et remettre un justificatif (acte de décès) à votre employeur.",
+        "sources": [
+          {
+            "document": "gouv_02_conges_evenements_familiaux",
+            "source": "gouv",
+            "filename": "gouv_02_conges_evenements_familiaux.md",
+            "distance": 0.43394166231155396
+          },
+          {
+            "document": "gouv_01_conges_payes",
+            "source": "gouv",
+            "filename": "gouv_01_conges_payes.md",
+            "distance": 0.4835200905799866
+          },
+          {
+            "document": "01_conges_payes",
+            "source": "novatech",
+            "filename": "01_conges_payes.md",
+            "distance": 0.48281538486480713
+          }
+        ],
+        "tools": [
+          {
+            "type": "form",
+            "name": "Leave request",
+            "path": "MonEspace > My leave > New request",
+            "url": "https://monespace.novatech-solutions.fr/conges/nouvelle-demande",
+            "match": "conges"
+          },
+          {
+            "type": "checklist",
+            "items": [
+              "Check your leave balance on MonEspace",
+              "Submit the request with the correct notice period (2 weeks / 1 month / 2 months)",
+              "Wait for manager approval (5 working days)",
+              "Organize handover of ongoing tasks",
+              "Set up your out-of-office email and Slack message"
+            ],
+            "topic": "leave"
+          },
+          {
+            "type": "contact",
+            "name": "Sophie Martin",
+            "role": "Head of Personnel Administration",
+            "email": "sophie.martin@novatech-solutions.fr",
+            "match_count": 1
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": "I lost my grandfather . How many days of leave do I get?"
+      },
+      {
+        "role": "assistant",
+        "content": "Vous avez droit à **1 jour** de congé pour le décès de votre grand-parent.\n\n- Les journées d'absence sont comptées en jours ouvrables.\n- Vous devez informer votre employeur de votre absence et remettre un justificatif (acte de décès).\n\n📄 *Source : Document 1 (gouv) gouv_02_conges_evenements_familiaux*",
+        "sources": [
+          {
+            "document": "gouv_02_conges_evenements_familiaux",
+            "source": "gouv",
+            "filename": "gouv_02_conges_evenements_familiaux.md",
+            "distance": 0.43394166231155396
+          },
+          {
+            "document": "gouv_01_conges_payes",
+            "source": "gouv",
+            "filename": "gouv_01_conges_payes.md",
+            "distance": 0.4835200905799866
+          },
+          {
+            "document": "01_conges_payes",
+            "source": "novatech",
+            "filename": "01_conges_payes.md",
+            "distance": 0.48281538486480713
+          }
+        ],
+        "tools": [
+          {
+            "type": "form",
+            "name": "Leave request",
+            "path": "MonEspace > My leave > New request",
+            "url": "https://monespace.novatech-solutions.fr/conges/nouvelle-demande",
+            "match": "conges"
+          },
+          {
+            "type": "checklist",
+            "items": [
+              "Check your leave balance on MonEspace",
+              "Submit the request with the correct notice period (2 weeks / 1 month / 2 months)",
+              "Wait for manager approval (5 working days)",
+              "Organize handover of ongoing tasks",
+              "Set up your out-of-office email and Slack message"
+            ],
+            "topic": "leave"
+          },
+          {
+            "type": "contact",
+            "name": "Sophie Martin",
+            "role": "Head of Personnel Administration",
+            "email": "sophie.martin@novatech-solutions.fr",
+            "match_count": 1
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": "peut me parler en anglais?\n"
+      },
+      {
+        "role": "assistant",
+        "content": "I can only respond in the language of your request. Since you asked in English, I will continue to respond in English.\n\nI am Nova, the HR assistant for NovaTech Solutions. I can help you with questions about NovaTech's internal HR policies and French labor law as it appears in the provided documents.\n\nIf you have questions outside of these topics, please contact the appropriate HR representative.",
+        "sources": [
+          {
+            "document": "gouv_07_rupture_conventionnelle",
+            "source": "gouv",
+            "filename": "gouv_07_rupture_conventionnelle.md",
+            "distance": 0.7744714021682739
+          },
+          {
+            "document": "gouv_10_rqth",
+            "source": "gouv",
+            "filename": "gouv_10_rqth.md",
+            "distance": 0.8076828122138977
+          },
+          {
+            "document": "05_accident_travail",
+            "source": "novatech",
+            "filename": "05_accident_travail.md",
+            "distance": 0.8111007213592529
+          },
+          {
+            "document": "03_teletravail",
+            "source": "novatech",
+            "filename": "03_teletravail.md",
+            "distance": 0.7992316484451294
+          },
+          {
+            "document": "gouv_05_accident_travail",
+            "source": "gouv",
+            "filename": "gouv_05_accident_travail.md",
+            "distance": 0.7651286721229553
+          },
+          {
+            "document": "gouv_09_cpf",
+            "source": "gouv",
+            "filename": "gouv_09_cpf.md",
+            "distance": 0.7838464975357056
+          }
+        ],
+        "tools": []
+      }
+    ],
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "I lost my grandfather . How many days of leave do I get?"
+      },
+      {
+        "role": "assistant",
+        "content": "1. Réponse directe: Vous avez droit à 1 jour de congé en cas de décès de votre grand-parent.\n2. Détails utiles ou cas particulier: Les journées d'absence sont comptées en jours ouvrables.\n3. Source(s): [Document 1] (gouv) gouv_02_conges_evenements_familiaux\n4. Action recommandée: Vous devez informer votre employeur de votre absence et remettre un justificatif (acte de décès) à votre employeur."
+      },
+      {
+        "role": "user",
+        "content": "I lost my grandfather . How many days of leave do I get?"
+      },
+      {
+        "role": "assistant",
+        "content": "Vous avez droit à **1 jour** de congé pour le décès de votre grand-parent.\n\n- Les journées d'absence sont comptées en jours ouvrables.\n- Vous devez informer votre employeur de votre absence et remettre un justificatif (acte de décès).\n\n📄 *Source : Document 1 (gouv) gouv_02_conges_evenements_familiaux*"
+      },
+      {
+        "role": "user",
+        "content": "peut me parler en anglais?\n"
+      },
+      {
+        "role": "assistant",
+        "content": "I can only respond in the language of your request. Since you asked in English, I will continue to respond in English.\n\nI am Nova, the HR assistant for NovaTech Solutions. I can help you with questions about NovaTech's internal HR policies and French labor law as it appears in the provided documents.\n\nIf you have questions outside of these topics, please contact the appropriate HR representative."
+      }
+    ]
+  },
+  {
+    "id": "c187ca6f-b2d9-4248-93f2-b92174781f56",
+    "title": "I lost my grandfather . How many days of",
+    "created_at": "2026-04-09T01:37:28.111858",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I lost my grandfather . How many days of leave do I get?"
+      },
+      {
+        "role": "assistant",
+        "content": "1. Réponse directe: Vous avez droit à 1 jour de congé ouvrable en cas de décès de votre grand-parent.\n2. Détails utiles ou cas particulier: Les journées d'absence sont comptées en jours ouvrables.\n3. Source(s): [Document 1] (gouv) gouv_02_conges_evenements_familiaux\n4. Action recommandée: Vous devez informer votre employeur de votre absence et remettre un justificatif (acte de décès) à votre employeur.",
+        "sources": [
+          {
+            "document": "gouv_02_conges_evenements_familiaux",
+            "source": "gouv",
+            "filename": "gouv_02_conges_evenements_familiaux.md",
+            "distance": 0.43394166231155396
+          },
+          {
+            "document": "gouv_01_conges_payes",
+            "source": "gouv",
+            "filename": "gouv_01_conges_payes.md",
+            "distance": 0.4835200905799866
+          },
+          {
+            "document": "01_conges_payes",
+            "source": "novatech",
+            "filename": "01_conges_payes.md",
+            "distance": 0.48281538486480713
+          }
+        ],
+        "tools": [
+          {
+            "type": "form",
+            "name": "Leave request",
+            "path": "MonEspace > My leave > New request",
+            "url": "https://monespace.novatech-solutions.fr/conges/nouvelle-demande",
+            "match": "conges"
+          },
+          {
+            "type": "checklist",
+            "items": [
+              "Check your leave balance on MonEspace",
+              "Submit the request with the correct notice period (2 weeks / 1 month / 2 months)",
+              "Wait for manager approval (5 working days)",
+              "Organize handover of ongoing tasks",
+              "Set up your out-of-office email and Slack message"
+            ],
+            "topic": "leave"
+          },
+          {
+            "type": "contact",
+            "name": "Sophie Martin",
+            "role": "Head of Personnel Administration",
+            "email": "sophie.martin@novatech-solutions.fr",
+            "match_count": 1
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": "je suis stagaire j'ai le droit à du Teletravail?"
+      },
+      {
+        "role": "assistant",
+        "content": "1. Réponse directe: En tant que stagiaire, le télétravail est possible sous réserve de l'accord de l'organisme de formation et de l'entreprise, et ne doit pas excéder 2 jours par semaine. Il est conditionné à la nature des missions confiées et à la capacité d'encadrement à distance.\n2. Détails utiles ou cas particulier: Cette disposition s'applique aux alternants, et par extension, aux stagiaires dont le statut est similaire en termes de conditions d'encadrement et de missions.\n3. Source(s): [Document 2] (novatech) 03_teletravail\n4. Action recommandée: Vous devez obtenir l'accord de votre responsable de stage et de votre organisme de formation.",
+        "sources": [
+          {
+            "document": "gouv_03_teletravail",
+            "source": "gouv",
+            "filename": "gouv_03_teletravail.md",
+            "distance": 0.46827638149261475
+          },
+          {
+            "document": "03_teletravail",
+            "source": "novatech",
+            "filename": "03_teletravail.md",
+            "distance": 0.4563444256782532
+          },
+          {
+            "document": "17_faq_rh",
+            "source": "novatech",
+            "filename": "17_faq_rh.md",
+            "distance": 0.506569504737854
+          },
+          {
+            "document": "gouv_04_arret_maladie",
+            "source": "gouv",
+            "filename": "gouv_04_arret_maladie.md",
+            "distance": 0.48707789182662964
+          }
+        ],
+        "tools": [
+          {
+            "type": "form",
+            "name": "Telework declaration",
+            "path": "MonEspace > Telework > Weekly schedule",
+            "url": "https://monespace.novatech-solutions.fr/teletravail/planning",
+            "match": "teletravail"
+          },
+          {
+            "type": "checklist",
+            "items": [
+              "Verify your eligibility (permanent/fixed-term contract > 6 months, probation completed)",
+              "Declare your telework days on MonEspace before Friday",
+              "Ensure the required office day is respected",
+              "Confirm you have the required equipment (monitor, keyboard provided)",
+              "Respect fixed working hours (9:30-12:00, 14:00-17:00)"
+            ],
+            "topic": "telework"
+          },
+          {
+            "type": "contact",
+            "name": "Lucas Dupont",
+            "role": "QVT Project Manager",
+            "email": "lucas.dupont@novatech-solutions.fr",
+            "match_count": 1
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": "I lost my grandfather . How many days of leave do I get?"
+      },
+      {
+        "role": "assistant",
+        "content": "1. Réponse directe: Vous avez droit à 1 jour ouvrable de congé en cas de décès de votre grand-parent.\n2. Détails utiles ou cas particulier: Les journées d'absence sont comptées en jours ouvrables.\n3. Source(s): [Document 1] (gouv) gouv_02_conges_evenements_familiaux\n4. Action recommandée: Vous devez informer votre employeur de votre absence et remettre un justificatif (acte de décès) à votre employeur.",
+        "sources": [
+          {
+            "document": "gouv_02_conges_evenements_familiaux",
+            "source": "gouv",
+            "filename": "gouv_02_conges_evenements_familiaux.md",
+            "distance": 0.43394166231155396
+          },
+          {
+            "document": "gouv_01_conges_payes",
+            "source": "gouv",
+            "filename": "gouv_01_conges_payes.md",
+            "distance": 0.4835200905799866
+          },
+          {
+            "document": "01_conges_payes",
+            "source": "novatech",
+            "filename": "01_conges_payes.md",
+            "distance": 0.48281538486480713
+          }
+        ],
+        "tools": [
+          {
+            "type": "form",
+            "name": "Leave request",
+            "path": "MonEspace > My leave > New request",
+            "url": "https://monespace.novatech-solutions.fr/conges/nouvelle-demande",
+            "match": "conges"
+          },
+          {
+            "type": "checklist",
+            "items": [
+              "Check your leave balance on MonEspace",
+              "Submit the request with the correct notice period (2 weeks / 1 month / 2 months)",
+              "Wait for manager approval (5 working days)",
+              "Organize handover of ongoing tasks",
+              "Set up your out-of-office email and Slack message"
+            ],
+            "topic": "leave"
+          },
+          {
+            "type": "contact",
+            "name": "Sophie Martin",
+            "role": "Head of Personnel Administration",
+            "email": "sophie.martin@novatech-solutions.fr",
+            "match_count": 1
+          }
+        ]
+      }
+    ],
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "I lost my grandfather . How many days of leave do I get?"
+      },
+      {
+        "role": "assistant",
+        "content": "1. Réponse directe: Vous avez droit à 1 jour de congé ouvrable en cas de décès de votre grand-parent.\n2. Détails utiles ou cas particulier: Les journées d'absence sont comptées en jours ouvrables.\n3. Source(s): [Document 1] (gouv) gouv_02_conges_evenements_familiaux\n4. Action recommandée: Vous devez informer votre employeur de votre absence et remettre un justificatif (acte de décès) à votre employeur."
+      },
+      {
+        "role": "user",
+        "content": "je suis stagaire j'ai le droit à du Teletravail?"
+      },
+      {
+        "role": "assistant",
+        "content": "1. Réponse directe: En tant que stagiaire, le télétravail est possible sous réserve de l'accord de l'organisme de formation et de l'entreprise, et ne doit pas excéder 2 jours par semaine. Il est conditionné à la nature des missions confiées et à la capacité d'encadrement à distance.\n2. Détails utiles ou cas particulier: Cette disposition s'applique aux alternants, et par extension, aux stagiaires dont le statut est similaire en termes de conditions d'encadrement et de missions.\n3. Source(s): [Document 2] (novatech) 03_teletravail\n4. Action recommandée: Vous devez obtenir l'accord de votre responsable de stage et de votre organisme de formation."
+      },
+      {
+        "role": "user",
+        "content": "I lost my grandfather . How many days of leave do I get?"
+      },
+      {
+        "role": "assistant",
+        "content": "1. Réponse directe: Vous avez droit à 1 jour ouvrable de congé en cas de décès de votre grand-parent.\n2. Détails utiles ou cas particulier: Les journées d'absence sont comptées en jours ouvrables.\n3. Source(s): [Document 1] (gouv) gouv_02_conges_evenements_familiaux\n4. Action recommandée: Vous devez informer votre employeur de votre absence et remettre un justificatif (acte de décès) à votre employeur."
+      }
+    ]
+  },
+  {
+    "id": "6dad2d5f-d192-4221-8d83-17a62f1db5e4",
+    "title": "New conversation",
+    "created_at": "2026-04-09T01:36:53.955750",
+    "messages": [],
+    "chat_history": []
+  },
+  {
     "id": "f437fdca-8d86-44e2-be16-4bfa1c9a5ff6",
     "title": "My grandfather passed away. How many day",
     "created_at": "2026-04-09T00:57:37.478164",

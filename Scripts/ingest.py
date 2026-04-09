@@ -40,11 +40,12 @@ def clean_chunk(text: str) -> str:
 # ============================================================
 # CHUNKING — same logic for both sources
 # ============================================================
-def chunk_markdown(text: str) -> list[dict]:
+def chunk_markdown(text: str) -> tuple[list[dict], str]:
     """
     Split sur ## headers. 1 chunk = 1 section.
     Chaque chunk est préfixé avec le titre du document (#).
     Si une section est trop longue, re-split sur ### puis par taille.
+    Returns (chunks, doc_title).
     """
     doc_title = ""
     m = re.search(r"^#\s+(.+)$", text, re.MULTILINE)
@@ -52,11 +53,16 @@ def chunk_markdown(text: str) -> list[dict]:
         doc_title = m.group(1).strip()
 
     sections = re.split(r"(?=^##\s+)", text, flags=re.MULTILINE)
+    has_headers = any(s.strip().startswith("##") for s in sections)
     chunks = []
 
     for section in sections:
         section = section.strip()
         if len(section) < 50:
+            continue
+
+        # Skip the preamble only if the document has real ## sections
+        if has_headers and not section.startswith("##"):
             continue
 
         section_title = ""
@@ -85,10 +91,16 @@ def chunk_markdown(text: str) -> list[dict]:
         if doc_title and doc_title not in c["text"]:
             c["text"] = f"[{doc_title}]\n\n{c['text']}"
     chunks = [c for c in chunks if len(c["text"]) > 80]
-    if len(chunks) <= 1 and len(text) > CHUNK_SIZE:
-        return [{"text": t, "section": ""} for t in chunk_by_size(text)]
+    if len(chunks) == 0:
+        # No sections found at all — index the whole document as one chunk
+        cleaned = clean_chunk(text)
+        if doc_title and doc_title not in cleaned:
+            cleaned = f"[{doc_title}]\n\n{cleaned}"
+        return [{"text": cleaned, "section": ""}], doc_title
+    if len(chunks) == 1 and len(text) > CHUNK_SIZE:
+        return [{"text": t, "section": ""} for t in chunk_by_size(text)], doc_title
 
-    return chunks
+    return chunks, doc_title
 
 
 def chunk_by_size(text: str) -> list[str]:
@@ -96,7 +108,12 @@ def chunk_by_size(text: str) -> list[str]:
     for s in re.split(r"(?<=[.!?])\s+", text):
         if len(current) + len(s) > CHUNK_SIZE and current:
             chunks.append(current.strip())
-            current = current[-CHUNK_OVERLAP:] + " " + s if len(current) > CHUNK_OVERLAP else s
+            # Find the start of the last sentence within the overlap window
+            overlap_text = current[-CHUNK_OVERLAP:] if len(current) > CHUNK_OVERLAP else current
+            sentence_start = re.search(r'(?<=[.!?])\s+[A-ZÀ-Ü]', overlap_text)
+            if sentence_start:
+                overlap_text = overlap_text[sentence_start.end() - 1:]
+            current = overlap_text + " " + s
         else:
             current += " " + s
     if current.strip():
@@ -125,8 +142,14 @@ def load_all_documents() -> list[dict]:
                 print(" ⚠ vide")
                 continue
 
-            chunks = chunk_markdown(text)
+            chunks, doc_title = chunk_markdown(text)
             print(f" → {len(chunks)} chunks")
+
+            if source_type == "gouv":
+                display_title = f"Code du travail — {doc_title}"
+            else:
+                clean_title = doc_title.replace(" — NovaTech Solutions", "").strip()
+                display_title = f"NovaTech — {clean_title}"
 
             for i, c in enumerate(chunks):
                 documents.append({
@@ -134,6 +157,7 @@ def load_all_documents() -> list[dict]:
                     "metadata": {
                         "source": source_type,
                         "document": md_path.stem,
+                        "title": display_title,
                         "filename": md_path.name,
                         "section": c["section"],
                         "chunk_index": i,
@@ -185,10 +209,33 @@ def index_documents(documents: list[dict]) -> None:
     print(f"\n  Détail :")
     for m in metas:
         if m["chunk_index"] == 0:
-            print(f"    [{m['source']}] {m['document']} — {m['total_chunks']} chunks")
+            print(f"    [{m['source']}] {m['document']} — {m['total_chunks']} chunks  →  \"{m['title']}\"")
+
+
+def inspect_chunks(doc_stem: str) -> None:
+    """Print all chunks for a given document stem (e.g. 'gouv_06_demission')."""
+    documents = load_all_documents()
+    chunks = [d for d in documents if d["metadata"]["document"] == doc_stem]
+    if not chunks:
+        print(f"  ✗ Document '{doc_stem}' not found.")
+        return
+    print(f"\n  {len(chunks)} chunks for '{doc_stem}'")
+    print(f"  title: \"{chunks[0]['metadata']['title']}\"")
+    print(f"{'='*60}")
+    for d in chunks:
+        m = d["metadata"]
+        print(f"\n--- Chunk {m['chunk_index']+1}/{m['total_chunks']} | section: {m['section']} | {len(d['text'])} chars ---")
+        print(d["text"][:400])
+        if len(d["text"]) > 400:
+            print("  [...]")
 
 
 def main():
+    import sys
+    if len(sys.argv) == 3 and sys.argv[1] == "--inspect":
+        inspect_chunks(sys.argv[2])
+        return
+
     print(f"\n{'='*50}")
     print(f"  HR Assistant — Ingestion v4")
     print(f"  Sources : gouv_md/ + novatech_md/")

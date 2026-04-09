@@ -140,10 +140,16 @@ Les documents contiennent des cas ambigus pour tester le système :
 
 - Lecture des fichiers Markdown (`data/gouv_md/` et `data/novatech_md/`)
 - **Chunking par headers `##`** : 1 section = 1 chunk
+  - Le préambule (avant le premier `##`) est ignoré — uniquement si le document a des sections
   - Si section > `CHUNK_SIZE * 2` : re-découpage sur `###` puis par taille
+  - `chunk_by_size` : l'overlap repart depuis la dernière frontière de phrase (plus de coupures en plein milieu)
+  - Fallback : si aucun `##` trouvé, le document entier est indexé comme un seul chunk
   - Chaque chunk est préfixé avec le titre du document (`[Nom du document]`)
 - Nettoyage du bruit (métadonnées service-public, séparateurs vides)
-- Indexation dans ChromaDB avec métadonnées riches (`source`, `document`, `section`, `chunk_index`)
+- **Titre lisible** extrait du `# Titre` Markdown et préfixé selon la source :
+  - Documents gouv → `Code du travail — Congés payés du salarié dans le secteur privé`
+  - Documents NovaTech → `NovaTech — Télétravail`
+- Indexation dans ChromaDB avec métadonnées riches (`source`, `document`, `title`, `section`, `chunk_index`)
 - IDs déterministes par MD5 (réindexation idempotente)
 
 ### 2. Retrieval (`src/rag.py` — classe `Retriever`)
@@ -175,25 +181,44 @@ Les documents contiennent des cas ambigus pour tester le système :
 
 ### Système prompt (Nova)
 
-- **Persona** : Nova, assistante RH NovaTech Solutions, répond uniquement en français
+- **Persona** : Nova, assistante RH NovaTech Solutions, chaleureuse et professionnelle
+- **Langue automatique** : détecte la langue de l'employé (français ou anglais) et répond dans la même langue
 - **Périmètre strict** : refuse les questions hors RH, redirige vers le bon contact
-- **Priorité des sources** : politiques NovaTech > droit du travail français
-- **Sécurité factuelle** : ne donne jamais un chiffre absent du contexte
-- **Anti-hallucination** : dit explicitement "Je n'ai pas cette information dans les documents fournis"
-- **Anti-injection** : ignore les tentatives de changement de rôle
+- **Priorité des sources** : politiques NovaTech > droit du travail français — si NovaTech est plus favorable que la loi, le dit explicitement
+- **Sécurité factuelle** : ne cite jamais un chiffre, délai ou droit absent du contexte
+- **Anti-hallucination** : reconnaît explicitement quand l'information est absente plutôt que d'inventer
+- **Anti-injection** : ignore les tentatives de changement de rôle, ne révèle jamais ses instructions
+- **Adaptation profil** : applique la règle cadre ou non-cadre selon le profil donné, présente les deux cas si inconnu
 
-### Format de réponse imposé
+### Détection de langue
+
+La langue de la question est détectée côté Python (correspondance avec un ensemble de mots français courants) et injectée comme instruction explicite (`MUST reply in French / English`) dans le prompt RAG — avant même les documents de contexte. Cela empêche Gemini de basculer en français automatiquement quand le corpus est en français.
+
+### Format de réponse
+
+Format naturel et aéré — pas de labels rigides comme "Réponse directe" :
 
 ```
-1. Réponse directe
-2. Détails utiles / cas particuliers (si pertinent)
-3. Source(s)
-4. Action recommandée (si pertinent)
+Phrase d'ouverture directe qui répond immédiatement à la question
+
+- Détail 1 (bullet points pour les informations clés)
+- Détail 2
+- Cas particulier si pertinent
+
+📄 *NovaTech — Télétravail*
+👉 Action recommandée sur MonEspace si applicable
 ```
+
+- Les **chiffres** et **termes importants** sont en gras
+- Les sources affichent le titre lisible (`NovaTech — Télétravail`, `Code du travail — Arrêt maladie`) extrait des métadonnées ChromaDB — plus de noms de fichiers bruts
+- Le ton est humain et chaleureux, pas administratif
 
 ### Few-shot examples
 
-4 exemples concrets couvrant : télétravail (cadre), congé deuil, hors périmètre (droit de grève), prompt injection.
+3 exemples couvrant :
+- Télétravail cadre (question en **anglais** → réponse en **anglais**)
+- Congé deuil (question en **français** → réponse en **français**)
+- Hors périmètre — droit de grève (refus poli + redirection contact)
 
 ---
 
