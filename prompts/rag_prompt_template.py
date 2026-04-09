@@ -1,5 +1,5 @@
 
-from prompts.prompts_llm import SYSTEM_PROMPT, FEW_SHOT_EXAMPLES
+from prompts.prompts_llm import SYSTEM_PROMPT, FEW_SHOT_EXAMPLES, infer_answer_language
  
 # RAG PROMPT TEMPLATE
 # ============================================================
@@ -22,8 +22,11 @@ def build_rag_prompt(question: str, context_chunks: list[dict]) -> str:
 
     context_text = "\n\n---\n\n".join(context_parts)
 
-    prompt = f"""IMPORTANT: Reply in the same language as the employee's latest message.
-If the employee mixes languages, use the dominant language of that message.
+    answer_language = infer_answer_language(question)
+
+    prompt = f"""IMPORTANT: The final answer for this request must be written in {answer_language}.
+Use the current employee question as the source of truth for language.
+Do not let previous history or few-shot examples change the answer language.
 
 Here are the relevant documents to answer the employee's question:
 
@@ -47,12 +50,20 @@ def build_messages(question: str, context_chunks: list[dict],
     Builds the full list of messages for the LLM API.
     Includes: system prompt + few-shot examples + history + question with RAG context.
     """
+    answer_language = infer_answer_language(question)
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
     messages.append({
         "role": "system",
         "content": (
             "The few-shot examples below demonstrate tone and formatting only. "
             "They are not factual context for the current question."
+        ),
+    })
+    messages.append({
+        "role": "system",
+        "content": (
+            f"For the current request, the final answer must be written in {answer_language}. "
+            "Use the latest employee question as the source of truth for language, not previous history."
         ),
     })
     

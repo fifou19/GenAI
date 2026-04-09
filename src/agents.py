@@ -21,6 +21,7 @@ from src.llm import call_gemini
 from src.config import TOP_K, DISTANCE_THRESHOLD, USE_RERANKING, RERANKING_MODEL
 from src.tools import execute_tool_call
 from prompts.rag_prompt_template import build_messages
+from prompts.prompts_llm import infer_answer_language
 from prompts.prompts_agents import ROUTER_SYSTEM_PROMPT, SYNTHESIS_SYSTEM_PROMPT, ACTION_AGENT_PROMPT
 
 
@@ -193,6 +194,7 @@ class OrchestratorAgent:
     def _synthesize(self, question: str, agent_results: dict,
                     chat_history: list = None) -> str: # type: ignore
         """Combine agent results into a single coherent answer."""
+        answer_language = infer_answer_language(question)
         parts = []
 
         policy_result = agent_results.get("policy")
@@ -222,6 +224,13 @@ class OrchestratorAgent:
             if action_result and action_result.get("tools"):
                 messages = [
                     {"role": "system", "content": SYNTHESIS_SYSTEM_PROMPT},
+                    {
+                        "role": "system",
+                        "content": (
+                            f"For the current request, the final answer must be written in {answer_language}. "
+                            "Use the current employee question as the source of truth for language."
+                        ),
+                    },
                     {"role": "user", "content": (
                         f"Employee question: {question}\n\n"
                         f"Available HR actions:\n{parts[0]}\n\n"
@@ -240,6 +249,13 @@ class OrchestratorAgent:
         combined = "\n\n---\n\n".join(parts)
         messages = [
             {"role": "system", "content": SYNTHESIS_SYSTEM_PROMPT},
+            {
+                "role": "system",
+                "content": (
+                    f"For the current request, the final answer must be written in {answer_language}. "
+                    "Use the current employee question as the source of truth for language, not previous history."
+                ),
+            },
         ]
         if chat_history:
             messages.extend(chat_history)

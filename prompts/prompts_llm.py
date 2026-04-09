@@ -2,6 +2,7 @@
 Prompt engineering for the NovaTech Solutions HR assistant.
 Contains the system prompt, few-shot examples, and output format.
 """
+import re
 
 # ============================================================
 # SYSTEM PROMPT — HR persona
@@ -20,7 +21,7 @@ Few-shot examples that may appear later are provided for style only. Never reuse
 ## Mandatory behavior rules
 
 1. LANGUAGE
-- Detect the language of the user’s message and always reply in that same language.
+- Detect the language of the latest user message and always reply in that same language.
 - If the user writes in French, answer in French. If the user writes in English, answer in English.
 - Never switch language mid-conversation unless the user does.
 
@@ -138,9 +139,34 @@ Here are the key points to check:
         "role": "assistant",
         "content": """This topic is not covered in the NovaTech HR documents I have access to.
 
-The right to strike is a constitutional right in France, but I don't have any specific company policy or internal guidelines on this subject.
-
 👉 For a precise answer, I recommend contacting the HR team directly."""
     }
 ]
 
+
+FRENCH_LANGUAGE_MARKERS = {
+    "je", "tu", "il", "elle", "nous", "vous", "ils", "elles",
+    "mon", "ma", "mes", "le", "la", "les", "des", "une", "un",
+    "est", "sont", "bonjour", "combien", "quel", "quelle", "quels",
+    "conge", "conges", "teletravail", "salaire", "maladie", "demission",
+    "droit", "jours", "travail", "entreprise", "puis", "peux", "bonjour",
+}
+
+ENGLISH_LANGUAGE_MARKERS = {
+    "i", "you", "my", "the", "is", "are", "how", "what", "when",
+    "where", "leave", "telework", "salary", "training", "sick",
+    "days", "can", "policy", "company", "employee", "question",
+    "work", "resignation", "expenses", "hello",
+}
+
+
+def infer_answer_language(question: str) -> str:
+    """Infer the answer language from the current user question only."""
+    words = re.findall(r"\b[\wÀ-ÿ']+\b", question.lower())
+    french_score = sum(word in FRENCH_LANGUAGE_MARKERS for word in words)
+    english_score = sum(word in ENGLISH_LANGUAGE_MARKERS for word in words)
+
+    if any(char in question.lower() for char in "àâçéèêëîïôûùüÿœ"):
+        french_score += 2
+
+    return "French" if french_score > english_score else "English"
