@@ -1,63 +1,67 @@
 [
   {
-    "id": "5e123bc1-9b4b-4087-acfb-481b71f72173",
-    "title": "I lost my grand father . How many day of",
-    "created_at": "2026-04-09T15:49:49.279257",
+    "id": "cb3b3c02-35a5-4727-8760-e0ce83656686",
+    "title": "New conversation",
+    "created_at": "2026-04-09T17:59:59.708299",
+    "messages": [],
+    "chat_history": []
+  },
+  {
+    "id": "5b8a964f-eb5c-405c-80c9-07daef99c599",
+    "title": "Bonjour comment se passe le télétravail ",
+    "created_at": "2026-04-09T17:58:17.951587",
     "messages": [
       {
         "role": "user",
-        "content": "I lost my grand father . How many day of leave I have?"
+        "content": "Bonjour comment se passe le télétravail ?"
       },
       {
         "role": "assistant",
-        "content": "I am sorry for your loss.\n\nUnder French labor law, you are entitled to **1 day** of leave following the death of your grandfather. This leave is paid as if you had worked it and is not deducted from your annual paid leave. The days of absence are counted as working days.\n\nWhile NovaTech's internal policy mentions leave for the \"death of a loved one,\" it does not specify the duration for the death of a grandfather. Therefore, the legal entitlement of **1 day** applies.\n\nTo proceed, please inform your manager of your absence and provide the death certificate to HR.\n\nIf you have any further questions or if your situation is unusual, you can contact Sophie Martin, Head of Personnel Administration, via email at sophie.martin@novatech-solutions.fr or through the HR portal: MonEspace > Mes Démarches > Congés et Absences.\n\nHere are some practical next steps:\n*   Review the policy details provided above.\n*   Open the relevant leave form in MonEspace if you are ready to submit a request.\n*   Prepare any supporting documents that may be needed for your case.\n*   Inform your manager if coordination is required.\n*   Contact HR if your situation is unusual or urgent.\n\n*Source: French Labor Code — Leave for family events (private sector), Article 2*",
+        "content": "Chez NovaTech, le télétravail peut être demandé de manière **régulière** ou **occasionnelle**.\n\nVoici les modalités pour en faire la demande et son organisation :\n\n*   **Demande de télétravail :**\n    *   Pour un télétravail **régulier**, vous devez soumettre votre demande via le portail **MonEspace**, section \"Mes Démarches RH\" > \"Demande de Télétravail\". Vous y préciserez la fréquence souhaitée et les motifs. Votre responsable évaluera votre éligibilité en fonction du poste, de votre performance et des besoins de l'équipe. Si l'avis est favorable, la demande sera transmise aux Ressources Humaines pour validation finale. Un avenant à votre contrat pourra être établi. Le délai de traitement est de **15 jours ouvrés**.\n    *   Pour un télétravail **ponctuel**, une demande motivée doit être adressée à votre manager au moins **48 heures à l'avance**, sauf en cas d'urgence.\n\n*   **Organisation du travail :**\n    *   Le **temps de travail** est décompté de la même manière qu'en présentiel.\n    *   Vos managers veilleront à la clarté de vos objectifs et au respect de votre **droit à la déconnexion**.\n    *   Durant les **plages de contact** définies, vous devez être réactif aux sollicitations. En cas d'absence imprévue pendant ces plages, informez votre responsable dès que possible.\n\nPour toute démarche, utilisez le portail **MonEspace**.\n\nSi vous avez des questions générales ou spécifiques concernant le télétravail, vous pouvez contacter le service RH par email à **teletravail.rh@novatech.fr**. Sophie Martin, Responsable Administration du Personnel, est votre référente principale pour le suivi des accords et les questions d'éligibilité. Lucas Dupont, Chargé de projet QVT, peut vous conseiller sur l'organisation du travail à distance.\n\n*Sources : NovaTech — Télétravail — Article 2 — Modalités de mise en œuvre et fréquence du télétravail, NovaTech — FAQ RH — 3. Télétravail et Organisation du Travail, NovaTech — Télétravail — Article 5 — Durée du travail et plages de contact, NovaTech — Télétravail — 8. Contact*\n\nVoici quelques étapes pratiques pour votre démarche :\n*   Consultez les conditions du télétravail détaillées ci-dessus.\n*   Accédez au formulaire de planification du télétravail sur MonEspace si vous devez déclarer des jours.\n*   Confirmez votre planning avec votre manager si nécessaire.\n*   Assurez-vous de disposer du matériel requis et d'un espace de travail adapté.\n*   Contactez le service RH si votre situation nécessite une exception.",
         "sources": [
           {
-            "document": "01_conges_payes",
+            "document": "03_teletravail",
             "source": "novatech",
-            "filename": "01_conges_payes.md",
-            "distance": 0.5183373689651489
+            "filename": "03_teletravail.md",
+            "distance": 0.7393413782119751
           },
           {
-            "document": "02_conges_evenements_familiaux",
+            "document": "17_faq_rh",
             "source": "novatech",
-            "filename": "02_conges_evenements_familiaux.md",
-            "distance": 0.531879723072052
+            "filename": "17_faq_rh.md",
+            "distance": 0.7610528469085693
           },
           {
-            "document": "gouv_02_conges_evenements_familiaux",
-            "source": "gouv",
-            "filename": "gouv_02_conges_evenements_familiaux.md",
-            "distance": 0.4463859796524048
+            "document": "07_rupture_conventionnelle",
+            "source": "novatech",
+            "filename": "07_rupture_conventionnelle.md",
+            "distance": 0.7384665012359619
           },
           {
-            "document": "gouv_01_conges_payes",
-            "source": "gouv",
-            "filename": "gouv_01_conges_payes.md",
-            "distance": 0.5344050526618958
+            "document": "18_depart_entreprise",
+            "source": "novatech",
+            "filename": "18_depart_entreprise.md",
+            "distance": 0.7597094178199768
+          },
+          {
+            "document": "12_frais_deplacements",
+            "source": "novatech",
+            "filename": "12_frais_deplacements.md",
+            "distance": 0.7569742202758789
           }
         ],
         "tools": [
           {
-            "type": "contact",
-            "tool": "route_to_contact",
-            "found": true,
-            "name": "Sophie Martin",
-            "role": "Head of Personnel Administration",
-            "email": "sophie.martin@novatech-solutions.fr",
-            "match_count": 1
-          },
-          {
             "type": "checklist",
             "tool": "generate_checklist",
             "found": true,
-            "topic": "leave",
+            "topic": "telework",
             "items": [
-              "Review the policy details given in the answer above before taking action",
-              "Open the relevant leave form in MonEspace if you are ready to submit a request",
-              "Prepare any supporting documents that may be needed for your case",
-              "Inform your manager if coordination is required",
-              "Contact HR if your situation is unusual or urgent"
+              "Review the telework conditions mentioned in the answer above",
+              "Open the telework planning form in MonEspace if you need to declare days",
+              "Confirm your schedule with your manager if needed",
+              "Make sure you have the required equipment and a suitable setup",
+              "Contact HR if your case requires an exception"
             ],
             "scope": "generic_next_steps"
           }
@@ -67,11 +71,11 @@
     "chat_history": [
       {
         "role": "user",
-        "content": "I lost my grand father . How many day of leave I have?"
+        "content": "Bonjour comment se passe le télétravail ?"
       },
       {
         "role": "assistant",
-        "content": "I am sorry for your loss.\n\nUnder French labor law, you are entitled to **1 day** of leave following the death of your grandfather. This leave is paid as if you had worked it and is not deducted from your annual paid leave. The days of absence are counted as working days.\n\nWhile NovaTech's internal policy mentions leave for the \"death of a loved one,\" it does not specify the duration for the death of a grandfather. Therefore, the legal entitlement of **1 day** applies.\n\nTo proceed, please inform your manager of your absence and provide the death certificate to HR.\n\nIf you have any further questions or if your situation is unusual, you can contact Sophie Martin, Head of Personnel Administration, via email at sophie.martin@novatech-solutions.fr or through the HR portal: MonEspace > Mes Démarches > Congés et Absences.\n\nHere are some practical next steps:\n*   Review the policy details provided above.\n*   Open the relevant leave form in MonEspace if you are ready to submit a request.\n*   Prepare any supporting documents that may be needed for your case.\n*   Inform your manager if coordination is required.\n*   Contact HR if your situation is unusual or urgent.\n\n*Source: French Labor Code — Leave for family events (private sector), Article 2*"
+        "content": "Chez NovaTech, le télétravail peut être demandé de manière **régulière** ou **occasionnelle**.\n\nVoici les modalités pour en faire la demande et son organisation :\n\n*   **Demande de télétravail :**\n    *   Pour un télétravail **régulier**, vous devez soumettre votre demande via le portail **MonEspace**, section \"Mes Démarches RH\" > \"Demande de Télétravail\". Vous y préciserez la fréquence souhaitée et les motifs. Votre responsable évaluera votre éligibilité en fonction du poste, de votre performance et des besoins de l'équipe. Si l'avis est favorable, la demande sera transmise aux Ressources Humaines pour validation finale. Un avenant à votre contrat pourra être établi. Le délai de traitement est de **15 jours ouvrés**.\n    *   Pour un télétravail **ponctuel**, une demande motivée doit être adressée à votre manager au moins **48 heures à l'avance**, sauf en cas d'urgence.\n\n*   **Organisation du travail :**\n    *   Le **temps de travail** est décompté de la même manière qu'en présentiel.\n    *   Vos managers veilleront à la clarté de vos objectifs et au respect de votre **droit à la déconnexion**.\n    *   Durant les **plages de contact** définies, vous devez être réactif aux sollicitations. En cas d'absence imprévue pendant ces plages, informez votre responsable dès que possible.\n\nPour toute démarche, utilisez le portail **MonEspace**.\n\nSi vous avez des questions générales ou spécifiques concernant le télétravail, vous pouvez contacter le service RH par email à **teletravail.rh@novatech.fr**. Sophie Martin, Responsable Administration du Personnel, est votre référente principale pour le suivi des accords et les questions d'éligibilité. Lucas Dupont, Chargé de projet QVT, peut vous conseiller sur l'organisation du travail à distance.\n\n*Sources : NovaTech — Télétravail — Article 2 — Modalités de mise en œuvre et fréquence du télétravail, NovaTech — FAQ RH — 3. Télétravail et Organisation du Travail, NovaTech — Télétravail — Article 5 — Durée du travail et plages de contact, NovaTech — Télétravail — 8. Contact*\n\nVoici quelques étapes pratiques pour votre démarche :\n*   Consultez les conditions du télétravail détaillées ci-dessus.\n*   Accédez au formulaire de planification du télétravail sur MonEspace si vous devez déclarer des jours.\n*   Confirmez votre planning avec votre manager si nécessaire.\n*   Assurez-vous de disposer du matériel requis et d'un espace de travail adapté.\n*   Contactez le service RH si votre situation nécessite une exception."
       }
     ]
   }
