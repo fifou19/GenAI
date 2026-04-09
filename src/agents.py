@@ -109,6 +109,20 @@ class ActionAgent(BaseAgent):
         "generate_checklist": "checklist",
         "route_to_contact": "contact",
     }
+    INFORMATIONAL_PATTERNS = (
+        "how many", "am i eligible", "what is the rule", "what does the policy say",
+        "what is the notice period", "what is the waiting period", "do i have",
+        "can i have", "is it allowed", "what are my rights", "which rule applies",
+        "combien", "ai-je droit", "suis-je eligible", "quelle est la regle",
+        "que dit la politique", "quel est le preavis", "quel est le delai de carence",
+        "est-ce que j'ai droit", "a combien", "a quel nombre",
+    )
+    PRACTICAL_FOLLOW_UP_PATTERNS = (
+        "how can i use", "what happens during", "what do i need to prepare",
+        "what should i prepare", "before my first day", "before i start",
+        "comment utiliser", "comment se passe", "que faut-il preparer",
+        "que dois-je preparer", "avant mon premier jour", "avant de commencer",
+    )
     ACTION_INTENT_PATTERNS = (
         "how do i", "what should i do", "next step", "next steps", "process", "procedure",
         "submit", "apply", "request", "declare", "fill", "form", "where do i submit",
@@ -128,8 +142,19 @@ class ActionAgent(BaseAgent):
         normalized = normalize_text(question)
         return any(pattern in normalized for pattern in self.CONTACT_INTENT_PATTERNS)
 
+    def _question_is_purely_informational(self, question: str) -> bool:
+        normalized = normalize_text(question).strip()
+        return any(normalized.startswith(pattern) for pattern in self.INFORMATIONAL_PATTERNS)
+
     def _question_can_benefit_from_checklist(self, question: str) -> bool:
-        return bool(find_matching_key(CHECKLIST_KEYWORDS, question))
+        if not find_matching_key(CHECKLIST_KEYWORDS, question):
+            return False
+
+        normalized = normalize_text(question)
+        if self._question_is_purely_informational(question):
+            return False
+
+        return any(pattern in normalized for pattern in self.PRACTICAL_FOLLOW_UP_PATTERNS)
 
     def run(self, question: str, **kwargs) -> dict:
         # Ask the LLM which tools to call and with what arguments
@@ -207,7 +232,7 @@ class OrchestratorAgent:
     # Routing
     # --------------------------------------------------------
     def _route(self, question: str) -> list[str]:
-        """Ask the LLM which agents to invoke. Falls back to ['policy']."""
+        """Ask the LLM which agents to invoke. Falls back to ['policy'].""" 
         messages = [
             {"role": "system", "content": ROUTER_SYSTEM_PROMPT},
             {"role": "user", "content": question},
@@ -219,6 +244,13 @@ class OrchestratorAgent:
                 parsed = json.loads(json_text)
                 valid = [a for a in parsed.get("agents", []) if a in self.agents]
                 if valid:
+                    action_agent = self.agents.get("action")
+                    if "action" in valid and isinstance(action_agent, ActionAgent):
+                        wants_action = action_agent._question_requests_action(question)
+                        wants_contact = action_agent._question_requests_contact(question)
+                        wants_optional_checklist = action_agent._question_can_benefit_from_checklist(question)
+                        if not (wants_action or wants_contact or wants_optional_checklist):
+                            valid = [agent_name for agent_name in valid if agent_name != "action"]
                     return valid
             except Exception:
                 pass

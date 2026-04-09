@@ -42,11 +42,13 @@ L'objectif n'est pas de faire un chatbot generique, mais un assistant capable de
 La version actuelle du projet inclut ces corrections et ameliorations :
 
 - le reranking est maintenant vraiment actif quand `USE_RERANKING=true`
+- le reranking suit une logique en 2 temps : retrieval large par similarite cosinus, puis tri fin par cross-encoder
 - les tools renvoyes par `ActionAgent` sont normalises pour l'UI en `form`, `checklist` et `contact`
 - `generate_checklist` produit maintenant des etapes pratiques generiques au lieu d'affirmer des regles RH non sourcees
 - l'historique sauvegarde est tronque avant persistance, comme dans l'interface
 - la langue de reponse suit maintenant le dernier message utilisateur
 - les prompts distinguent plusieurs types de questions au lieu d'une logique binaire trop simple
+- les questions de type "How many...", "Am I eligible...", "What is the rule..." ne declenchent plus `action` par defaut
 
 ---
 
@@ -102,6 +104,7 @@ Strategie actuelle :
 - `policy` est toujours inclus
 - `legal` est ajoute pour les sujets RH reglementes ou les questions de droits
 - `action` est ajoute quand l'utilisateur doit faire une vraie demarche, ou quand une petite aide pratique est pertinente
+- `action` n'est pas ajoute par defaut pour une question qui demande seulement un droit, un nombre, une eligibilite ou une regle
 
 ### Types De Questions
 
@@ -122,7 +125,7 @@ Les prompts distinguent 4 types de questions :
 ### Exemples
 
 - `How many telework days do I have as a manager?`
-  En general : `policy + legal`, avec eventuellement une checklist legere en fin de reponse.
+  En general : `policy + legal`, sans `action` par defaut.
 
 - `How do I declare my telework days?`
   En general : `policy + legal + action`.
@@ -173,10 +176,16 @@ Le systeme peut appliquer une deuxieme passe apres le retrieval.
 
 Fonctionnement :
 
-- ChromaDB recupere d'abord un ensemble plus large de chunks proches
+- ChromaDB recupere d'abord un ensemble plus large de chunks proches avec la similarite cosinus sur les embeddings
 - un cross-encoder local relit la question et chaque chunk ensemble
 - les chunks sont reordonnes par score de pertinence
 - seuls les meilleurs sont conserves pour le LLM
+
+En pratique :
+
+- la similarite cosinus sert a faire un retrieval rapide et large
+- le cross-encoder sert a faire un reranking plus precis sur les meilleurs candidats
+- on combine donc vitesse et precision
 
 Pourquoi c'est utile :
 
@@ -267,6 +276,8 @@ Outils disponibles :
 - `get_form_link` est reserve aux questions procedurales
 - `generate_checklist` peut aussi etre utilise pour certaines questions informatives, mais seulement comme aide pratique optionnelle
 - `route_to_contact` est reserve aux demandes de contact, aux blocages ou aux cas d'escalade
+- les questions qui demandent seulement un droit, un nombre, une eligibilite ou une regle ne doivent pas declencher `action` par defaut
+- `src/agents.py` contient aussi un garde-fou code qui retire `action` si le routeur LLM le propose alors que la question est purement informative
 
 ### Point Important Sur Les Checklists
 
@@ -292,6 +303,7 @@ Les tools sont normalises pour l'interface Streamlit en :
 - `contact`
 
 Cela evite un mismatch entre ce que renvoie l'agent et ce que sait afficher l'interface.
+`app.py` n'affiche que les tools effectivement renvoyes par `ActionAgent`, donc si `action` n'est pas selectionne ou est filtre, rien n'apparait cote UI.
 
 ---
 
@@ -333,7 +345,7 @@ Cette logique est plus juste et plus defendable pour un assistant RH.
 
 | Fichier | Role |
 |---|---|
-| `app.py` | Interface Streamlit du chat. Gere l'affichage, les messages, les tools, les sources et les conversations. |
+| `app.py` | Interface Streamlit du chat. Gere l'affichage, les messages, les tools, les sources et les conversations. Affiche uniquement les tools effectivement retournes par `ActionAgent`. |
 | `requirements.txt` | Liste des dependances Python. |
 | `.env.example` | Exemple de configuration locale. |
 | `test_rag.py` | Petit point d'entree de debug pour tester une question hors UI. |
@@ -346,7 +358,7 @@ Cette logique est plus juste et plus defendable pour un assistant RH.
 | `src/config.py` | Charge les variables d'environnement et centralise les parametres du projet. |
 | `src/llm.py` | Encapsule les appels Gemini avec retry et backoff. |
 | `src/rag.py` | Contient le retriever ChromaDB et l'utilitaire d'extraction JSON. |
-| `src/agents.py` | Coeur de l'architecture multi-agents : routing, agents RAG, action agent, reranking, synthese. |
+| `src/agents.py` | Coeur de l'architecture multi-agents : routing, agents RAG, action agent, reranking, synthese, et garde-fous pour distinguer questions informatives, procedurales et d'escalade. |
 | `src/tools.py` | Formulaires, checklist, routage vers les contacts, matching par topic et execution des tool calls. |
 | `src/cache.py` | Persistance des conversations pour l'application Streamlit. |
 | `src/__init__.py` | Marqueur de package Python. |

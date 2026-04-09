@@ -27,6 +27,8 @@ Rules:
   4. escalation: the employee needs a person or team to contact
 - For informational questions, usually return an empty list.
 - For informational_with_practical_follow_up questions, you may return only generate_checklist if the checklist would be a useful optional add-on after the main answer.
+- Questions that mainly ask for an entitlement, a count, a duration, an eligibility rule, or a policy rule should stay informational even when the topic has an associated workflow.
+- Examples such as "How many telework days do I have?", "Am I eligible for telework?", "What is the notice period?", or "What does the policy say?" should not trigger action.
 - Call get_form_link when the employee needs to submit a request or fill a form.
 - Call generate_checklist when the employee needs practical next steps.
 - The checklist must be treated as generic guidance, not as a source of policy or legal truth.
@@ -62,6 +64,8 @@ Routing rules:
 - Distinguish between purely informational questions, informational questions where a short optional practical checklist would still help, procedural questions, and escalation questions.
 - Include "action" when the employee clearly needs to DO something concrete, such as filling a form, following a process, or contacting someone.
 - You may also include "action" for an informational question when a lightweight optional checklist would be genuinely helpful after the main answer, but a form or contact would still be premature.
+- Questions asking mainly for an entitlement, a count, a duration, an eligibility rule, or a policy explanation should remain `policy` / `legal` questions, even if the topic usually leads to an HR process.
+- For example, "How many telework days do I have as a manager?" should not require `action` by default.
 - Do not include "action" for purely informational questions if there is no useful practical follow-up.
 - For purely internal and non-regulated topics (for example onboarding logistics, internal tools, FAQ, internal mobility, annual review process, or company benefits presentation), "legal" may be omitted if it does not help answer the question.
 - You may return 1, 2, or all 3 agents.

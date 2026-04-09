@@ -429,7 +429,7 @@ with st.sidebar:
     st.markdown(
         '<p style="font-size:.69rem;color:#b0c4d0;line-height:1.7;'
         'margin:.1rem .1rem 0;font-family:Inter,sans-serif">'
-        'Gemini · RAG · CrossEncoder<br>© 2025 NovaTech Solutions</p>',
+        '<br>© 2025 NovaTech Solutions</p>',
         unsafe_allow_html=True,
     )
 
