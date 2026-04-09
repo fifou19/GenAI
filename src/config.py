@@ -49,8 +49,7 @@ CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "500"))
 CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "50"))
 TOP_K = int(os.getenv("TOP_K", "5"))
 DISTANCE_THRESHOLD = float(os.getenv("DISTANCE_THRESHOLD", "1.0"))
-USE_RERANKING = os.getenv("USE_RERANKING", "false").lower() == "true"
-
+USE_RERANKING = os.getenv("USE_RERANKING")
 
 
 

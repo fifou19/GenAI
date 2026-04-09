@@ -97,6 +97,11 @@ class LegalAgent(RAGAgent):
 # ============================================================
 class ActionAgent(BaseAgent):
     name = "action"
+    TOOL_TYPE_MAP = {
+        "get_form_link": "form",
+        "generate_checklist": "checklist",
+        "route_to_contact": "contact",
+    }
 
     def run(self, question: str, **kwargs) -> dict:
         # Ask the LLM which tools to call and with what arguments
@@ -122,7 +127,11 @@ class ActionAgent(BaseAgent):
             arguments = call.get("arguments", {})
             result = execute_tool_call(tool_name, arguments)
             if result.get("found"):
-                tools_results.append({"type": tool_name, **result})
+                tools_results.append({
+                    "type": self.TOOL_TYPE_MAP.get(tool_name, tool_name),
+                    "tool": tool_name,
+                    **result,
+                })
 
         return {"tools": tools_results, "agent": self.name}
 
@@ -255,6 +264,9 @@ class OrchestratorAgent:
         Returns a dict with the same keys as RAGChain.answer() for drop-in compatibility:
             answer, sources, chunks, agents_used, agent_results
         """
+        if use_reranking:
+            self._get_cross_encoder()
+
         # 1. Route
         selected = self._route(question)
         print(f"    [Orchestrator] agents selected: {selected}")

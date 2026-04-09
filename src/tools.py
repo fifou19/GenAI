@@ -2,7 +2,7 @@
 Tool use / function calling for the HR assistant.
 3 tools:
   - get_form_link: returns the link to the right MonEspace form
-  - generate_checklist: generates an action checklist for the employee
+  - generate_checklist: generates generic practical next steps for the employee
   - route_to_contact: routes the employee to the appropriate HR contact
 """
 
@@ -213,65 +213,69 @@ def get_form_link(topic: str) -> dict:
 
 
 def generate_checklist(topic: str) -> dict:
-    """Generate an action checklist for the topic."""
+    """Generate generic next steps without asserting policy or legal rules."""
     checklist_key = find_matching_key(CHECKLIST_KEYWORDS, topic)
     if not checklist_key:
         return {"found": False, "message": "No checklist available for this topic."}
 
     checklists = {
         "leave": [
-            "Check your leave balance on MonEspace",
-            "Submit the request with the correct notice period (2 weeks / 1 month / 2 months)",
-            "Wait for manager approval (5 working days)",
-            "Organize handover of ongoing tasks",
-            "Set up your out-of-office email and Slack message",
+            "Review the policy details given in the answer above before taking action",
+            "Open the relevant leave form in MonEspace if you are ready to submit a request",
+            "Prepare any supporting documents that may be needed for your case",
+            "Inform your manager if coordination is required",
+            "Contact HR if your situation is unusual or urgent",
         ],
         "telework": [
-            "Verify your eligibility (permanent/fixed-term contract > 6 months, probation completed)",
-            "Declare your telework days on MonEspace before Friday",
-            "Ensure the required office day is respected",
-            "Confirm you have the required equipment (monitor, keyboard provided)",
-            "Respect fixed working hours (9:30-12:00, 14:00-17:00)",
+            "Review the telework conditions mentioned in the answer above",
+            "Open the telework planning form in MonEspace if you need to declare days",
+            "Confirm your schedule with your manager if needed",
+            "Make sure you have the required equipment and a suitable setup",
+            "Contact HR if your case requires an exception",
         ],
         "sick_leave": [
-            "Notify your manager within 24h (phone, email, or Slack)",
-            "Submit the medical certificate within 48h via MonEspace",
-            "Send slips 1 and 2 to CPAM",
-            "Respect the authorized outing hours",
-            "Schedule the return-to-work medical visit if leave > 60 days",
+            "Inform your manager as soon as possible",
+            "Use the dedicated absence form in MonEspace if a declaration is needed",
+            "Prepare the medical documents requested by HR or the relevant administration",
+            "Keep copies of the supporting documents you submit",
+            "Contact HR if you need help with follow-up or return-to-work steps",
         ],
         "departure": [
-            "Send the resignation notice by registered mail or in person",
-            "Respect the notice period (1 month non-manager / 3 months manager)",
-            "Clear your expense reports one week before leaving",
-            "Organize the transfer of your files",
-            "Return IT equipment to desk 5678",
-            "Collect your documents (certificate, France Travail attestation, final balance)",
+            "Review the departure information given in the answer above",
+            "Start the departure workflow in MonEspace if you are ready to proceed",
+            "List the documents, equipment, and ongoing work that may need handover",
+            "Coordinate the next steps with your manager and HR",
+            "Contact HR directly if your departure case is urgent or atypical",
         ],
         "accident": [
-            "Inform your manager immediately",
-            "See a doctor and obtain an initial medical certificate",
-            "Declare the accident on MonEspace within 48h",
-            "Collect the work accident report from HR",
-            "Keep all medical supporting documents",
+            "Inform your manager and HR as soon as possible",
+            "Seek medical attention if needed and keep the related documents",
+            "Use the dedicated declaration process in MonEspace if applicable",
+            "Keep a record of the key facts and supporting information",
+            "Contact HR if you need help with the administrative follow-up",
         ],
         "training": [
-            "Identify the training on NovAcademy or through the external catalog",
-            "Discuss it with your manager",
-            "Submit the request on MonEspace (deadline: 3 weeks or 2 months if diploma-related)",
-            "Wait for validation (manager → HR)",
-            "Verify financing (plan, CPF, or co-funding)",
+            "Review the training information mentioned in the answer above",
+            "Discuss the request with your manager if validation is needed",
+            "Open the training request form in MonEspace if you want to proceed",
+            "Gather the information needed to describe the training and its objective",
+            "Contact the training team if you need guidance on eligibility or funding",
         ],
         "onboarding": [
-            "Complete the administrative file on MonEspace (before D-7)",
-            "Prepare required documents (ID, bank details, social security certificate)",
-            "Arrive at 9:30 on the first day at 12 rue de l'Innovation",
-            "Collect your badge, welcome kit, and IT equipment",
-            "Complete mandatory NovAcademy training in the first month",
+            "Review the onboarding information available to you",
+            "Complete the required administrative steps in MonEspace",
+            "Prepare the personal documents requested by HR",
+            "Reach out to your manager or HR if practical information is missing",
+            "Use your onboarding contact if you hit a blocker before your first days",
         ],
     }
 
-    return {"found": True, "topic": checklist_key, "items": checklists[checklist_key]}
+    return {
+        "found": True,
+        "topic": checklist_key,
+        "items": checklists[checklist_key],
+        "scope": "generic_next_steps",
+    }
 
 
 def route_to_contact(topic: str) -> dict:
@@ -369,7 +373,7 @@ TOOL_DEFINITIONS = [
         "type": "function",
         "function": {
             "name": "generate_checklist",
-            "description": "Generates an action checklist for the employee based on the HR topic",
+            "description": "Generates generic practical next steps for the employee based on the HR topic",
             "parameters": {
                 "type": "object",
                 "properties": {
