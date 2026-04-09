@@ -333,19 +333,6 @@ def detect_tools(topic: str) -> list[dict]:
     return tools
 
 
-def format_tool_instructions() -> str:
-    """Return a textual description of the tools for the LLM prompt."""
-    lines = [
-        "Available tools:",
-    ]
-    for tool in TOOL_DEFINITIONS:
-        func = tool["function"]
-        params = func["parameters"]["properties"]
-        param_list = ", ".join(f"{name}: {spec.get('description', '')}" for name, spec in params.items())
-        lines.append(f"- {func['name']}({param_list}) : {func['description']}")
-    lines.append("\nIf the question can be answered using one of these tools, respond with JSON only in the form: {\"tool\": \"tool_name\", \"arguments\": {...}}.")
-    lines.append("If no tool is needed, answer normally in natural language.")
-    return "\n".join(lines)
 
 
 def execute_tool_call(tool_name: str, arguments: dict) -> dict:

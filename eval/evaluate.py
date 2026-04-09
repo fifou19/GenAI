@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from src.rag import RAGChain
+from src.agents import OrchestratorAgent
 
 
 def load_test_cases() -> list[dict]:
@@ -94,7 +94,7 @@ def main():
     print(f"  HR Assistant — Evaluation")
     print(f"{'='*60}\n")
 
-    rag = RAGChain()
+    rag = OrchestratorAgent()
     test_cases = load_test_cases()
 
     print(f"  {len(test_cases)} test cases loaded\n")

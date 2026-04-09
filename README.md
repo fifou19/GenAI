@@ -1,12 +1,12 @@
 # Nova — Assistante RH NovaTech Solutions
 
-Assistant RH intelligent basé sur un pipeline RAG (Retrieval-Augmented Generation) pour répondre aux questions des employés de NovaTech Solutions sur les politiques RH internes et le droit du travail français.
+Assistant RH intelligent basé sur une architecture **multi-agents RAG** pour répondre aux questions des employés de NovaTech Solutions sur les politiques RH internes et le droit du travail français.
 
 ---
 
 ## Contexte du projet
 
-Projet final du cours **Generative AI** (ESIEA, Master). L'objectif est de construire un assistant IA spécialisé pour un domaine métier précis, avec un prototype fonctionnel incluant interface web, RAG, prompt engineering avancé et tool use.
+Projet final du cours **Generative AI** (ESIEA, Master). L'objectif est de construire un assistant IA spécialisé pour un domaine métier précis, avec un prototype fonctionnel incluant interface web, RAG, architecture multi-agents, prompt engineering avancé et tool use piloté par LLM.
 
 ### Problème résolu
 
@@ -14,32 +14,41 @@ Les employés posent sans cesse les mêmes questions RH (congés, télétravail,
 
 ---
 
-## Architecture globale
+## Architecture multi-agents
 
 ```
-Question utilisateur
-    │
-    ▼
-[Embedding — sentence-transformers]
-    │
-    ▼
-[Retrieval — ChromaDB (top K chunks)]
-    │
-    ▼
-[Reranking — Cross-encoder local]
-    │
-    ▼
-[Prompt Engineering — système + few-shot + contexte RAG]
-    │
-    ▼
-[LLM — Gemini (via google-genai)]
-    │
-    ▼
-[Tool Use — formulaire / checklist / contact RH]
-    │
-    ▼
-Réponse structurée + sources
+Question employé
+       │
+       ▼
+OrchestratorAgent
+       │
+       ├─ _route() ──► LLM décide : ["policy", "legal", "action"] ?
+       │
+       ├──► PolicyAgent   →  RAG sur docs NovaTech internes  →  réponse partielle
+       ├──► LegalAgent    →  RAG sur docs droit du travail   →  réponse partielle
+       └──► ActionAgent   →  LLM sélectionne les outils HR  →  formulaires / checklist / contact
+                │
+                ▼
+         _synthesize() ──► LLM fusionne tout en une réponse finale
+                │
+                ▼
+       Réponse structurée + sources
 ```
+
+### Les 4 agents
+
+| Agent | Rôle | Source de données |
+|---|---|---|
+| **OrchestratorAgent** | Route la question, lance les agents, synthétise | — |
+| **PolicyAgent** | Répond sur les règles internes NovaTech | `data/novatech_md/` |
+| **LegalAgent** | Répond sur le droit du travail français | `data/gouv_md/` |
+| **ActionAgent** | Sélectionne et exécute les outils RH via LLM | `src/tools.py` |
+
+**Pourquoi multi-agents ?**
+- Les sources sont séparées (NovaTech vs Gouv) → chaque agent cherche dans son corpus
+- La priorité *NovaTech > loi* est appliquée explicitement lors de la synthèse
+- L'`ActionAgent` comprend l'intention via LLM, plus de détection par mots-clés fragile
+- Extensible : ajouter un agent = une classe, sans toucher au reste
 
 ---
 
@@ -53,11 +62,15 @@ GenAI/
 │
 ├── src/
 │   ├── config.py                 ← Configuration centralisée (env vars)
-│   ├── rag.py                    ← Pipeline RAG : retriever + reranker + génération
+│   ├── agents.py                 ← Architecture multi-agents (Orchestrator, Policy, Legal, Action)
+│   ├── rag.py                    ← Retriever ChromaDB + reranker cross-encoder
 │   ├── llm.py                    ← Appel Gemini avec retry/backoff
-│   ├── prompts.py                ← Système prompt, few-shot, builder de messages
-│   ├── tools.py                  ← Tool use : formulaires, checklists, contacts
+│   ├── tools.py                  ← Outils RH : formulaires, checklists, contacts
 │   └── cache.py                  ← Persistance des conversations (JSON)
+│
+├── prompts/
+│   ├── prompts_llm.py            ← Système prompt Nova, few-shot, RAG prompt builder
+│   └── prompts_agents.py         ← Prompts routing, synthesis, action agent
 │
 ├── Scripts/
 │   ├── ingest.py                 ← Pipeline d'ingestion : chunking + indexation ChromaDB
@@ -84,7 +97,7 @@ GenAI/
 
 ### Couche 1 — Droit du travail français (service-public.fr)
 
-10 documents scraipés et nettoyés :
+10 documents scrappés et nettoyés :
 
 | # | Thème |
 |---|---|
@@ -142,7 +155,7 @@ Les documents contiennent des cas ambigus pour tester le système :
 - **Chunking par headers `##`** : 1 section = 1 chunk
   - Le préambule (avant le premier `##`) est ignoré — uniquement si le document a des sections
   - Si section > `CHUNK_SIZE * 2` : re-découpage sur `###` puis par taille
-  - `chunk_by_size` : l'overlap repart depuis la dernière frontière de phrase (plus de coupures en plein milieu)
+  - `chunk_by_size` : l'overlap repart depuis la dernière frontière de phrase
   - Fallback : si aucun `##` trouvé, le document entier est indexé comme un seul chunk
   - Chaque chunk est préfixé avec le titre du document (`[Nom du document]`)
 - Nettoyage du bruit (métadonnées service-public, séparateurs vides)
@@ -157,9 +170,9 @@ Les documents contiennent des cas ambigus pour tester le système :
 - Embedding de la question via `sentence-transformers`
 - Recherche vectorielle dans ChromaDB (cosine similarity)
 - Récupère `top_k * 2` chunks, filtre par `distance_threshold`, retourne les `top_k` meilleurs
-- Filtre optionnel par source (`gouv` ou `novatech`)
+- Filtre par source (`gouv` ou `novatech`) utilisé par `PolicyAgent` et `LegalAgent`
 
-### 3. Reranking (`src/rag.py` — méthode `rerank_chunks`)
+### 3. Reranking (`src/rag.py` — méthode `_rerank`)
 
 - **Cross-encoder local** (`cross-encoder/mmarco-mMiniLMv2-L12-H384-v1`)
 - Évalue chaque paire (question, chunk) ensemble → score de pertinence précis
@@ -167,51 +180,28 @@ Les documents contiennent des cas ambigus pour tester le système :
 - Modèle chargé une seule fois (lazy init), **aucun appel API**, ~200ms
 - Multilingue, optimisé pour le français
 
-### 4. Génération (`src/rag.py` — méthode `answer`)
-
-- Construction du prompt : système + few-shot + historique + contexte RAG + question
-- Instructions tool use fusionnées dans le dernier message user (pas de doublon de rôle)
-- Appel Gemini → détection d'un éventuel tool call JSON
-- Si tool call : exécution + second appel Gemini avec le résultat
-- Extraction des sources pour affichage
-
 ---
 
-## Prompt Engineering (`src/prompts.py`)
+## Prompt Engineering (`prompts/`)
 
-### Système prompt (Nova)
+### Système prompt — Nova (`prompts/prompts_llm.py`)
 
 - **Persona** : Nova, assistante RH NovaTech Solutions, chaleureuse et professionnelle
 - **Langue automatique** : détecte la langue de l'employé (français ou anglais) et répond dans la même langue
 - **Périmètre strict** : refuse les questions hors RH, redirige vers le bon contact
 - **Priorité des sources** : politiques NovaTech > droit du travail français — si NovaTech est plus favorable que la loi, le dit explicitement
 - **Sécurité factuelle** : ne cite jamais un chiffre, délai ou droit absent du contexte
-- **Anti-hallucination** : reconnaît explicitement quand l'information est absente plutôt que d'inventer
+- **Anti-hallucination** : reconnaît explicitement quand l'information est absente
 - **Anti-injection** : ignore les tentatives de changement de rôle, ne révèle jamais ses instructions
 - **Adaptation profil** : applique la règle cadre ou non-cadre selon le profil donné, présente les deux cas si inconnu
 
-### Détection de langue
+### Prompts agents (`prompts/prompts_agents.py`)
 
-La langue de la question est détectée côté Python (correspondance avec un ensemble de mots français courants) et injectée comme instruction explicite (`MUST reply in French / English`) dans le prompt RAG — avant même les documents de contexte. Cela empêche Gemini de basculer en français automatiquement quand le corpus est en français.
-
-### Format de réponse
-
-Format naturel et aéré — pas de labels rigides comme "Réponse directe" :
-
-```
-Phrase d'ouverture directe qui répond immédiatement à la question
-
-- Détail 1 (bullet points pour les informations clés)
-- Détail 2
-- Cas particulier si pertinent
-
-📄 *NovaTech — Télétravail*
-👉 Action recommandée sur MonEspace si applicable
-```
-
-- Les **chiffres** et **termes importants** sont en gras
-- Les sources affichent le titre lisible (`NovaTech — Télétravail`, `Code du travail — Arrêt maladie`) extrait des métadonnées ChromaDB — plus de noms de fichiers bruts
-- Le ton est humain et chaleureux, pas administratif
+| Prompt | Utilisé par | Rôle |
+|---|---|---|
+| `ROUTER_SYSTEM_PROMPT` | OrchestratorAgent | Décide quels agents invoquer → JSON `{"agents": [...]}` |
+| `SYNTHESIS_SYSTEM_PROMPT` | OrchestratorAgent | Fusionne les réponses des agents en une réponse finale |
+| `ACTION_AGENT_PROMPT` | ActionAgent | Choisit les outils RH à appeler → JSON `{"tool_calls": [...]}` |
 
 ### Few-shot examples
 
@@ -224,13 +214,21 @@ Phrase d'ouverture directe qui répond immédiatement à la question
 
 ## Tool Use (`src/tools.py`)
 
-3 outils disponibles, détectés par mots-clés et proposés par le LLM via function calling :
+3 outils disponibles, sélectionnés et invoqués par l'`ActionAgent` via LLM :
 
 | Outil | Rôle | Exemple |
 |---|---|---|
 | `get_form_link` | Retourne le chemin MonEspace vers le bon formulaire | `MonEspace > Mes congés > Nouvelle demande` |
 | `generate_checklist` | Génère une checklist d'actions pour le salarié | 5 étapes pour un départ de l'entreprise |
 | `route_to_contact` | Identifie le bon contact RH selon le sujet | Sophie Martin pour l'administration du personnel |
+
+Le LLM comprend l'intention de l'employé et choisit les bons outils avec les bons arguments — sans correspondance de mots-clés fragile. Exemple pour *"Je veux bosser de chez moi"* :
+```json
+{"tool_calls": [
+  {"tool": "get_form_link",      "arguments": {"topic": "telework"}},
+  {"tool": "generate_checklist", "arguments": {"topic": "telework"}}
+]}
+```
 
 ### Contacts RH disponibles
 
@@ -251,7 +249,7 @@ Phrase d'ouverture directe qui répond immédiatement à la question
 ## LLM (`src/llm.py`)
 
 - **Modèle** : Gemini 2.5 Flash Lite (configurable via `.env`)
-- Client instancié **une seule fois** au chargement du module (pas de reconnexion à chaque appel)
+- Client instancié **une seule fois** au chargement du module
 - **Retry avec backoff exponentiel** : jusqu'à 10 tentatives, attente 15s → 120s max
 - Erreurs retriables : HTTP 429, 500, 503, "resource exhausted", "rate limit", "overloaded"
 
@@ -366,10 +364,12 @@ python eval/evaluate.py
 
 | Composant | Choix | Justification |
 |---|---|---|
+| **Architecture** | Multi-agents (Orchestrator / Policy / Legal / Action) | Séparation des sources, synthèse explicite, extensible |
 | **LLM** | Gemini 2.5 Flash Lite | Rapide, gratuit en tier développeur, bon en français |
 | **Embedding** | `paraphrase-multilingual-mpnet-base-v2` | Local, gratuit, optimisé français/multilingue |
 | **Reranking** | Cross-encoder `mmarco-mMiniLMv2` | Local, 0 appel API, plus précis qu'un LLM scoring |
 | **Vector store** | ChromaDB | Local, persistant, simple à déployer |
+| **Tool selection** | LLM-driven (ActionAgent) | Comprend l'intention, pas de keywords fragiles |
 | **Chunking** | Par headers `##` Markdown | Respecte la structure logique des documents |
 | **Interface** | Streamlit | Rapide à prototyper, gestion du state intégrée |
 | **Format données** | Markdown → ChromaDB | Évite la perte de structure des PDFs |

@@ -4,9 +4,8 @@ Usage: streamlit run app.py
 """
 
 import streamlit as st
-from src.rag import RAGChain
+from src.agents import OrchestratorAgent
 from src.config import TOP_K, DISTANCE_THRESHOLD, USE_RERANKING
-from src.tools import detect_tools
 from src.cache import (
     load_all_conversations,
     create_new_conversation,
@@ -34,7 +33,7 @@ SHOW_CHUNKS = False
 # ============================================================
 @st.cache_resource
 def load_rag():
-    return RAGChain()
+    return OrchestratorAgent()
 
 rag = load_rag()
 
@@ -169,18 +168,10 @@ if prompt := st.chat_input("Your HR question..."):
             answer = result["answer"]
             sources = result["sources"]
             chunks = result["chunks"]
-            tool_call = result.get("tool_call")
-            tool_result = result.get("tool_result")
-
-            # Tools — detect relevant tools from the question
-            tools_used = detect_tools(prompt)
+            tools_used = result.get("agent_results", {}).get("action", {}).get("tools", [])
 
         # Display answer
         st.markdown(answer)
-
-        if tool_call:
-            st.info(f"🛠️ Tool call used: {tool_call['tool']}\nArguments: {tool_call['arguments']}")
-            st.write(f"Tool result: {tool_result}")
 
         # Display sources if enabled
         if SHOW_SOURCES and sources:

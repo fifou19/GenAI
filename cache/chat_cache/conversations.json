@@ -1,5 +1,215 @@
 [
   {
+    "id": "2bbd20d2-caa7-4eca-964d-fe4211084507",
+    "title": "Je veux bosser de chez moi, comment je f",
+    "created_at": "2026-04-09T10:34:54.439806",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Je veux bosser de chez moi, comment je fais?"
+      },
+      {
+        "role": "assistant",
+        "content": "Pour travailler de chez vous, vous devez respecter les règles de télétravail de NovaTech.\n\nVoici les points importants :\n\n*   **Lieu de travail :** Vous pouvez télétravailler depuis votre domicile personnel. Si vous souhaitez travailler depuis un autre lieu (résidence secondaire, espace de coworking), cela nécessite une autorisation préalable de votre responsable hiérarchique. Il est interdit de télétravailler dans des lieux publics non sécurisés (cafés, etc.) ou si cela compromet la sécurité des informations de l'entreprise.\n*   **Conditions :** Le lieu de télétravail doit disposer d'une connexion internet fiable et sécurisée, et offrir un environnement propice à la concentration et à la confidentialité.\n*   **Plages de contact :** En tant que cadre ou non-cadre à temps plein, vous devez être joignable par messagerie instantanée (Slack), téléphone professionnel ou email du lundi au vendredi, de **9h30 à 12h00** et de **14h00 à 17h00**. Vous devez répondre aux sollicitations dans un délai raisonnable, idéalement dans l'heure.\n*   **Déclaration :** Vous devez déclarer vos jours de télétravail sur **MonEspace** avant le vendredi de la semaine précédente.\n\n📄 *Sources : NovaTech — Télétravail, Articles 3 et 5*\n👉 Pour déclarer votre télétravail, rendez-vous sur **MonEspace > Télétravail > Planning hebdomadaire**. Si vous souhaitez télétravailler depuis un lieu autre que votre domicile, demandez l'autorisation à votre responsable hiérarchique.",
+        "sources": [
+          {
+            "document": "02_conges_evenements_familiaux",
+            "source": "novatech",
+            "filename": "02_conges_evenements_familiaux.md",
+            "distance": 0.6747727394104004
+          },
+          {
+            "document": "03_teletravail",
+            "source": "novatech",
+            "filename": "03_teletravail.md",
+            "distance": 0.681058406829834
+          },
+          {
+            "document": "04_arret_maladie",
+            "source": "novatech",
+            "filename": "04_arret_maladie.md",
+            "distance": 0.6939237117767334
+          }
+        ],
+        "tools": []
+      },
+      {
+        "role": "user",
+        "content": "i lost my grand father can i have day of leave?"
+      },
+      {
+        "role": "assistant",
+        "content": "Je suis désolé d'apprendre le décès de votre grand-père.\n\nConcernant votre demande de congé, voici ce que nous pouvons vous dire :\n\n*   La loi française prévoit **1 jour** de congé pour le décès d'un grand-parent. Ce jour est comptabilisé en jours ouvrés.\n*   NovaTech s'efforce d'être plus favorable que la loi pour les congés pour événements familiaux. Cependant, la durée exacte du congé pour le décès d'un grand-parent n'est pas explicitement précisée dans nos politiques internes.\n\nPour obtenir une réponse définitive concernant la durée du congé et la procédure à suivre, nous vous invitons à contacter **Sophie Martin**, Responsable de l'Administration du Personnel, à l'adresse suivante : sophie.martin@novatech-solutions.fr.\n\nPour toute demande de congé, vous pouvez utiliser le formulaire disponible sur **MonEspace**. N'oubliez pas de respecter les délais de prévenance et d'organiser la passation de vos tâches en cours.\n\n📄 *Sources : Code du Travail Français — Congés pour événements familiaux, Article 7 ; NovaTech — Congés pour événements familiaux, Article 9*\n👉 Pour soumettre votre demande de congé, rendez-vous sur **MonEspace > Mes congés > Nouvelle demande**.",
+        "sources": [
+          {
+            "document": "02_conges_evenements_familiaux",
+            "source": "novatech",
+            "filename": "02_conges_evenements_familiaux.md",
+            "distance": 0.5282003879547119
+          },
+          {
+            "document": "01_conges_payes",
+            "source": "novatech",
+            "filename": "01_conges_payes.md",
+            "distance": 0.5394597053527832
+          },
+          {
+            "document": "04_arret_maladie",
+            "source": "novatech",
+            "filename": "04_arret_maladie.md",
+            "distance": 0.560532808303833
+          },
+          {
+            "document": "gouv_02_conges_evenements_familiaux",
+            "source": "gouv",
+            "filename": "gouv_02_conges_evenements_familiaux.md",
+            "distance": 0.39053207635879517
+          },
+          {
+            "document": "gouv_01_conges_payes",
+            "source": "gouv",
+            "filename": "gouv_01_conges_payes.md",
+            "distance": 0.5131509900093079
+          }
+        ],
+        "tools": [
+          {
+            "type": "form",
+            "name": "Leave request",
+            "path": "MonEspace > My leave > New request",
+            "url": "https://monespace.novatech-solutions.fr/conges/nouvelle-demande",
+            "match": "conges"
+          },
+          {
+            "type": "checklist",
+            "items": [
+              "Check your leave balance on MonEspace",
+              "Submit the request with the correct notice period (2 weeks / 1 month / 2 months)",
+              "Wait for manager approval (5 working days)",
+              "Organize handover of ongoing tasks",
+              "Set up your out-of-office email and Slack message"
+            ],
+            "topic": "leave"
+          },
+          {
+            "type": "contact",
+            "name": "Sophie Martin",
+            "role": "Head of Personnel Administration",
+            "email": "sophie.martin@novatech-solutions.fr",
+            "match_count": 1
+          }
+        ]
+      }
+    ],
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "Je veux bosser de chez moi, comment je fais?"
+      },
+      {
+        "role": "assistant",
+        "content": "Pour travailler de chez vous, vous devez respecter les règles de télétravail de NovaTech.\n\nVoici les points importants :\n\n*   **Lieu de travail :** Vous pouvez télétravailler depuis votre domicile personnel. Si vous souhaitez travailler depuis un autre lieu (résidence secondaire, espace de coworking), cela nécessite une autorisation préalable de votre responsable hiérarchique. Il est interdit de télétravailler dans des lieux publics non sécurisés (cafés, etc.) ou si cela compromet la sécurité des informations de l'entreprise.\n*   **Conditions :** Le lieu de télétravail doit disposer d'une connexion internet fiable et sécurisée, et offrir un environnement propice à la concentration et à la confidentialité.\n*   **Plages de contact :** En tant que cadre ou non-cadre à temps plein, vous devez être joignable par messagerie instantanée (Slack), téléphone professionnel ou email du lundi au vendredi, de **9h30 à 12h00** et de **14h00 à 17h00**. Vous devez répondre aux sollicitations dans un délai raisonnable, idéalement dans l'heure.\n*   **Déclaration :** Vous devez déclarer vos jours de télétravail sur **MonEspace** avant le vendredi de la semaine précédente.\n\n📄 *Sources : NovaTech — Télétravail, Articles 3 et 5*\n👉 Pour déclarer votre télétravail, rendez-vous sur **MonEspace > Télétravail > Planning hebdomadaire**. Si vous souhaitez télétravailler depuis un lieu autre que votre domicile, demandez l'autorisation à votre responsable hiérarchique."
+      },
+      {
+        "role": "user",
+        "content": "i lost my grand father can i have day of leave?"
+      },
+      {
+        "role": "assistant",
+        "content": "Je suis désolé d'apprendre le décès de votre grand-père.\n\nConcernant votre demande de congé, voici ce que nous pouvons vous dire :\n\n*   La loi française prévoit **1 jour** de congé pour le décès d'un grand-parent. Ce jour est comptabilisé en jours ouvrés.\n*   NovaTech s'efforce d'être plus favorable que la loi pour les congés pour événements familiaux. Cependant, la durée exacte du congé pour le décès d'un grand-parent n'est pas explicitement précisée dans nos politiques internes.\n\nPour obtenir une réponse définitive concernant la durée du congé et la procédure à suivre, nous vous invitons à contacter **Sophie Martin**, Responsable de l'Administration du Personnel, à l'adresse suivante : sophie.martin@novatech-solutions.fr.\n\nPour toute demande de congé, vous pouvez utiliser le formulaire disponible sur **MonEspace**. N'oubliez pas de respecter les délais de prévenance et d'organiser la passation de vos tâches en cours.\n\n📄 *Sources : Code du Travail Français — Congés pour événements familiaux, Article 7 ; NovaTech — Congés pour événements familiaux, Article 9*\n👉 Pour soumettre votre demande de congé, rendez-vous sur **MonEspace > Mes congés > Nouvelle demande**."
+      }
+    ]
+  },
+  {
+    "id": "1bad5781-d0cd-4e96-806b-a9548f600305",
+    "title": "J'ai perdu mon grand pere combien de jou",
+    "created_at": "2026-04-09T10:27:48.685778",
+    "messages": [
+      {
+        "role": "user",
+        "content": "J'ai perdu mon grand pere combien de jours de congé j'ai le droit"
+      },
+      {
+        "role": "assistant",
+        "content": "Je suis navrée d'apprendre le décès de votre grand-père.\n\nChez NovaTech, pour le décès d'un grand-parent, vous avez droit à **1 jour ouvré** de congé exceptionnel rémunéré. Ce jour est également conforme à la loi française qui prévoit **1 jour ouvrable** dans ce cas.\n\nCe congé doit être pris au moment de l'événement ou dans la période immédiatement consécutive. La date exacte de prise de congé est à convenir avec votre responsable hiérarchique.\n\nPour soumettre votre demande, veuillez utiliser **MonEspace** dans la section \"Mes Demandes\" > \"Congés et Absences\" > \"Congé pour Événement Familial\". Il est demandé de faire la demande au plus tard **5 jours ouvrés avant le début du congé**, sauf en cas d'urgence. Les justificatifs devront être téléchargés sur MonEspace dans les **10 jours ouvrables** suivant la fin du congé.\n\n*Source : NovaTech — Congés pour événements familiaux — Article 5.2*\n*Source : Code du travail — Congés pour événements familiaux (secteur privé), Article 6*",
+        "sources": [
+          {
+            "document": "01_conges_payes",
+            "source": "novatech",
+            "filename": "01_conges_payes.md",
+            "distance": 0.5111935138702393
+          },
+          {
+            "document": "02_conges_evenements_familiaux",
+            "source": "novatech",
+            "filename": "02_conges_evenements_familiaux.md",
+            "distance": 0.5237365365028381
+          },
+          {
+            "document": "04_arret_maladie",
+            "source": "novatech",
+            "filename": "04_arret_maladie.md",
+            "distance": 0.536156415939331
+          },
+          {
+            "document": "gouv_01_conges_payes",
+            "source": "gouv",
+            "filename": "gouv_01_conges_payes.md",
+            "distance": 0.4479760527610779
+          },
+          {
+            "document": "gouv_02_conges_evenements_familiaux",
+            "source": "gouv",
+            "filename": "gouv_02_conges_evenements_familiaux.md",
+            "distance": 0.4481405019760132
+          },
+          {
+            "document": "gouv_04_arret_maladie",
+            "source": "gouv",
+            "filename": "gouv_04_arret_maladie.md",
+            "distance": 0.49294424057006836
+          },
+          {
+            "document": "gouv_05_accident_travail",
+            "source": "gouv",
+            "filename": "gouv_05_accident_travail.md",
+            "distance": 0.5264260172843933
+          }
+        ],
+        "tools": [
+          {
+            "type": "form",
+            "name": "Leave request",
+            "path": "MonEspace > My leave > New request",
+            "url": "https://monespace.novatech-solutions.fr/conges/nouvelle-demande",
+            "match": "conges"
+          },
+          {
+            "type": "checklist",
+            "items": [
+              "Check your leave balance on MonEspace",
+              "Submit the request with the correct notice period (2 weeks / 1 month / 2 months)",
+              "Wait for manager approval (5 working days)",
+              "Organize handover of ongoing tasks",
+              "Set up your out-of-office email and Slack message"
+            ],
+            "topic": "leave"
+          }
+        ]
+      }
+    ],
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "J'ai perdu mon grand pere combien de jours de congé j'ai le droit"
+      },
+      {
+        "role": "assistant",
+        "content": "Je suis navrée d'apprendre le décès de votre grand-père.\n\nChez NovaTech, pour le décès d'un grand-parent, vous avez droit à **1 jour ouvré** de congé exceptionnel rémunéré. Ce jour est également conforme à la loi française qui prévoit **1 jour ouvrable** dans ce cas.\n\nCe congé doit être pris au moment de l'événement ou dans la période immédiatement consécutive. La date exacte de prise de congé est à convenir avec votre responsable hiérarchique.\n\nPour soumettre votre demande, veuillez utiliser **MonEspace** dans la section \"Mes Demandes\" > \"Congés et Absences\" > \"Congé pour Événement Familial\". Il est demandé de faire la demande au plus tard **5 jours ouvrés avant le début du congé**, sauf en cas d'urgence. Les justificatifs devront être téléchargés sur MonEspace dans les **10 jours ouvrables** suivant la fin du congé.\n\n*Source : NovaTech — Congés pour événements familiaux — Article 5.2*\n*Source : Code du travail — Congés pour événements familiaux (secteur privé), Article 6*"
+      }
+    ]
+  },
+  {
     "id": "7a9b78ef-03cf-4dc2-920c-ee43dea0a701",
     "title": "J'ai perdu mon grand pere combien de jou",
     "created_at": "2026-04-09T01:44:10.227704",
@@ -57,6 +267,16 @@
             "topic": "leave"
           }
         ]
+      },
+      {
+        "role": "user",
+        "content": "Qui je dois appelé ?"
+      },
+      {
+        "role": "assistant",
+        "content": "I don't have enough information in the available documents to answer this question. Please contact the HR team directly.",
+        "sources": [],
+        "tools": []
       }
     ],
     "chat_history": [
@@ -67,6 +287,14 @@
       {
         "role": "assistant",
         "content": "Je suis désolé d'apprendre le décès de votre grand-père.\n\nPour le décès d'un grand-parent, la politique de NovaTech ne spécifie pas de jours de congé exceptionnel rémunéré. La loi française prévoit des dispositions pour le décès d'un enfant, d'un conjoint, d'un partenaire lié par un PACS, d'un père ou d'une mère, mais pas explicitement pour les grands-parents.\n\n📄 *Source : Documents fournis (politique NovaTech sur les congés pour événements familiaux non disponible, loi française sur les congés pour événements familiaux)*\n\n👉 Je vous invite à contacter **Sophie Martin**, Responsable Administration du Personnel, à l'adresse sophie.martin@novatech-solutions.fr pour discuter de votre situation. Elle pourra vous informer sur les options possibles, comme l'utilisation de vos jours de congés payés ou de congés sans solde."
+      },
+      {
+        "role": "user",
+        "content": "Qui je dois appelé ?"
+      },
+      {
+        "role": "assistant",
+        "content": "I don't have enough information in the available documents to answer this question. Please contact the HR team directly."
       }
     ]
   },
