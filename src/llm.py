@@ -5,10 +5,7 @@ import time
 import random
 from google import genai
 from google.genai import types
-from src.config import (
-    GEMINI_API_KEY, GEMINI_MODEL, MAX_TOKENS, TEMPERATURES,
-    MAX_RETRIES, BASE_WAIT, MAX_WAIT, is_retryable_error
-)
+from src.config import GEMINI_API_KEY, GEMINI_MODEL, MAX_TOKENS, TEMPERATURES,MAX_RETRIES, BASE_WAIT, MAX_WAIT, is_retryable_error
 
 _client = genai.Client(api_key=GEMINI_API_KEY)
 

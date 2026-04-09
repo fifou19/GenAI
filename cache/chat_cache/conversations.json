@@ -1,5 +1,172 @@
 [
   {
+    "id": "4085a122-e25b-4d73-90d3-9ebbb29fc557",
+    "title": "I want to work from home. How do I do th",
+    "created_at": "2026-04-09T11:13:22.560966",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to work from home. How do I do that?"
+      },
+      {
+        "role": "assistant",
+        "content": "Pour travailler à distance chez NovaTech, vous devez suivre la politique de télétravail de l'entreprise. Voici les étapes et conditions à respecter :\n\n**Conditions d'éligibilité :**\n*   Vous devez être en **CDI** ou en **CDD d'une durée minimale de 6 mois**.\n*   Vous devez avoir terminé votre **période d'essai**.\n\n**Lieu de télétravail :**\n*   Vous pouvez télétravailler depuis votre domicile ou un autre lieu, à condition qu'il dispose d'une connexion internet **fiable et sécurisée**.\n*   Le lieu doit être propice à la concentration et à la confidentialité.\n*   Le travail depuis des lieux publics non sécurisés (comme des cafés) ou dans des conditions qui compromettent la sécurité des données est **interdit**.\n*   Votre manager peut refuser un lieu de télétravail s'il présente des risques pour la sécurité.\n\n**Planification et déclaration :**\n*   Vous devez déclarer vos jours de télétravail sur **MonEspace** avant le **vendredi de la semaine précédente**.\n\n**Approbation du manager :**\n*   Bien qu'une approbation explicite pour chaque jour ne soit pas toujours requise, votre manager peut refuser un lieu de télétravail s'il présente des risques.\n*   Il est important de noter que pour les managers, il y a un jour de présence obligatoire par semaine pour leur équipe.\n\n*Source : NovaTech — Politique de Télétravail, Articles 3, 4 et 5*\n\n**Prochaines étapes recommandées :**\n\n*   Consultez la politique de télétravail détaillée sur **MonEspace**.\n*   Discutez de votre demande avec votre manager.\n*   Pour déclarer vos jours de télétravail, utilisez le formulaire de planification disponible sur **MonEspace** dans la section \"Télétravail > Planning hebdomadaire\" : [https://monespace.novatech-solutions.fr/teletravail/planning](https://monespace.novatech-solutions.fr/teletravail/planning)\n*   Assurez-vous de disposer de l'équipement nécessaire et d'un espace de travail adapté.\n*   Si votre situation nécessite une exception, n'hésitez pas à contacter le service des Ressources Humaines.",
+        "sources": [
+          {
+            "document": "03_teletravail",
+            "source": "novatech",
+            "filename": "03_teletravail.md",
+            "distance": 0.59577476978302
+          },
+          {
+            "document": "02_conges_evenements_familiaux",
+            "source": "novatech",
+            "filename": "02_conges_evenements_familiaux.md",
+            "distance": 0.7013266682624817
+          },
+          {
+            "document": "01_conges_payes",
+            "source": "novatech",
+            "filename": "01_conges_payes.md",
+            "distance": 0.709323525428772
+          },
+          {
+            "document": "15_formation_carriere",
+            "source": "novatech",
+            "filename": "15_formation_carriere.md",
+            "distance": 0.6911646127700806
+          },
+          {
+            "document": "09_cpf",
+            "source": "novatech",
+            "filename": "09_cpf.md",
+            "distance": 0.6456294655799866
+          }
+        ],
+        "tools": [
+          {
+            "type": "form",
+            "tool": "get_form_link",
+            "found": true,
+            "name": "Telework declaration",
+            "path": "MonEspace > Telework > Weekly schedule",
+            "url": "https://monespace.novatech-solutions.fr/teletravail/planning",
+            "match": "teletravail"
+          },
+          {
+            "type": "checklist",
+            "tool": "generate_checklist",
+            "found": true,
+            "topic": "telework",
+            "items": [
+              "Review the telework conditions mentioned in the answer above",
+              "Open the telework planning form in MonEspace if you need to declare days",
+              "Confirm your schedule with your manager if needed",
+              "Make sure you have the required equipment and a suitable setup",
+              "Contact HR if your case requires an exception"
+            ],
+            "scope": "generic_next_steps"
+          }
+        ]
+      }
+    ],
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "I want to work from home. How do I do that?"
+      },
+      {
+        "role": "assistant",
+        "content": "Pour travailler à distance chez NovaTech, vous devez suivre la politique de télétravail de l'entreprise. Voici les étapes et conditions à respecter :\n\n**Conditions d'éligibilité :**\n*   Vous devez être en **CDI** ou en **CDD d'une durée minimale de 6 mois**.\n*   Vous devez avoir terminé votre **période d'essai**.\n\n**Lieu de télétravail :**\n*   Vous pouvez télétravailler depuis votre domicile ou un autre lieu, à condition qu'il dispose d'une connexion internet **fiable et sécurisée**.\n*   Le lieu doit être propice à la concentration et à la confidentialité.\n*   Le travail depuis des lieux publics non sécurisés (comme des cafés) ou dans des conditions qui compromettent la sécurité des données est **interdit**.\n*   Votre manager peut refuser un lieu de télétravail s'il présente des risques pour la sécurité.\n\n**Planification et déclaration :**\n*   Vous devez déclarer vos jours de télétravail sur **MonEspace** avant le **vendredi de la semaine précédente**.\n\n**Approbation du manager :**\n*   Bien qu'une approbation explicite pour chaque jour ne soit pas toujours requise, votre manager peut refuser un lieu de télétravail s'il présente des risques.\n*   Il est important de noter que pour les managers, il y a un jour de présence obligatoire par semaine pour leur équipe.\n\n*Source : NovaTech — Politique de Télétravail, Articles 3, 4 et 5*\n\n**Prochaines étapes recommandées :**\n\n*   Consultez la politique de télétravail détaillée sur **MonEspace**.\n*   Discutez de votre demande avec votre manager.\n*   Pour déclarer vos jours de télétravail, utilisez le formulaire de planification disponible sur **MonEspace** dans la section \"Télétravail > Planning hebdomadaire\" : [https://monespace.novatech-solutions.fr/teletravail/planning](https://monespace.novatech-solutions.fr/teletravail/planning)\n*   Assurez-vous de disposer de l'équipement nécessaire et d'un espace de travail adapté.\n*   Si votre situation nécessite une exception, n'hésitez pas à contacter le service des Ressources Humaines."
+      }
+    ]
+  },
+  {
+    "id": "4afe2c26-e722-47f4-b9b3-60cb745f3f01",
+    "title": "Je veux bosser de chez moi, comment je f",
+    "created_at": "2026-04-09T11:12:42.487146",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Je veux bosser de chez moi, comment je fais?"
+      },
+      {
+        "role": "assistant",
+        "content": "Pour travailler de chez vous, vous pouvez bénéficier du télétravail chez NovaTech Solutions. Voici les conditions et démarches à suivre :\n\n**Conditions d'éligibilité :**\n*   Vous devez être en **CDI** ou **CDD** d'une durée minimale de **6 mois**.\n*   Votre **période d'essai** doit être terminée.\n\n**Lieu de télétravail :**\n*   Vous pouvez travailler depuis votre **domicile personnel**.\n*   Il est également possible de travailler depuis un autre lieu (résidence secondaire, espace de coworking) sous réserve d'une **autorisation préalable de votre responsable hiérarchique**. Ce lieu doit disposer d'une connexion internet fiable et sécurisée, et offrir un environnement propice à la concentration et à la confidentialité.\n*   Il est **interdit** de travailler dans des lieux publics non sécurisés (cafés, espaces ouverts) ou dans des conditions qui compromettraient la sécurité des informations de NovaTech.\n\n**Démarches et organisation :**\n*   Vous devez déclarer vos jours de télétravail sur **MonEspace** avant le **vendredi de la semaine précédente**.\n*   En tant que manager, vous avez droit à **jusqu'à 3 jours de télétravail par semaine**.\n*   Pour les cadres et non-cadres à temps plein, les plages de contact obligatoires sont du lundi au vendredi, de **9h30 à 12h00** et de **14h00 à 17h00**.\n\n**Prochaines étapes :**\n\n*   Pour déclarer vos jours de télétravail, rendez-vous sur **MonEspace > Télétravail > Planning hebdomadaire** : [https://monespace.novatech-solutions.fr/teletravail/planning](https://monespace.novatech-solutions.fr/teletravail/planning)\n*   Assurez-vous de disposer de l'équipement nécessaire et d'un espace de travail adapté.\n*   Si votre situation nécessite une exception ou si vous avez des questions spécifiques, n'hésitez pas à contacter **Lucas Dupont**, notre Chef de Projet QVT, par email à lucas.dupont@novatech-solutions.fr.\n\n*Source : NovaTech — Télétravail — Articles 3.1 et 5, NovaTech — Télétravail — Article 2*",
+        "sources": [
+          {
+            "document": "04_arret_maladie",
+            "source": "novatech",
+            "filename": "04_arret_maladie.md",
+            "distance": 0.7156617641448975
+          },
+          {
+            "document": "03_teletravail",
+            "source": "novatech",
+            "filename": "03_teletravail.md",
+            "distance": 0.681058406829834
+          },
+          {
+            "document": "02_conges_evenements_familiaux",
+            "source": "novatech",
+            "filename": "02_conges_evenements_familiaux.md",
+            "distance": 0.6747727394104004
+          },
+          {
+            "document": "17_faq_rh",
+            "source": "novatech",
+            "filename": "17_faq_rh.md",
+            "distance": 0.7331829071044922
+          }
+        ],
+        "tools": [
+          {
+            "type": "form",
+            "tool": "get_form_link",
+            "found": true,
+            "name": "Telework declaration",
+            "path": "MonEspace > Telework > Weekly schedule",
+            "url": "https://monespace.novatech-solutions.fr/teletravail/planning",
+            "match": "teletravail"
+          },
+          {
+            "type": "checklist",
+            "tool": "generate_checklist",
+            "found": true,
+            "topic": "telework",
+            "items": [
+              "Review the telework conditions mentioned in the answer above",
+              "Open the telework planning form in MonEspace if you need to declare days",
+              "Confirm your schedule with your manager if needed",
+              "Make sure you have the required equipment and a suitable setup",
+              "Contact HR if your case requires an exception"
+            ],
+            "scope": "generic_next_steps"
+          },
+          {
+            "type": "contact",
+            "tool": "route_to_contact",
+            "found": true,
+            "name": "Lucas Dupont",
+            "role": "QVT Project Manager",
+            "email": "lucas.dupont@novatech-solutions.fr",
+            "match_count": 1
+          }
+        ]
+      }
+    ],
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "Je veux bosser de chez moi, comment je fais?"
+      },
+      {
+        "role": "assistant",
+        "content": "Pour travailler de chez vous, vous pouvez bénéficier du télétravail chez NovaTech Solutions. Voici les conditions et démarches à suivre :\n\n**Conditions d'éligibilité :**\n*   Vous devez être en **CDI** ou **CDD** d'une durée minimale de **6 mois**.\n*   Votre **période d'essai** doit être terminée.\n\n**Lieu de télétravail :**\n*   Vous pouvez travailler depuis votre **domicile personnel**.\n*   Il est également possible de travailler depuis un autre lieu (résidence secondaire, espace de coworking) sous réserve d'une **autorisation préalable de votre responsable hiérarchique**. Ce lieu doit disposer d'une connexion internet fiable et sécurisée, et offrir un environnement propice à la concentration et à la confidentialité.\n*   Il est **interdit** de travailler dans des lieux publics non sécurisés (cafés, espaces ouverts) ou dans des conditions qui compromettraient la sécurité des informations de NovaTech.\n\n**Démarches et organisation :**\n*   Vous devez déclarer vos jours de télétravail sur **MonEspace** avant le **vendredi de la semaine précédente**.\n*   En tant que manager, vous avez droit à **jusqu'à 3 jours de télétravail par semaine**.\n*   Pour les cadres et non-cadres à temps plein, les plages de contact obligatoires sont du lundi au vendredi, de **9h30 à 12h00** et de **14h00 à 17h00**.\n\n**Prochaines étapes :**\n\n*   Pour déclarer vos jours de télétravail, rendez-vous sur **MonEspace > Télétravail > Planning hebdomadaire** : [https://monespace.novatech-solutions.fr/teletravail/planning](https://monespace.novatech-solutions.fr/teletravail/planning)\n*   Assurez-vous de disposer de l'équipement nécessaire et d'un espace de travail adapté.\n*   Si votre situation nécessite une exception ou si vous avez des questions spécifiques, n'hésitez pas à contacter **Lucas Dupont**, notre Chef de Projet QVT, par email à lucas.dupont@novatech-solutions.fr.\n\n*Source : NovaTech — Télétravail — Articles 3.1 et 5, NovaTech — Télétravail — Article 2*"
+      }
+    ]
+  },
+  {
     "id": "2bbd20d2-caa7-4eca-964d-fe4211084507",
     "title": "Je veux bosser de chez moi, comment je f",
     "created_at": "2026-04-09T10:34:54.439806",
