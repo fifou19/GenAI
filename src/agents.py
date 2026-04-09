@@ -20,7 +20,7 @@ from src.rag import Retriever, extract_json_object
 from src.llm import call_gemini
 from src.config import TOP_K, DISTANCE_THRESHOLD, USE_RERANKING, RERANKING_MODEL
 from src.tools import execute_tool_call
-from prompts.prompts_llm import build_messages
+from prompts.rag_prompt_template import build_messages
 from prompts.prompts_agents import ROUTER_SYSTEM_PROMPT, SYNTHESIS_SYSTEM_PROMPT, ACTION_AGENT_PROMPT
 
 

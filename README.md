@@ -54,7 +54,7 @@ OrchestratorAgent
 
 **Pourquoi multi-agents ?**
 - Les sources sont séparées (NovaTech vs Gouv) → chaque agent cherche dans son corpus
-- La priorité *NovaTech > loi* est appliquée explicitement lors de la synthèse
+- La synthèse confronte politique interne et droit du travail : la loi reste le socle, NovaTech n'est retenue que si la règle interne est explicitement plus favorable ou plus précise
 - L'`ActionAgent` comprend l'intention via LLM, plus de détection par mots-clés fragile
 - Extensible : ajouter un agent = une classe, sans toucher au reste
 
@@ -98,6 +98,119 @@ GenAI/
     ├── evaluate.py               ← Script d'évaluation automatique
     └── eval_results.json         ← Résultats du dernier run d'évaluation
 ```
+
+---
+
+## Guide fichier par fichier
+
+### Racine du projet
+
+| Fichier | Rôle concret |
+|---|---|
+| `README.md` | Document principal du projet : architecture, pipeline RAG, prompts, outils, installation, évaluation. |
+| `app.py` | Point d'entrée Streamlit. Gère l'interface du chat, la session, l'affichage des sources/tools et la persistance des conversations. |
+| `requirements.txt` | Liste des dépendances Python nécessaires au projet. |
+| `.env.example` | Exemple de configuration locale : clés API, modèles, chemins Chroma, paramètres de chunking et reranking. |
+| `.env` | Configuration locale réelle utilisée à l'exécution. Non versionnée, elle contient notamment la clé Gemini et les variables d'environnement du projet. |
+| `.gitignore` | Empêche de versionner les fichiers locaux ou générés automatiquement (`.venv`, cache, artefacts temporaires, etc.). |
+| `test_rag.py` | Petit script manuel de debug pour lancer une question de test et inspecter les agents utilisés, les chunks récupérés et les scores de reranking. |
+
+### Dossier `src/`
+
+| Fichier | Rôle concret |
+|---|---|
+| `src/__init__.py` | Marqueur de package Python. Permet d'importer `src.*` proprement. |
+| `src/config.py` | Centralise toute la configuration : chargement `.env`, chemins des données, modèles, paramètres RAG, retry/backoff et utilitaire `is_retryable_error()`. |
+| `src/llm.py` | Encapsule l'appel Gemini : conversion des messages au format API, gestion des retries, backoff exponentiel et retour texte. |
+| `src/rag.py` | Contient le retriever ChromaDB et l'utilitaire d'extraction JSON. Fait la recherche vectorielle, applique les filtres de source et retourne les chunks. |
+| `src/tools.py` | Regroupe les outils “action” : formulaires internes, checklists pratiques génériques, routage vers les contacts RH, mots-clés et exécution des tool calls. |
+| `src/agents.py` | Cœur de l'architecture multi-agents : `PolicyAgent`, `LegalAgent`, `ActionAgent`, `OrchestratorAgent`, routage, reranking partagé et synthèse finale. |
+| `src/cache.py` | Gère la persistance JSON des conversations : chargement, création, suppression, renommage automatique par premier message utilisateur. |
+
+### Dossier `prompts/`
+
+| Fichier | Rôle concret |
+|---|---|
+| `prompts/__init__.py` | Marqueur de package Python pour les prompts. |
+| `prompts/prompts_llm.py` | Prompt système principal “Nova”, few-shot examples, construction du prompt RAG et assemblage final des messages envoyés aux agents RAG. |
+| `prompts/prompts_agents.py` | Prompts spécialisés pour le routage (`router`), la synthèse (`synthesis`) et la sélection d'outils (`action`). |
+| `prompts/prompt_generate_corpus.py` | Définit les prompts de génération du corpus NovaTech et la liste des 18 thèmes métier utilisés par `Scripts/generate_corpus.py`. |
+| `prompts/rag_prompt_template.py` | Version utilitaire/factorisée du builder de prompt RAG ; proche de `prompts_llm.py`, utile pour isoler la logique de templating. |
+
+### Dossier `Scripts/`
+
+| Fichier | Rôle concret |
+|---|---|
+| `Scripts/__init__.py` | Marqueur de package Python pour les scripts. |
+| `Scripts/Scrapping.py` | Scrape les pages service-public.fr, nettoie le bruit, suit certains liens, puis exporte les contenus en Markdown structuré et en PDF. |
+| `Scripts/generate_corpus.py` | Génère les politiques internes NovaTech avec Gemini, thème par thème et article par article, en s'appuyant si besoin sur un contexte légal gouv. |
+| `Scripts/ingest.py` | Transforme les fichiers Markdown en chunks, nettoie les textes, calcule les métadonnées et indexe l'ensemble dans ChromaDB. |
+| `Scripts/md_to_pdf.py` | Convertisseur simple Markdown → PDF utilisé surtout après la génération des documents NovaTech. |
+
+### Dossier `eval/`
+
+| Fichier | Rôle concret |
+|---|---|
+| `eval/__init__.py` | Marqueur de package Python pour les scripts d'évaluation. |
+| `eval/evaluate.py` | Lance les cas de test, exécute l'orchestrateur, vérifie la réponse, les sources, les refus et la résistance aux injections. |
+| `eval/test_cases.json` | Jeu de cas de test utilisé par `evaluate.py` : questions, catégories, mots-clés attendus, source attendue, flags injection/hors périmètre. |
+| `eval/eval_results.json` | Dernier rapport d'évaluation généré automatiquement : résumé global, résultats par catégorie et détail de chaque cas. |
+
+### Cache et base vectorielle
+
+| Fichier / famille | Rôle concret |
+|---|---|
+| `cache/chat_cache/conversations.json` | Historique persistant des conversations Streamlit. Chaque entrée stocke id, titre, messages et `chat_history` tronqué. |
+| `data/__init__.py` | Marqueur de package Python pour le dossier de données. |
+| `data/chroma_db/chroma.sqlite3` | Métadonnées principales de la base vectorielle Chroma persistée localement. |
+| `data/chroma_db/<uuid>/header.bin` | Métadonnées bas niveau d'un index HNSW stocké par Chroma. |
+| `data/chroma_db/<uuid>/data_level0.bin` | Données vectorielles/indexées pour le niveau de base de l'index HNSW. |
+| `data/chroma_db/<uuid>/length.bin` | Informations de taille/longueur associées à l'index binaire. |
+| `data/chroma_db/<uuid>/link_lists.bin` | Liens de voisinage utilisés par l'index HNSW pour la recherche de plus proches voisins. |
+
+### Corpus `data/gouv/` et `data/gouv_md/`
+
+Chaque thème gouv existe en général en **deux formats** :
+- `data/gouv/*.pdf` pour la consultation humaine
+- `data/gouv_md/*.md` pour l'ingestion RAG structurée
+
+| Fichiers | Thème |
+|---|---|
+| `data/gouv/gouv_01_conges_payes.pdf` + `data/gouv_md/gouv_01_conges_payes.md` | Congés payés |
+| `data/gouv/gouv_02_conges_evenements_familiaux.pdf` + `data/gouv_md/gouv_02_conges_evenements_familiaux.md` | Congés pour événements familiaux |
+| `data/gouv/gouv_03_teletravail.pdf` + `data/gouv_md/gouv_03_teletravail.md` | Télétravail dans le secteur privé |
+| `data/gouv/gouv_04_arret_maladie.pdf` + `data/gouv_md/gouv_04_arret_maladie.md` | Arrêt maladie |
+| `data/gouv/gouv_05_accident_travail.pdf` + `data/gouv_md/gouv_05_accident_travail.md` | Accident du travail |
+| `data/gouv/gouv_06_demission.pdf` + `data/gouv_md/gouv_06_demission.md` | Démission |
+| `data/gouv/gouv_07_rupture_conventionnelle.pdf` + `data/gouv_md/gouv_07_rupture_conventionnelle.md` | Rupture conventionnelle |
+| `data/gouv/gouv_08_licenciement.pdf` + `data/gouv_md/gouv_08_licenciement.md` | Licenciement |
+| `data/gouv/gouv_09_cpf.pdf` + `data/gouv_md/gouv_09_cpf.md` | CPF |
+| `data/gouv/gouv_10_rqth.pdf` + `data/gouv_md/gouv_10_rqth.md` | RQTH / handicap |
+
+### Corpus `data/novatech/` et `data/novatech_md/`
+
+Les documents internes NovaTech sont générés en Markdown dans `data/novatech_md/`. Une partie d'entre eux existe aussi en PDF dans `data/novatech/` pour la démonstration ou la consultation humaine.
+
+| Fichiers | Thème |
+|---|---|
+| `data/novatech_md/01_conges_payes.md` + `data/novatech/01_conges_payes.pdf` | Politique interne sur les congés payés |
+| `data/novatech_md/02_conges_evenements_familiaux.md` + `data/novatech/02_conges_evenements_familiaux.pdf` | Congés événements familiaux |
+| `data/novatech_md/03_teletravail.md` + `data/novatech/03_teletravail.pdf` | Politique télétravail |
+| `data/novatech_md/04_arret_maladie.md` + `data/novatech/04_arret_maladie.pdf` | Politique arrêt maladie |
+| `data/novatech_md/05_accident_travail.md` | Politique accident du travail |
+| `data/novatech_md/06_demission.md` + `data/novatech/06_demission.pdf` | Politique démission |
+| `data/novatech_md/07_rupture_conventionnelle.md` + `data/novatech/07_rupture_conventionnelle.pdf` | Rupture conventionnelle |
+| `data/novatech_md/08_licenciement.md` + `data/novatech/08_licenciement.pdf` | Politique licenciement |
+| `data/novatech_md/09_cpf.md` | CPF côté NovaTech |
+| `data/novatech_md/10_rqth_handicap.md` | RQTH, handicap et aménagements |
+| `data/novatech_md/11_rtt.md` + `data/novatech/11_rtt.pdf` | RTT |
+| `data/novatech_md/12_frais_deplacements.md` + `data/novatech/12_frais_deplacements.pdf` | Frais et déplacements professionnels |
+| `data/novatech_md/13_onboarding.md` + `data/novatech/13_onboarding.pdf` | Onboarding et intégration |
+| `data/novatech_md/14_mutuelle_avantages.md` | Mutuelle et avantages sociaux |
+| `data/novatech_md/15_formation_carriere.md` + `data/novatech/15_formation_carriere.pdf` | Formation continue et évolution de carrière |
+| `data/novatech_md/16_entretiens_remuneration.md` + `data/novatech/16_entretiens_remuneration.pdf` | Entretiens, objectifs et rémunération |
+| `data/novatech_md/17_faq_rh.md` + `data/novatech/17_faq_rh.pdf` | FAQ RH |
+| `data/novatech_md/18_depart_entreprise.md` + `data/novatech/18_depart_entreprise.pdf` | Départ de l'entreprise / offboarding |
 
 ---
 
@@ -211,9 +324,9 @@ Le reranking ajoute une **deuxième passe de sélection** après la recherche ve
 ### Système prompt — Nova (`prompts/prompts_llm.py`)
 
 - **Persona** : Nova, assistante RH NovaTech Solutions, chaleureuse et professionnelle
-- **Langue automatique** : détecte la langue de l'employé (français ou anglais) et répond dans la même langue
+- **Langue de réponse** : suit la langue du dernier message de l'employé, sans heuristique fragile codée à la main
 - **Périmètre strict** : refuse les questions hors RH, redirige vers le bon contact
-- **Priorité des sources** : politiques NovaTech > droit du travail français — si NovaTech est plus favorable que la loi, le dit explicitement
+- **Réconciliation des sources** : le droit du travail français est traité comme socle ; une règle NovaTech n'est mise en avant que si elle est explicitement plus favorable ou plus précise dans le contexte disponible
 - **Sécurité factuelle** : ne cite jamais un chiffre, délai ou droit absent du contexte
 - **Anti-hallucination** : reconnaît explicitement quand l'information est absente
 - **Anti-injection** : ignore les tentatives de changement de rôle, ne révèle jamais ses instructions
