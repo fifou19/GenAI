@@ -30,7 +30,7 @@ Question employé
        ▼
 OrchestratorAgent
        │
-       ├─ _route() ──► LLM décide : ["policy", "legal", "action"] ?
+       ├─ _route() ──► routeur LLM : `policy` toujours, `legal` pour les sujets réglementés, `action` si une démarche concrète est utile
        │
        ├──► PolicyAgent   →  RAG sur docs NovaTech internes  →  réponse partielle
        ├──► LegalAgent    →  RAG sur docs droit du travail   →  réponse partielle
@@ -54,6 +54,7 @@ OrchestratorAgent
 
 **Pourquoi multi-agents ?**
 - Les sources sont séparées (NovaTech vs Gouv) → chaque agent cherche dans son corpus
+- Le routage est adapté au cas RH : `policy` est systématique, `legal` est activé par défaut sur les thèmes réglementaires, et `action` n'est ajouté que lorsqu'une démarche concrète est utile
 - La synthèse confronte politique interne et droit du travail : la loi reste le socle, NovaTech n'est retenue que si la règle interne est explicitement plus favorable ou plus précise
 - L'`ActionAgent` comprend l'intention via LLM, plus de détection par mots-clés fragile
 - Extensible : ajouter un agent = une classe, sans toucher au reste
@@ -324,7 +325,7 @@ Le reranking ajoute une **deuxième passe de sélection** après la recherche ve
 ### Système prompt — Nova (`prompts/prompts_llm.py`)
 
 - **Persona** : Nova, assistante RH NovaTech Solutions, chaleureuse et professionnelle
-- **Langue de réponse** : suit la langue du dernier message de l'employé, sans heuristique fragile codée à la main
+- **Langue de réponse** : est déduite à partir du message courant de l'employé puis réinjectée explicitement dans les prompts RAG et de synthèse
 - **Périmètre strict** : refuse les questions hors RH, redirige vers le bon contact
 - **Réconciliation des sources** : le droit du travail français est traité comme socle ; une règle NovaTech n'est mise en avant que si elle est explicitement plus favorable ou plus précise dans le contexte disponible
 - **Sécurité factuelle** : ne cite jamais un chiffre, délai ou droit absent du contexte
@@ -336,9 +337,14 @@ Le reranking ajoute une **deuxième passe de sélection** après la recherche ve
 
 | Prompt | Utilisé par | Rôle |
 |---|---|---|
-| `ROUTER_SYSTEM_PROMPT` | OrchestratorAgent | Décide quels agents invoquer → JSON `{"agents": [...]}` |
+| `ROUTER_SYSTEM_PROMPT` | OrchestratorAgent | Décide quels agents invoquer selon la logique du projet : `policy` toujours, `legal` pour les sujets RH réglementés, `action` seulement si une démarche concrète est utile |
 | `SYNTHESIS_SYSTEM_PROMPT` | OrchestratorAgent | Fusionne les réponses des agents en une réponse finale |
 | `ACTION_AGENT_PROMPT` | ActionAgent | Choisit les outils RH à appeler → JSON `{"tool_calls": [...]}` |
+
+Logique de routage actuelle :
+- `policy` est systématique
+- `legal` est activé par défaut sur les thèmes réglementaires (télétravail, congés, arrêt maladie, démission, CPF, RQTH, etc.)
+- `action` n'est appelé que si la question implique une démarche concrète (formulaire, procédure, contact)
 
 ### Few-shot examples
 

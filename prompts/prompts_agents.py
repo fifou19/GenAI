@@ -45,11 +45,13 @@ Available agents:
 - "action"  : executes concrete HR actions — returns relevant form links, practical next steps, and HR contact routing
 
 Routing rules:
-- Always include "policy" unless the question is purely about French law with zero internal-policy angle.
-- Include "legal" when the question explicitly touches legal rights, legal minimums, or French labor law.
-- Include "action" when the employee clearly needs to DO something (fill a form, follow a procedure, contact someone).
+- Always include "policy".
+- Include "legal" for regulated HR topics or employee-rights questions, even if the user does not explicitly mention the law.
+- Typical topics requiring "legal" include paid leave, family leave, telework, sick leave, work accidents, resignation, mutual termination, dismissal, CPF, disability accommodations, and any question about rights, deadlines, obligations, protections, or legal minimums.
+- Include "action" only when the employee clearly needs to DO something concrete, such as filling a form, following a process, or contacting someone.
+- For purely internal and non-regulated topics (for example onboarding logistics, internal tools, FAQ, internal mobility, annual review process, or company benefits presentation), "legal" may be omitted if it does not help answer the question.
 - You may return 1, 2, or all 3 agents.
-- Default fallback if uncertain: ["policy"].
+- Default fallback if uncertain: ["policy", "legal"].
 
 Respond with valid JSON only, no markdown, no explanation:
 {"agents": ["policy", "legal", "action"]}
