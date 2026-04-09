@@ -182,12 +182,27 @@ Les documents contiennent des cas ambigus pour tester le système :
 
 ### 3. Reranking (`src/rag.py` + `src/agents.py`)
 
-- **Cross-encoder local** (`cross-encoder/mmarco-mMiniLMv2-L12-H384-v1`)
-- Évalue chaque paire (question, chunk) ensemble → score de pertinence précis
-- Trie les chunks par score décroissant, garde les `top_k` meilleurs
-- Modèle chargé une seule fois (lazy init dans l'orchestrateur), **aucun appel API**, ~200ms
-- Le reranking est effectivement exécuté lorsque `use_reranking=True` / `USE_RERANKING=true`
-- Multilingue, optimisé pour le français
+Le reranking ajoute une **deuxième passe de sélection** après la recherche vectorielle classique.
+
+- **Étape 1 : retrieval large**
+  - ChromaDB récupère d'abord `top_k * 2` chunks proches de la question grâce aux embeddings.
+  - Cette étape est rapide, mais elle peut ramener des chunks globalement proches sans être les plus précis pour la question exacte.
+
+- **Étape 2 : reranking fin**
+  - Un **cross-encoder local** (`cross-encoder/mmarco-mMiniLMv2-L12-H384-v1`) réévalue chaque paire `(question, chunk)`.
+  - Contrairement à l'embedding search, il lit la question et le chunk **ensemble**, ce qui donne un score de pertinence plus précis.
+  - Les chunks sont ensuite retriés par `rerank_score`, puis on garde les `top_k` meilleurs.
+
+- **Pourquoi c'est utile**
+  - Réduit les faux positifs sémantiques : un chunk vaguement proche peut être rétrogradé.
+  - Aide à mieux distinguer des cas RH proches mais différents (cadre/non-cadre, télétravail/RTT, arrêt maladie/accident du travail, etc.).
+  - Améliore la qualité du contexte envoyé au LLM, donc la précision de la réponse finale.
+
+- **Implémentation dans ce projet**
+  - Le modèle est chargé une seule fois en lazy init dans l'orchestrateur.
+  - Il est partagé par `PolicyAgent` et `LegalAgent`.
+  - Il s'exécute réellement quand `use_reranking=True` / `USE_RERANKING=true`.
+  - Il est local, sans appel API supplémentaire, et optimisé pour le français / multilingue.
 
 ---
 

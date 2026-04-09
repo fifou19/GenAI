@@ -24,6 +24,7 @@ from prompts.prompts_llm import build_messages
 from prompts.prompts_agents import ROUTER_SYSTEM_PROMPT, SYNTHESIS_SYSTEM_PROMPT, ACTION_AGENT_PROMPT
 
 
+
 # ============================================================
 # BASE
 # ============================================================
@@ -46,9 +47,9 @@ class RAGAgent(BaseAgent):
         self.retriever = retriever
         self._cross_encoder = cross_encoder
 
-    def run(self, question: str, chat_history: list = None,
+    def run(self, question: str, chat_history: list = None, # type: ignore
             top_k: int = TOP_K, distance_threshold: float = DISTANCE_THRESHOLD,
-            use_reranking: bool = USE_RERANKING) -> dict:
+            use_reranking: bool = USE_RERANKING) -> dict: # type: ignore
 
         chunks = self.retriever.search(
             question,
@@ -70,7 +71,7 @@ class RAGAgent(BaseAgent):
 
     def _rerank(self, question: str, chunks: list, top_k: int) -> list:
         pairs = [[question, c["text"]] for c in chunks]
-        scores = self._cross_encoder.predict(pairs)
+        scores = self._cross_encoder.predict(pairs) # type: ignore
         scored = [{**c, "rerank_score": float(s)} for c, s in zip(chunks, scores)]
         scored.sort(key=lambda x: -x["rerank_score"])
         return scored[:top_k]
@@ -190,7 +191,7 @@ class OrchestratorAgent:
     # Synthesis
     # --------------------------------------------------------
     def _synthesize(self, question: str, agent_results: dict,
-                    chat_history: list = None) -> str:
+                    chat_history: list = None) -> str: # type: ignore
         """Combine agent results into a single coherent answer."""
         parts = []
 
@@ -255,9 +256,9 @@ class OrchestratorAgent:
     # --------------------------------------------------------
     # Main entry point
     # --------------------------------------------------------
-    def answer(self, question: str, chat_history: list = None,
+    def answer(self, question: str, chat_history: list = None, # type: ignore
                top_k: int = TOP_K, distance_threshold: float = DISTANCE_THRESHOLD,
-               use_reranking: bool = USE_RERANKING) -> dict:
+               use_reranking: bool = USE_RERANKING) -> dict: # type: ignore
         """
         Full pipeline: route → run agents → synthesize.
 

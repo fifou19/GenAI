@@ -1,5 +1,134 @@
 [
   {
+    "id": "1972ab10-0be6-46f9-9a99-ade9c6289207",
+    "title": "I lost my grand father . How many day of",
+    "created_at": "2026-04-09T12:06:37.684269",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I lost my grand father . How many day of leave i have?"
+      },
+      {
+        "role": "assistant",
+        "content": "I am very sorry for your loss.\n\nRegarding your leave entitlement for the death of your grandfather, French labor law grants you **1 day** of paid leave. This leave is considered as time worked for all purposes.\n\nWhile NovaTech's internal policy on \"Congés pour événements familiaux\" mentions leave for the \"décès d'un proche\" (death of a loved one) to be taken in the days following the event, it does not explicitly state the number of days for the death of a grandfather. In this instance, French law is more specific and favorable.\n\nTo proceed with your leave, please inform your employer of your absence and be prepared to provide a death certificate.\n\nFor any further assistance or to discuss your situation, you can contact **Sophie Martin**, Head of Personnel Administration, at sophie.martin@novatech-solutions.fr.",
+        "sources": [
+          {
+            "document": "01_conges_payes",
+            "source": "novatech",
+            "filename": "01_conges_payes.md",
+            "distance": 0.5140504240989685
+          },
+          {
+            "document": "02_conges_evenements_familiaux",
+            "source": "novatech",
+            "filename": "02_conges_evenements_familiaux.md",
+            "distance": 0.5309851169586182
+          },
+          {
+            "document": "04_arret_maladie",
+            "source": "novatech",
+            "filename": "04_arret_maladie.md",
+            "distance": 0.5912262797355652
+          },
+          {
+            "document": "gouv_02_conges_evenements_familiaux",
+            "source": "gouv",
+            "filename": "gouv_02_conges_evenements_familiaux.md",
+            "distance": 0.4419599771499634
+          },
+          {
+            "document": "gouv_01_conges_payes",
+            "source": "gouv",
+            "filename": "gouv_01_conges_payes.md",
+            "distance": 0.5213924646377563
+          }
+        ],
+        "tools": [
+          {
+            "type": "contact",
+            "tool": "route_to_contact",
+            "found": true,
+            "name": "Sophie Martin",
+            "role": "Head of Personnel Administration",
+            "email": "sophie.martin@novatech-solutions.fr",
+            "match_count": 1
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": "Tu penses que j'aurais le droit?"
+      },
+      {
+        "role": "assistant",
+        "content": "Je ne dispose pas d'informations suffisantes dans les documents fournis pour répondre à votre question. Les documents traitent de divers droits des salariés (licenciement, arrêt maladie, rupture conventionnelle, CPF, congés payés, RQTH, télétravail), mais ils ne contiennent pas d'éléments permettant de déterminer si vous auriez droit à quelque chose de spécifique sans plus de contexte.\n\n👉 Pour obtenir une réponse précise, je vous invite à contacter l'équipe des Ressources Humaines.",
+        "sources": [
+          {
+            "document": "08_licenciement",
+            "source": "novatech",
+            "filename": "08_licenciement.md",
+            "distance": 0.7019233107566833
+          },
+          {
+            "document": "04_arret_maladie",
+            "source": "novatech",
+            "filename": "04_arret_maladie.md",
+            "distance": 0.7462413907051086
+          },
+          {
+            "document": "07_rupture_conventionnelle",
+            "source": "novatech",
+            "filename": "07_rupture_conventionnelle.md",
+            "distance": 0.74580979347229
+          },
+          {
+            "document": "09_cpf",
+            "source": "novatech",
+            "filename": "09_cpf.md",
+            "distance": 0.7142746448516846
+          },
+          {
+            "document": "01_conges_payes",
+            "source": "novatech",
+            "filename": "01_conges_payes.md",
+            "distance": 0.74190354347229
+          },
+          {
+            "document": "03_teletravail",
+            "source": "novatech",
+            "filename": "03_teletravail.md",
+            "distance": 0.7340829968452454
+          },
+          {
+            "document": "10_rqth_handicap",
+            "source": "novatech",
+            "filename": "10_rqth_handicap.md",
+            "distance": 0.6968114376068115
+          }
+        ],
+        "tools": []
+      }
+    ],
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "I lost my grand father . How many day of leave i have?"
+      },
+      {
+        "role": "assistant",
+        "content": "I am very sorry for your loss.\n\nRegarding your leave entitlement for the death of your grandfather, French labor law grants you **1 day** of paid leave. This leave is considered as time worked for all purposes.\n\nWhile NovaTech's internal policy on \"Congés pour événements familiaux\" mentions leave for the \"décès d'un proche\" (death of a loved one) to be taken in the days following the event, it does not explicitly state the number of days for the death of a grandfather. In this instance, French law is more specific and favorable.\n\nTo proceed with your leave, please inform your employer of your absence and be prepared to provide a death certificate.\n\nFor any further assistance or to discuss your situation, you can contact **Sophie Martin**, Head of Personnel Administration, at sophie.martin@novatech-solutions.fr."
+      },
+      {
+        "role": "user",
+        "content": "Tu penses que j'aurais le droit?"
+      },
+      {
+        "role": "assistant",
+        "content": "Je ne dispose pas d'informations suffisantes dans les documents fournis pour répondre à votre question. Les documents traitent de divers droits des salariés (licenciement, arrêt maladie, rupture conventionnelle, CPF, congés payés, RQTH, télétravail), mais ils ne contiennent pas d'éléments permettant de déterminer si vous auriez droit à quelque chose de spécifique sans plus de contexte.\n\n👉 Pour obtenir une réponse précise, je vous invite à contacter l'équipe des Ressources Humaines."
+      }
+    ]
+  },
+  {
     "id": "4085a122-e25b-4d73-90d3-9ebbb29fc557",
     "title": "I want to work from home. How do I do th",
     "created_at": "2026-04-09T11:13:22.560966",

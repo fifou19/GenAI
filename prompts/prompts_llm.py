@@ -143,41 +143,13 @@ The right to strike is a constitutional right in France, but I don't have any sp
 ]
 
 # ============================================================
-# LANGUAGE DETECTION
-# ============================================================
-_FRENCH_WORDS = {
-    "je", "tu", "il", "elle", "nous", "vous", "ils", "elles",
-    "mon", "ma", "mes", "ton", "ta", "tes", "son", "sa", "ses",
-    "le", "la", "les", "un", "une", "des", "du", "de",
-    "est", "sont", "ai", "as", "avez", "avons", "ont",
-    "et", "ou", "mais", "donc", "or", "ni", "car",
-    "que", "qui", "quoi", "comment", "combien", "quel", "quelle",
-    "jours", "congé", "télétravail", "salaire", "formation",
-    "droit", "puis", "peux", "peut", "pouvez", "suis",
-}
-
-def detect_language(text: str) -> str:
-    """Return 'fr' or 'en' based on word overlap with common French words."""
-    words = set(__import__("re").findall(r"\b[\wÀ-ÿ']+\b", text.lower()))
-    french_hits = len(words & _FRENCH_WORDS)
-    has_french_accents = any(char in text.lower() for char in "àâçéèêëîïôûùüÿœ")
-    return "fr" if french_hits >= 2 or (has_french_accents and french_hits >= 1) else "en"
-
-
-# ============================================================
 # RAG PROMPT TEMPLATE
 # ============================================================
 def build_rag_prompt(question: str, context_chunks: list[dict]) -> str:
     """
     Builds the final prompt sent to the LLM with the RAG context.
-    Injects an explicit language instruction so the model never defaults to French.
+    Tells the model to answer in the same language as the employee's latest message.
     """
-    lang = detect_language(question)
-    if lang == "fr":
-        lang_instruction = "IMPORTANT: The employee wrote in French. You MUST reply in French."
-    else:
-        lang_instruction = "IMPORTANT: The employee wrote in English. You MUST reply in English."
-
     # Format context chunks
     context_parts = []
     for i, chunk in enumerate(context_chunks):
@@ -192,7 +164,8 @@ def build_rag_prompt(question: str, context_chunks: list[dict]) -> str:
 
     context_text = "\n\n---\n\n".join(context_parts)
 
-    prompt = f"""{lang_instruction}
+    prompt = f"""IMPORTANT: Reply in the same language as the employee's latest message.
+If the employee mixes languages, use the dominant language of that message.
 
 Here are the relevant documents to answer the employee's question:
 

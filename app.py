@@ -210,12 +210,13 @@ if prompt := st.chat_input("Your HR question..."):
     st.session_state.chat_history.append({"role": "user", "content": prompt})
     st.session_state.chat_history.append({"role": "assistant", "content": answer})
 
+    # Limit history to last 10 exchanges before persisting it
+    if len(st.session_state.chat_history) > 20:
+        st.session_state.chat_history = st.session_state.chat_history[-20:]
+
     # Persist conversation cache
     save_conversation(
         st.session_state.active_conversation_id,
         st.session_state.messages,
         st.session_state.chat_history,
     )
-    # Limit history to last 10 exchanges
-    if len(st.session_state.chat_history) > 20:
-        st.session_state.chat_history = st.session_state.chat_history[-20:]
