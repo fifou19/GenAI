@@ -247,6 +247,7 @@ html, [class*="css"] { font-family: 'Inter', system-ui, sans-serif !important; }
 # ── HELPERS ───────────────────────────────────────────────────────────────────
 
 def _card(icon, accent, bg, border, title, subtitle=None, body_html=""):
+    """Render a styled HTML card for the Streamlit UI."""
     sub = (
         f'<div style="color:#6b7a8d;font-size:.8rem;margin:.12rem 0 .45rem;'
         f'line-height:1.45">{subtitle}</div>'
@@ -280,6 +281,7 @@ def _card(icon, accent, bg, border, title, subtitle=None, body_html=""):
 
 
 def render_tool(tool: dict) -> None:
+    """Render a tool card in the Streamlit app based on the tool type."""
     if tool["type"] == "form":
         st.html(
             _card(
@@ -330,6 +332,7 @@ def render_tool(tool: dict) -> None:
 
 @st.cache_resource
 def load_rag():
+    """Create and cache the RAG orchestrator agent."""
     return OrchestratorAgent()
 
 rag = load_rag()
@@ -479,45 +482,45 @@ if not st.session_state.messages:
             margin-bottom:1.1rem;
         ">✦</div>
         <h2 style="font-size:1.1rem;font-weight:700;color:#0d1b2a;margin:0 0 .5rem">
-            Bonjour, je suis Nova &#x1F44B;
+            Hello, I’m Nova &#x1F44B;
         </h2>
         <p style="font-size:.86rem;color:#8fa3b1;max-width:400px;
                   margin:0 auto 2rem;line-height:1.7">
-            Votre assistant RH pour NovaTech Solutions. Posez vos questions sur
-            les cong&#233;s, le t&#233;l&#233;travail, les notes de frais, la formation, et plus encore.
+            Your HR assistant for NovaTech Solutions. Ask your questions about
+            leave, remote work, expense reports, training, and more.
         </p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;
                     max-width:460px;margin:0 auto">
             <div style="background:#f6fdfb;border:1.5px solid #deeeed;border-radius:13px;
                         padding:.8rem 1rem;text-align:left">
                 <div style="font-size:1.05rem;margin-bottom:.3rem">&#x1F3D6;&#xFE0F;</div>
-                <div style="font-size:.82rem;font-weight:600;color:#0d1b2a">Cong&#233;s pay&#233;s</div>
+                <div style="font-size:.82rem;font-weight:600;color:#0d1b2a">Paid Leave</div>
                 <div style="font-size:.74rem;color:#8fa3b1;margin-top:.15rem">
-                    Droits, soldes, proc&#233;dures
+                    Rights, balances, procedures
                 </div>
             </div>
             <div style="background:#f6fdfb;border:1.5px solid #deeeed;border-radius:13px;
                         padding:.8rem 1rem;text-align:left">
                 <div style="font-size:1.05rem;margin-bottom:.3rem">&#x1F3E0;</div>
-                <div style="font-size:.82rem;font-weight:600;color:#0d1b2a">T&#233;l&#233;travail</div>
+                <div style="font-size:.82rem;font-weight:600;color:#0d1b2a">Remote Work</div>
                 <div style="font-size:.74rem;color:#8fa3b1;margin-top:.15rem">
-                    Politique &amp; formulaires
+                    Policy &amp; Forms
                 </div>
             </div>
             <div style="background:#f6fdfb;border:1.5px solid #deeeed;border-radius:13px;
                         padding:.8rem 1rem;text-align:left">
                 <div style="font-size:1.05rem;margin-bottom:.3rem">&#x1F393;</div>
-                <div style="font-size:.82rem;font-weight:600;color:#0d1b2a">Formation / CPF</div>
+                <div style="font-size:.82rem;font-weight:600;color:#0d1b2a">Training / CPF</div>
                 <div style="font-size:.74rem;color:#8fa3b1;margin-top:.15rem">
-                    Acc&#232;s &amp; d&#233;marches
+                    Access &amp; Requests
                 </div>
             </div>
             <div style="background:#f6fdfb;border:1.5px solid #deeeed;border-radius:13px;
                         padding:.8rem 1rem;text-align:left">
                 <div style="font-size:1.05rem;margin-bottom:.3rem">&#x1F4B0;</div>
-                <div style="font-size:.82rem;font-weight:600;color:#0d1b2a">Notes de frais</div>
+                <div style="font-size:.82rem;font-weight:600;color:#0d1b2a">Expense Reports</div>
                 <div style="font-size:.74rem;color:#8fa3b1;margin-top:.15rem">
-                    Soumission &amp; remboursement
+                    Submission &amp; Reimbursement
                 </div>
             </div>
         </div>
@@ -533,7 +536,7 @@ for msg in st.session_state.messages:
 
         if msg["role"] == "assistant":
             if "sources" in msg and SHOW_SOURCES and msg["sources"]:
-                with st.expander("📄 Sources consultées"):
+                with st.expander("📄 Sources consulted"):
                     for s in msg["sources"]:
                         icon = "🏛️" if s["source"] == "gouv" else "🏢"
                         st.caption(f"{icon} **{s['document']}** — distance : {s['distance']:.3f}")
@@ -545,7 +548,7 @@ for msg in st.session_state.messages:
 
 # ── USER INPUT ────────────────────────────────────────────────────────────────
 
-if prompt := st.chat_input("Posez votre question RH…"):
+if prompt := st.chat_input("Ask your HR question…"):
 
     # append & display user message
     st.session_state.messages.append({"role": "user", "content": prompt})
@@ -571,7 +574,7 @@ if prompt := st.chat_input("Posez votre question RH…"):
         st.markdown(answer)
 
         if SHOW_SOURCES and sources:
-            with st.expander("📄 Sources consultées"):
+            with st.expander("📄 Sources consulted"):
                 for s in sources:
                     icon = "🏛️" if s["source"] == "gouv" else "🏢"
                     st.caption(f"{icon} **{s['document']}** — distance : {s['distance']:.3f}")

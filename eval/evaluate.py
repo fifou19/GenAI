@@ -46,6 +46,7 @@ NUMBER_WORD_REPLACEMENTS = {
 
 
 def load_test_cases() -> list[dict]:
+    """Load test cases from JSON file."""
     path = Path(__file__).parent / "test_cases.json"
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -165,6 +166,7 @@ def evaluate_answer(test_case: dict, result: dict) -> dict:
 
 
 def main():
+    """Main function to run the evaluation."""
     print(f"\n{'=' * 60}")
     print("  HR Assistant - Evaluation")
     print(f"{'=' * 60}\n")

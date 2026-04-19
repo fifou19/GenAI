@@ -26,11 +26,12 @@ from Scripts.md_to_pdf import convert_all_to_pdf
 from src.config import ( GEMINI_API_KEY , TEMPERATURES,MAX_RETRIES, BASE_WAIT, MAX_WAIT, SLEEP_BETWEEN_CALLS, GOUV_DIR, NOVATECH_DIR, NOVATECH_MD_DIR , GEMINI_MODEL,is_retryable_error)
 
 from prompts.prompt_generate_corpus import SYSTEM_STRUCTURE, SYSTEM_ARTICLE,THEMES
+
 # ============================================================
 # GEMINI CALL WITH RETRY
 # ============================================================
 def call_gemini(client, system: str, prompt: str, temperature: float ) -> str:
-    """Appelle Gemini avec retry et backoff."""
+    """Call Gemini with retry and backoff."""
     last_exc = None
     for attempt in range(MAX_RETRIES):
         try:
@@ -64,6 +65,7 @@ def call_gemini(client, system: str, prompt: str, temperature: float ) -> str:
 # PDF EXTRACTION
 # ============================================================
 def extract_pdf_text(pdf_path: str, max_chars: int = 8000) -> str:
+    """Extract text from a PDF file."""
     text = ""
     try:
         with pdfplumber.open(pdf_path) as pdf:
@@ -79,6 +81,7 @@ def extract_pdf_text(pdf_path: str, max_chars: int = 8000) -> str:
 
 
 def load_gouv_texts() -> dict:
+    """Load text from government PDF files."""
     texts = {}
     if not GOUV_DIR.exists():
         print(f"  ⚠ {GOUV_DIR} not found")
@@ -170,6 +173,7 @@ Now write ONLY the section "{article_title}". Use ## for the section title. Be t
 # BUILD LEGAL CONTEXT
 # ============================================================
 def build_gouv_context(theme: dict, gouv_texts: dict) -> str:
+    """Build legal context from government texts."""
     gouv_keys = theme.get("gouv_keys", [])
     matched = [gouv_texts[k] for k in gouv_keys if k in gouv_texts]
     if not matched:
@@ -230,6 +234,7 @@ def generate_document(client, theme: dict, gouv_texts: dict) -> str:
 # MAIN
 # ============================================================
 def main():
+    """Main function to generate the corpus."""
     api_key = GEMINI_API_KEY
     if not api_key:
         print("❌ GEMINI_API_KEY not set")

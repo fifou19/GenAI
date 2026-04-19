@@ -168,12 +168,14 @@ CHECKLIST_KEYWORDS = {
 
 
 def normalize_text(text: str) -> str:
+    """Normalize text by removing accents and converting to lowercase."""
     text = unicodedata.normalize("NFD", text)
     text = "".join(ch for ch in text if unicodedata.category(ch) != "Mn")
     return text.lower()
 
 
 def contains_keyword(text: str, keyword: str) -> bool:
+    """Check if the normalized text contains the normalized keyword."""
     text = normalize_text(text)
     keyword = normalize_text(keyword)
     if " " in keyword or "-" in keyword:
@@ -182,6 +184,7 @@ def contains_keyword(text: str, keyword: str) -> bool:
 
 
 def find_matching_key(keyword_map: dict, topic: str) -> str | None:
+    """Find the key in the keyword map that matches the topic."""
     topic_normalized = normalize_text(topic)
     for key, keywords in keyword_map.items():
         for keyword in keywords:

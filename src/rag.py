@@ -42,6 +42,7 @@ class Retriever:
     """Searches for the most relevant chunks in ChromaDB."""
 
     def __init__(self):
+        """Initialize the Retriever with ChromaDB client and collection."""
         self.ef = embedding_functions.SentenceTransformerEmbeddingFunction(
             model_name=EMBEDDING_MODEL  # type: ignore
         )

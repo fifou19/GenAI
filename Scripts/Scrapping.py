@@ -181,6 +181,7 @@ SKIP_TEXTS = [
 
 
 def should_skip(text):
+    """Check if text should be skipped based on patterns."""
     lower = text.lower().strip()
     if len(lower) < 10:
         return True
@@ -202,12 +203,14 @@ HEADERS = {
 
 
 def clean_text(text):
+    """Clean extracted HTML text by normalizing whitespace and removing tracking tokens."""
     text = re.sub(r'\s+', ' ', text).strip()
     text = re.sub(r':?\s*titleContent', '', text)
     return text
 
 
 def scrape_page(url):
+    """Scrape a page and extract relevant structured content elements."""
     resp = requests.get(url, headers=HEADERS, timeout=30)
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, 'html.parser')
@@ -282,6 +285,7 @@ def scrape_page(url):
 
 
 def extract_sub_links(soup, base_url, follow_patterns):
+    """Extract followable sublinks from a scraped page using the given patterns."""
     links = set()
     for a in soup.find_all('a', href=True):
         full_url = urljoin(base_url, a['href'])
@@ -296,6 +300,7 @@ def extract_sub_links(soup, base_url, follow_patterns):
 
 
 def crawl_theme(theme):
+    """Crawl the pages for a theme and collect extracted elements."""
     all_elements = []
     visited = set()
     to_visit = list(theme["start_urls"])
@@ -333,7 +338,7 @@ def crawl_theme(theme):
 # SAVE AS MARKDOWN
 # ============================================================
 def to_markdown(elements, title, urls) -> str:
-    """Convertit les éléments scrapés en Markdown structuré."""
+    """Convert scraped elements into structured Markdown."""
     lines = []
     lines.append(f"# {title}")
     lines.append(f"")
@@ -391,6 +396,7 @@ WHITE = colors.white
 
 
 def create_styles():
+    """Return PDF paragraph styles used for rendering scraped content."""
     return {
         'Title': ParagraphStyle('T', fontName='Helvetica-Bold', fontSize=18, leading=24, textColor=GOV_BLUE, spaceAfter=4*mm),
         'Source': ParagraphStyle('S', fontName='Helvetica', fontSize=9, leading=12, textColor=GOV_GRAY, spaceAfter=6*mm),
@@ -403,10 +409,12 @@ def create_styles():
 
 
 def safe_xml(text):
+    """Escape text for safe XML rendering in PDF output."""
     return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
 
 def header_footer(canvas, doc):
+    """Draw the header and footer on each PDF page."""
     canvas.saveState()
     w, h = A4
     canvas.setFillColor(GOV_BLUE)
@@ -424,6 +432,7 @@ def header_footer(canvas, doc):
 
 
 def to_pdf(elements, path, title, urls):
+    """Render scraped content elements into a PDF document."""
     styles = create_styles()
     doc = SimpleDocTemplate(path, pagesize=A4, topMargin=22*mm, bottomMargin=18*mm, leftMargin=15*mm, rightMargin=15*mm)
     story = [Spacer(1, 3*mm)]
@@ -480,6 +489,7 @@ def to_pdf(elements, path, title, urls):
 # MAIN
 # ============================================================
 def main():
+    """Main function for scraping."""
     GOUV_MD_DIR.mkdir(parents=True, exist_ok=True)
     GOUV_DIR.mkdir(parents=True, exist_ok=True)
 

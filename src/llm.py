@@ -11,6 +11,7 @@ _client = genai.Client(api_key=GEMINI_API_KEY)
 
 
 def call_gemini(messages: list[dict]) -> str: # type: ignore
+    """Call the Gemini LLM with the given messages and return the response text."""
     for attempt in range(MAX_RETRIES):
         try:
             # Extract the system prompt and the user/assistant messages

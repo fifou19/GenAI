@@ -1,5 +1,5 @@
 """
-Cache local pour sauvegarder plusieurs conversations du chat.
+Local cache to save multiple chat conversations.
 """
 import json
 import uuid
@@ -11,6 +11,7 @@ CHAT_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def _load_all_conversations() -> list[dict]:
+    """Load all conversations from the cache file."""
     if not CACHE_FILE.exists():
         return []
 
@@ -21,6 +22,7 @@ def _load_all_conversations() -> list[dict]:
 
 
 def _save_all_conversations(conversations: list[dict]) -> None:
+    """Save all conversations to the cache file."""
     CACHE_FILE.write_text(
         json.dumps(conversations, indent=2, ensure_ascii=False),
         encoding="utf-8"
@@ -28,10 +30,12 @@ def _save_all_conversations(conversations: list[dict]) -> None:
 
 
 def load_all_conversations() -> list[dict]:
+    """Load all conversations from the cache."""
     return _load_all_conversations()
 
 
 def create_new_conversation() -> dict:
+    """Create a new conversation and save it to the cache."""
     conversations = _load_all_conversations()
 
     new_conv = {
@@ -48,6 +52,7 @@ def create_new_conversation() -> dict:
 
 
 def get_conversation(conversation_id: str) -> dict | None:
+    """Get a conversation by its ID."""
     conversations = _load_all_conversations()
     for conv in conversations:
         if conv["id"] == conversation_id:
@@ -56,6 +61,7 @@ def get_conversation(conversation_id: str) -> dict | None:
 
 
 def save_conversation(conversation_id: str, messages: list[dict], chat_history: list[dict]) -> None:
+    """Save a conversation with updated messages and chat history."""
     conversations = _load_all_conversations()
 
     for conv in conversations:
@@ -90,6 +96,7 @@ def save_conversation(conversation_id: str, messages: list[dict], chat_history: 
 
 
 def delete_conversation(conversation_id: str) -> None:
+    """Delete a conversation by its ID."""
     conversations = _load_all_conversations()
     conversations = [conv for conv in conversations if conv["id"] != conversation_id]
     _save_all_conversations(conversations)

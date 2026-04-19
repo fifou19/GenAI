@@ -35,9 +35,22 @@ from prompts.prompts_agents import ROUTER_SYSTEM_PROMPT, SYNTHESIS_SYSTEM_PROMPT
 # BASE
 # ============================================================
 class BaseAgent:
+    """Base class for all agents in the HR Assistant system."""
     name: str = "base"
 
     def run(self, question: str, **kwargs) -> dict:
+        """Run the agent with the given question and additional keyword arguments.
+
+        Args:
+            question (str): The user's question.
+            **kwargs: Additional arguments specific to the agent.
+
+        Returns:
+            dict: The agent's response.
+
+        Raises:
+            NotImplementedError: If the method is not implemented in a subclass.
+        """
         raise NotImplementedError
 
 
@@ -50,12 +63,14 @@ class RAGAgent(BaseAgent):
     source_filter: str = ""
 
     def __init__(self, retriever: Retriever, cross_encoder=None):
+        """Initialize a RAG agent with a retriever and optional reranker."""
         self.retriever = retriever
         self._cross_encoder = cross_encoder
 
     def run(self, question: str, chat_history: list = None, # type: ignore
             top_k: int = TOP_K, distance_threshold: float = DISTANCE_THRESHOLD,
             use_reranking: bool = USE_RERANKING) -> dict: # type: ignore
+        """Run retrieval and generate an answer for the given question."""
 
         chunks = self.retriever.search(
             question,
@@ -76,6 +91,7 @@ class RAGAgent(BaseAgent):
         return {"answer": answer, "chunks": chunks, "agent": self.name}
 
     def _rerank(self, question: str, chunks: list, top_k: int) -> list:
+        """Rerank retrieved chunks using the cross-encoder model."""
         pairs = [[question, c["text"]] for c in chunks]
         scores = self._cross_encoder.predict(pairs) # type: ignore
         scored = [{**c, "rerank_score": float(s)} for c, s in zip(chunks, scores)]
@@ -87,6 +103,7 @@ class RAGAgent(BaseAgent):
 # POLICY AGENT  — NovaTech internal docs
 # ============================================================
 class PolicyAgent(RAGAgent):
+    """Agent specialized for NovaTech internal policy documents."""
     name = "policy"
     source_filter = "novatech"
 
@@ -95,6 +112,7 @@ class PolicyAgent(RAGAgent):
 # LEGAL AGENT  — French labor law docs
 # ============================================================
 class LegalAgent(RAGAgent):
+    """Agent specialized for French labor law documents."""
     name = "legal"
     source_filter = "gouv"
 
@@ -103,6 +121,7 @@ class LegalAgent(RAGAgent):
 # ACTION AGENT  — forms, checklists, HR contacts
 # ============================================================
 class ActionAgent(BaseAgent):
+    """Agent that decides when to call tools for forms, checklists, and contact routing."""
     name = "action"
     TOOL_TYPE_MAP = {
         "get_form_link": "form",
@@ -135,18 +154,22 @@ class ActionAgent(BaseAgent):
     )
 
     def _question_requests_action(self, question: str) -> bool:
+        """Detect explicit process intent such as submit / request / declare."""
         normalized = normalize_text(question)
         return any(pattern in normalized for pattern in self.ACTION_INTENT_PATTERNS)
 
     def _question_requests_contact(self, question: str) -> bool:
+        """Detect when the user is asking to be routed to a human contact."""
         normalized = normalize_text(question)
         return any(pattern in normalized for pattern in self.CONTACT_INTENT_PATTERNS)
 
     def _question_is_purely_informational(self, question: str) -> bool:
+        """Keep entitlement or policy questions from triggering procedural tools by default."""
         normalized = normalize_text(question).strip()
         return any(normalized.startswith(pattern) for pattern in self.INFORMATIONAL_PATTERNS)
 
     def _question_can_benefit_from_checklist(self, question: str) -> bool:
+        """Allow lightweight next steps only for topics that naturally have a practical follow-up."""
         if not find_matching_key(CHECKLIST_KEYWORDS, question):
             return False
 
@@ -157,6 +180,7 @@ class ActionAgent(BaseAgent):
         return any(pattern in normalized for pattern in self.PRACTICAL_FOLLOW_UP_PATTERNS)
 
     def run(self, question: str, **kwargs) -> dict:
+        """Ask the LLM to select tools, then enforce local product guardrails."""
         # Ask the LLM which tools to call and with what arguments
         messages = [
             {"role": "system", "content": ACTION_AGENT_PROMPT},
@@ -209,6 +233,7 @@ class OrchestratorAgent:
     """
 
     def __init__(self):
+        """Initialize the orchestrator and create the available agents."""
         self.retriever = Retriever()
         self._cross_encoder = None
         self.agents: dict[str, BaseAgent] = {
@@ -221,6 +246,7 @@ class OrchestratorAgent:
     # Lazy cross-encoder loader (shared across RAG agents)
     # --------------------------------------------------------
     def _get_cross_encoder(self):
+        """Load the reranker once and share it across both RAG agents."""
         if self._cross_encoder is None:
             from sentence_transformers import CrossEncoder
             self._cross_encoder = CrossEncoder(RERANKING_MODEL)
@@ -232,7 +258,7 @@ class OrchestratorAgent:
     # Routing
     # --------------------------------------------------------
     def _route(self, question: str) -> list[str]:
-        """Ask the LLM which agents to invoke. Falls back to ['policy'].""" 
+        """Use the router prompt, then apply local safeguards before returning the agent list."""
         messages = [
             {"role": "system", "content": ROUTER_SYSTEM_PROMPT},
             {"role": "user", "content": question},
@@ -261,7 +287,7 @@ class OrchestratorAgent:
     # --------------------------------------------------------
     def _synthesize(self, question: str, agent_results: dict,
                     chat_history: list = None) -> str: # type: ignore
-        """Combine agent results into a single coherent answer."""
+        """Merge policy, legal, and action outputs into one final answer in the user's language."""
         answer_language = infer_answer_language(question)
         parts = []
 
@@ -390,6 +416,7 @@ class OrchestratorAgent:
         }
 
     def _extract_sources(self, chunks: list) -> list:
+        """Deduplicate chunk metadata so the UI can display a clean source list."""
         seen: set = set()
         sources: list = []
         for chunk in chunks:

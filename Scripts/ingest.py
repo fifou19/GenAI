@@ -22,6 +22,7 @@ from src.config import (
 
 
 def read_markdown(path: str) -> str:
+    """Read markdown content from a file."""
     with open(path, "r", encoding="utf-8") as f:
         return f.read().strip()
     
@@ -42,9 +43,9 @@ def clean_chunk(text: str) -> str:
 # ============================================================
 def chunk_markdown(text: str) -> tuple[list[dict], str]:
     """
-    Split sur ## headers. 1 chunk = 1 section.
-    Chaque chunk est préfixé avec le titre du document (#).
-    Si une section est trop longue, re-split sur ### puis par taille.
+    Split on ## headers. 1 chunk = 1 section.
+    Each chunk is prefixed with the document title (#).
+    If a section is too long, re-split on ### then by size.
     Returns (chunks, doc_title).
     """
     doc_title = ""
@@ -104,6 +105,7 @@ def chunk_markdown(text: str) -> tuple[list[dict], str]:
 
 
 def chunk_by_size(text: str) -> list[str]:
+    """Chunk text by size with overlap."""
     chunks, current = [], ""
     for s in re.split(r"(?<=[.!?])\s+", text):
         if len(current) + len(s) > CHUNK_SIZE and current:
@@ -125,6 +127,7 @@ def chunk_by_size(text: str) -> list[str]:
 # LOAD ALL MARKDOWN
 # ============================================================
 def load_all_documents() -> list[dict]:
+    """Load all markdown documents and chunk them."""
     documents = []
 
     for md_dir, source_type in [(GOUV_MD_DIR, "gouv"), (NOVATECH_MD_DIR, "novatech")]:
@@ -172,6 +175,7 @@ def load_all_documents() -> list[dict]:
 # INDEX
 # ============================================================
 def index_documents(documents: list[dict]) -> None:
+    """Index documents in ChromaDB."""
     print(f"\n  Embedding : {EMBEDDING_MODEL}")
     print(f"  Collection : {CHROMA_COLLECTION_NAME}")
 
@@ -231,6 +235,7 @@ def inspect_chunks(doc_stem: str) -> None:
 
 
 def main():
+    """Main function for ingestion."""
     import sys
     if len(sys.argv) == 3 and sys.argv[1] == "--inspect":
         inspect_chunks(sys.argv[2])
